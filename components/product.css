@@ -1,0 +1,55 @@
+/* styling for the whole product list container, including the filters on the side */
+.product-list-container {
+    display: grid;
+    grid-template-rows: 55px calc(100vh - 55px);
+    grid-template-columns: 220px auto;
+    grid-template-areas:
+      'filter header'
+      'filter products';
+  }
+  
+  /* styling for just the main list of products displayed on screen */
+  .product-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-area: header;
+  }
+  
+  .products-container {
+    grid-area: products;
+    overflow: auto;
+  }
+  
+  .product-list-product-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+  }
+  
+  /* styling for the filters */
+  .filter-wrapper {
+    padding: 10px;
+    background-color: #ffcfae;
+    grid-area: filter;
+    height: 100vh;
+  }
+  
+  .filter-title {
+    font-weight: 600;
+  }
+  
+  .filter-data {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border-top: 2px solid #012025;
+  }
+  
+  .filter-item {
+    margin: 8px 16px;
+  }
+  
+  .filter-checkbox {
+    margin-left: 10px;
+  }
