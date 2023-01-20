@@ -7,22 +7,22 @@ import { useSelector } from "react-redux"
 import Toggle from "../Toggle"
 import { useDarkMode } from "../../hooks/useDarkMode"
 import HideSideNav from "../HideSideNav"
+import { device } from "../../config/theme"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
-  background-color: ${({theme}) => theme.nav};
-  padding:20px 0;
-  width:300px;  
-  /* position:fixed; */
+ flex: 0 0 auto; /* fixed width */
+  position: sticky;
+  padding-top: 20px;
   box-sizing:border-box;
-  min-height:100vh;
-  color: ${({theme}) => theme.primary};
-  border-bottom: ${({theme})=> `2px solid ${theme.border}`};
-  border-left: ${({theme})=> `2px solid ${theme.border}`};
-  justify-content:space-between;
- position:relative;
- right: ${({showSideNav}) => showSideNav ? '0' : '100%'};
+  background-color: ${({theme}) => theme.white};
+  width:250px;
+  max-height:100%;
+ /* right: ${({showSideNav}) => showSideNav ? '0' : '100%'}; */
  display:${({showSideNav}) => showSideNav ? 'block' : 'none'};
+ @media ${device.mobileM} {
+  display:block;
+ }
  
 `
 const SideDataStyle = styled.ul`
@@ -32,53 +32,45 @@ margin:20px 0;
 
 const LI = styled.li<{selected: boolean}>`
 
-z-index:1;
+  z-index:1;
   display:flex;
   align-items:center;
   position:relative;
   padding: 10px 0px;
   margin:15px 0;
-  transition:1s all ease;
-  & ::before{
-      content:'';
-      width:${({selected}) => selected ? "200px": 0};
-      height:${({selected}) => selected && "100%"};
-      border-radius: ${({selected}) => selected && "0px 100px 100px 0px"};
-      border: ${({theme,selected}) => selected && `1px solid ${theme.button}`};
-      color:red;
-      position:${({selected}) => selected && "absolute"};
-      left:0;
-      top:-1px;
-    }
-  cursor:pointer;
-  color:white;
+  &::before{
+    content:'';
+    transform:scaleX(0);
+      /* border-radius: ${({selected}) => selected && "0px 100px 100px 0px"};
+      border: ${({theme,selected}) => selected && `1px solid ${theme.button}`}; */
+    transform-origin:bottom right;
+    display:block;
+    position:absolute;
+   
+    width:200px;
+      height:40px;
+  
+    background-color:${({theme}) => theme.button};
+    border-radius:0px 100px 100px 0px;
+    z-index:-1;
+    transition:transform 0.25s ease-in-out;
+  }
+
+  &:hover::before{
+    transform:scaleX(1);
+    transform-origin:bottom left;
+    transition:transform 0.25s ease-in-out;
+  }
+  p {
+    position: relative;
+  }
   &:hover{
-  p{
     color:red;
-  
-    z-index:100;
+    cursor: pointer;
   }
-  & ::before{
-      content:'';
-      transition:width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
-      width:200px;
-      height:100%;
-      border-radius: 0px 100px 100px 0px;
-      border:1px solid ${({theme}) => theme.button};
-      position:absolute;
-      left:0;
-      top:-1px;
-    }
-    
-  }
-  
-  p{
-    font-size: 15px;
-    font-weight: 500;
-    z-index:30;
-    /* position:relative; */
-    color: ${({theme}) => theme.primary};
-  }
+ 
+
+ 
 `
 const NavBoards = styled.div`
     margin: 20px;
@@ -90,7 +82,8 @@ const Logo= styled.div`
   box-sizing:border-box;
 `
 const SideNav = () => {
-  const {currentBoard,boardsDetails,showSideNav} = useSelector((state: RootState) => state.board)
+  const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
+  const {showSideNav} = useSelector((state: RootState) => state.display)
 
   const boards = boardsDetails.map((board)=>board.name)
   const [theme, themeToggler] = useDarkMode();
@@ -113,7 +106,7 @@ const SideNav = () => {
     </SideDataStyle>
     
     <Toggle toggleTheme={themeToggler} theme={theme} />
-    {/* <HideSideNav /> */}
+    <HideSideNav />
         </NavBoards>
     </NavWrapper>
   )

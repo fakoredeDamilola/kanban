@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import {FaRegEye, FaRegEyeSlash} from 'react-icons/fa'
 import { iconStyle } from '../utils/utilData'
 import { useDispatch, useSelector } from 'react-redux'
-import { setShowSideNav } from '../state/board'
+import { toggleSideNav } from '../state/display'
 
 const Wrapper = styled.div<{showSideNav:boolean}>`
-position:${({showSideNav}) => showSideNav ? 'absolute' : 'fixed'};
-bottom:${({showSideNav}) => showSideNav ? '-80px' : '20px'};
+/* position:${({showSideNav}) => showSideNav ? 'absolute' : 'fixed'}; */
+/* bottom:${({showSideNav}) => showSideNav ? '-80px' : '20px'}; */
 color:#828FA3;
 cursor:pointer;
 width:${({showSideNav}) => showSideNav ? 'auto' : '56px'};
@@ -27,10 +27,10 @@ const NoSide = styled.div`
 `
 
 const HideSideNav = () => {
-   const { showSideNav }= useSelector((state: any) => state.board)
+   const { showSideNav }= useSelector((state: any) => state.display)
    const dispatch = useDispatch()
    const removesideNav = () => {
-      dispatch(setShowSideNav(!showSideNav))
+      dispatch(toggleSideNav(!showSideNav))
    }
   return (
     <Wrapper onClick={removesideNav} showSideNav={showSideNav} >

@@ -15,9 +15,8 @@ import store from '../state/store';
 export default function MyApp(props:AppProps) {
 
   // This function is triggered when the Switch component is toggled
-  const [theme, mountedComponent] = useDarkMode();
-
-  const themeMode = theme === 'light' ? lightTheme : darkTheme;
+  const [theme,themeToggler, mountedComponent] = useDarkMode();
+console.log({theme})
 
 
 
@@ -31,7 +30,7 @@ export default function MyApp(props:AppProps) {
       <Provider store={store}>
       {/* 
 // @ts-ignore */}
-      <ThemeProvider theme={themeMode} >
+      <ThemeProvider theme={theme == 'light' ? lightTheme : darkTheme} >
         <>
         <GlobalStyles />
         <Layout>

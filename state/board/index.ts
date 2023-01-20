@@ -17,7 +17,6 @@ export interface IBoard {
 interface boardIntialState {
   currentBoard: string;
   boards: string[];
-  showSideNav: boolean;
   boardsDetails:IBoard[]
 }
 
@@ -37,7 +36,6 @@ const initialState: boardIntialState = {
         ]
       }
     ],
-    showSideNav:true
 }
 
 const boardSlice = createSlice({
@@ -46,9 +44,6 @@ const boardSlice = createSlice({
   reducers: {
     switchCurrentBoard: (state, action) => {
       state.currentBoard = action.payload;
-    },
-    setShowSideNav: (state, action) => {
-      state.showSideNav = action.payload;
     },
     addNewBoard: (state, {payload:{ newBoard }}) =>{
      state.boardsDetails.push(newBoard)
@@ -59,7 +54,6 @@ const boardSlice = createSlice({
 
 export const {
   switchCurrentBoard,
-  setShowSideNav,
   addNewBoard
 } = boardSlice.actions;
 

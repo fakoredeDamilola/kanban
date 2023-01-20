@@ -3,12 +3,11 @@ import {useState} from "react"
 import Toggle from "../components/Toggle"
 import { useDarkMode } from "../hooks/useDarkMode";
 import AddNewBoard from "../components/AddNewBoard";
-import ViewArea from "../components/ViewArea";
+import ViewArea from "../components/viewarea/ViewArea";
 
 
 const Wrapper = styled.div`
  
-  width:100%;
     /* margin-left:150px; */
     padding:20px;
     box-sizing:border-box;
@@ -17,10 +16,7 @@ const Wrapper = styled.div`
   margin-top:90px;
   background-color: ${({theme}) => theme.background};
     border-bottom: ${({theme})=> `2px solid ${theme.border}`};
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
+    
     & p {
       color: ${({theme}) => theme.secondaryColor};
       font-weight:700;
@@ -50,21 +46,14 @@ const closeNewBoardModal = () => {
   setOpenNewBoardModal(false)
 }
   return (
-    <>
-     <Wrapper>
-     <ViewArea 
+    // <>
+        <ViewArea 
       openNewBoardModal={openNewBoardModal}
       setOpenNewBoardModal={setOpenNewBoardModal}
 
       />
+     
 
-   </Wrapper>
-   {openNewBoardModal && 
-   <AddNewBoard
-   closeNewBoardModal={closeNewBoardModal}
-   openNewBoardModal={openNewBoardModal}
-   />}
-    </>
   
   )
 }

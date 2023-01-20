@@ -8,24 +8,26 @@ import SideNav from './navs/SideNav'
 
 
 const NavWrapper = styled.div`
-  display:flex;
-  position:relative;
-  /* gap:40px; */
-  
+   display: flex;
+  flex-wrap: nowrap;
+  box-sizing:border-box;
+  height:100%;
+  max-height:100%;
+  background-color: aqua;
 `
-
 const Layout = ({children}:{children:JSX.Element}) => {
- 
+
   return (
-    <div>
       <NavWrapper>
            <SideNav />
-        {children}
-        <Navbar/>
+          
+              <Navbar />
+             {children}
+      
+       
       </NavWrapper>
    
-<HideSideNav />
-    </div>
+
   )
 }
 

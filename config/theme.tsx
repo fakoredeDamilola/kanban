@@ -37,22 +37,34 @@ export const fontSize ={
   h4:"12px",
 }
 
-export const GlobalStyles = createGlobalStyle`
-*{
-  margin:0;
-  padding:0;
-  
+const sizes = {
+  mobileS:"320px",
+  mobileM:"605px",
+  tablet:"768px",
+  laptop:"1024px"
 }
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: all 0.50s linear;
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    width:100vw;
-    height:100vh;
-    /* overflow-x:hidden; */
-  }
+
+export const device = {
+  mobileS: `(min-width: ${sizes.mobileS})`,
+  mobileM: `(min-width: ${sizes.mobileM})`,
+  tablet: `(min-width: ${sizes.tablet})`,
+  laptop: `(min-width: ${sizes.laptop})`,
+}
+
+export const view = "grid"
+
+export const GlobalStyles = createGlobalStyle`
+    html,body,#__next{
+            height:100%;
+            max-height:100%;
+            box-sizing: border-box;
+            background-color:black;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        *{
+            padding:0;
+            margin:0;
+        }
   h1{
     font-size:${fontSize.h1};
   }

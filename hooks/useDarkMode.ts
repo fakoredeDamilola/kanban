@@ -6,6 +6,7 @@ export const useDarkMode = () => {
 
     const setMode =( mode:string) => {
         window.localStorage.setItem('theme', mode)
+        console.log({mode})
         setTheme(mode)
     };
 
