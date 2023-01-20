@@ -15,8 +15,9 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   position: sticky;
   padding-top: 20px;
   box-sizing:border-box;
-  background-color: ${({theme}) => theme.white};
+  background-color: ${({theme}) => theme.sidenav};
   width:250px;
+  color: ${({theme}) => theme.primary};
   max-height:100%;
  /* right: ${({showSideNav}) => showSideNav ? '0' : '100%'}; */
  display:${({showSideNav}) => showSideNav ? 'block' : 'none'};
@@ -84,9 +85,10 @@ const Logo= styled.div`
 const SideNav = () => {
   const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
   const {showSideNav} = useSelector((state: RootState) => state.display)
+  const {theme} = useSelector((state: RootState) => state.display)
 
   const boards = boardsDetails.map((board)=>board.name)
-  const [theme, themeToggler] = useDarkMode();
+
   return (
     <NavWrapper showSideNav={showSideNav} >
         <Logo>
@@ -105,7 +107,6 @@ const SideNav = () => {
     ))}
     </SideDataStyle>
     
-    <Toggle toggleTheme={themeToggler} theme={theme} />
     <HideSideNav />
         </NavBoards>
     </NavWrapper>

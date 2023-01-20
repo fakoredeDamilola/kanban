@@ -20,6 +20,7 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   height: 70px;
   display:flex;
   width:100%;
+  color: ${({theme}) => theme.primary};
   
   @media ${device.mobileM} {
   width:calc(100% - 250px);

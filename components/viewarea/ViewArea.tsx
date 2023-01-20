@@ -17,7 +17,7 @@ interface IView {
 const FlexWrapper = styled.div`
 @media ${device.mobileM} {
   overflow-x: scroll; /* enable horizontal scrolling */
-  background-color: red;
+  background-color: ${({theme}) => theme.body};
   display:flex;
   padding:100px 20px;
   gap:40px; 
