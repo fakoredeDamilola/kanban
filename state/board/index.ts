@@ -42,9 +42,6 @@ const boardSlice = createSlice({
   name: "board",
   initialState,
   reducers: {
-    switchCurrentBoard: (state, action) => {
-      state.currentBoard = action.payload;
-    },
     addNewBoard: (state, {payload:{ newBoard }}) =>{
      state.boardsDetails.push(newBoard)
      
@@ -53,7 +50,6 @@ const boardSlice = createSlice({
 });
 
 export const {
-  switchCurrentBoard,
   addNewBoard
 } = boardSlice.actions;
 

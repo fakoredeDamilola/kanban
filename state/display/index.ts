@@ -21,6 +21,9 @@ const displaySlice = createSlice({
         toggleSideNav: (state,{payload:{sideNav}}) => {
             state.showSideNav = sideNav ?? !state.showSideNav
         },
+        switchTaskView: (state,action) => {
+            state.taskView = action.payload
+        },
         switchTheme: (state,{payload:{theme}}) =>{
             state.theme = theme
         }
@@ -29,7 +32,8 @@ const displaySlice = createSlice({
 
 export const {
     toggleSideNav,
-    switchTheme
+    switchTheme,
+    switchTaskView
 } = displaySlice.actions
 
 export default displaySlice.reducer

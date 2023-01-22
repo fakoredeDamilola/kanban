@@ -37,7 +37,7 @@ const Columns = styled.div`
     width:300px;
      }
 `
-const ColumnTask = styled.div`
+const ColumnTask = styled.div<{view:string}>`
     background-color: yellow;
     flex-shrink: 0;
     overflow-y: auto;
@@ -45,10 +45,12 @@ const ColumnTask = styled.div`
     
     max-height:100%;
     width:100%;
+  
     & > div {
         width:100%;
         margin:0px auto;
         height:40px;
+        background-color:blue;
     min-height:40px;
     box-sizing:border-box;
     border-radius:0px;
@@ -59,6 +61,7 @@ const ColumnTask = styled.div`
     width:300px;
     & > div {
     border:0px;
+    background-color:red;
     width:95%;
     height:70px;
     min-height:70px;
@@ -69,6 +72,7 @@ const ColumnTask = styled.div`
 `
 const ViewArea = ({setOpenNewBoardModal,openNewBoardModal}:IView) => {
     const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
+    const {taskView} = useSelector((state: RootState) => state.display)
 
     const [columns,setColumns] = useState<{
         name:string;
@@ -144,7 +148,7 @@ if(columns.length===0) {
             return (
                <Columns>
                <TaskBar taskbar={col} />
-               <ColumnTask>
+               <ColumnTask view={taskView} >
                 {tasks[index].map((cards,index)=> (
                <TaskCard cards={cards} />
             ))

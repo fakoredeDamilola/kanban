@@ -66,7 +66,6 @@ const LI = styled.li<{selected: boolean}>`
     position: relative;
   }
   &:hover{
-    color:red;
     cursor: pointer;
   }
  

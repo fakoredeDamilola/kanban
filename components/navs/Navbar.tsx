@@ -1,10 +1,9 @@
 import styled from "styled-components"
-import {HiOutlineViewList} from 'react-icons/hi'
+import {HiOutlineViewList,HiViewBoards} from 'react-icons/hi'
 import { useDispatch, useSelector } from "react-redux"
 import { device } from "../../config/theme"
 import Harmburger from "../Harmburger"
-import { toggleSideNav } from "../../state/display"
-import { MdDashboard } from "react-icons/md"
+import { switchTaskView, toggleSideNav } from "../../state/display"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -27,24 +26,6 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   width:calc(100% - 250px);
   }
 `
-const Button = styled.button`
-  background-color: ${({theme}) => theme.button};
-  color: ${({theme}) => theme.white};
-  padding:0px 20px;
-  border-radius:24px;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-  width:164px;
-  height:48px;
-  margin-right:6px;
-  opacity:0.25;
-  transition: all 0.50s linear;
-  &:hover{
-    background-color: ${({theme}) => theme.secondary};
-    color: ${({theme}) => theme.button};
-  }
-`
 const MenuNav = styled.div`
   display:flex;
   div:last-child {
@@ -60,25 +41,48 @@ const Hammenu = styled.div`
     margin-right:5px;
   }
   `
-  const BoardSwitchButton = styled.div`
+  const BoardSwitchButton = styled.div<{taskView:string}>`
   display:flex;
   align-items:center;
   background-color: ${({theme}) => theme.button};
-  height:30px;
-  box-sizing:border-box;
+  /* height:30px; */
   border-radius:6px;
   /* padding:0px 10px; */
-   & div:first-child {
-    margin-right:5px;
-    background-color: white;
-    width:100%;
+  & > div:first-child {
+    background-color: ${({taskView,theme}) => taskView === "list" ? theme.secondary : theme.button};
+  
   }
+  & > div:last-child {
+    background-color: ${({taskView,theme}) => taskView === "column" ? theme.secondary : theme.button};
+  }
+   & > div {
+    cursor: pointer;
+  box-sizing:border-box;
+    width:30px; 
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:6px;
+    /* min-height:100%; */
+    height:30px;
+    &:hover{
+      background-color: ${({theme}) => theme.secondary};
+    }
+  }
+
   
   `
 
 const Navbar = () => {
-  const {currentBoard,showSideNav} = useSelector((state: any) => state.board)
+  const {currentBoard} = useSelector((state: any) => state.board)
+  const {taskView,showSideNav} = useSelector((state: any) => state.display)
   const dispatch = useDispatch()
+
+const changeBoardView = (view:string) => {
+  dispatch(switchTaskView(view))
+
+}
+
 
   const toggleNav = () => {
     console.log("toggleNav")
@@ -92,12 +96,12 @@ const Navbar = () => {
       </Hammenu>
       <MenuNav>
         
-        <BoardSwitchButton>
+        <BoardSwitchButton taskView={taskView}>
         <div>
-          <HiOutlineViewList size="22px"/>
+          <HiOutlineViewList size="20px" onClick={()=>changeBoardView("list")}/>
         </div>
         <div>
-          <MdDashboard size="20px"/>
+          <HiViewBoards size="20px" onClick={()=>changeBoardView("column")}/>
         </div>
         </BoardSwitchButton>
       
