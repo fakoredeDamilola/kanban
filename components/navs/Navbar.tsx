@@ -1,9 +1,10 @@
 import styled from "styled-components"
-import {HiOutlineEllipsisVertical} from 'react-icons/hi2'
+import {HiOutlineViewList} from 'react-icons/hi'
 import { useDispatch, useSelector } from "react-redux"
 import { device } from "../../config/theme"
 import Harmburger from "../Harmburger"
 import { toggleSideNav } from "../../state/display"
+import { MdDashboard } from "react-icons/md"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -59,6 +60,22 @@ const Hammenu = styled.div`
     margin-right:5px;
   }
   `
+  const BoardSwitchButton = styled.div`
+  display:flex;
+  align-items:center;
+  background-color: ${({theme}) => theme.button};
+  height:30px;
+  box-sizing:border-box;
+  border-radius:6px;
+  /* padding:0px 10px; */
+   & div:first-child {
+    margin-right:5px;
+    background-color: white;
+    width:100%;
+  }
+  
+  `
+
 const Navbar = () => {
   const {currentBoard,showSideNav} = useSelector((state: any) => state.board)
   const dispatch = useDispatch()
@@ -75,9 +92,14 @@ const Navbar = () => {
       </Hammenu>
       <MenuNav>
         
+        <BoardSwitchButton>
         <div>
-            <HiOutlineEllipsisVertical size="23px"/>
+          <HiOutlineViewList size="22px"/>
         </div>
+        <div>
+          <MdDashboard size="20px"/>
+        </div>
+        </BoardSwitchButton>
       
       </MenuNav>
       
