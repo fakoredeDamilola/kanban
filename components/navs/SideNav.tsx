@@ -15,8 +15,9 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   position: sticky;
   padding-top: 20px;
   box-sizing:border-box;
-  background-color: ${({theme}) => theme.white};
+  background-color: ${({theme}) => theme.sidenav};
   width:250px;
+  color: ${({theme}) => theme.primary};
   max-height:100%;
  /* right: ${({showSideNav}) => showSideNav ? '0' : '100%'}; */
  display:${({showSideNav}) => showSideNav ? 'block' : 'none'};
@@ -80,17 +81,25 @@ const NavBoards = styled.div`
 const Logo= styled.div`
   padding:0 20px;
   box-sizing:border-box;
+  display:flex;
+  & div{
+    font-size:25px;
+    margin-left:10px;
+    margin-top:-5px;
+  }
 `
 const SideNav = () => {
   const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
   const {showSideNav} = useSelector((state: RootState) => state.display)
+  const {theme} = useSelector((state: RootState) => state.display)
 
   const boards = boardsDetails.map((board)=>board.name)
-  const [theme, themeToggler] = useDarkMode();
+
   return (
     <NavWrapper showSideNav={showSideNav} >
         <Logo>
-              <Image src={theme==="light"? "/logoLight.svg" : "/logo.svg"} alt="logo" width={130} height={30} />
+              <Image src="/LOGO.svg" alt="logo" width={25} height={25} />
+              <div>Kanban</div>
         </Logo>
       
         <NavBoards>
@@ -105,7 +114,6 @@ const SideNav = () => {
     ))}
     </SideDataStyle>
     
-    <Toggle toggleTheme={themeToggler} theme={theme} />
     <HideSideNav />
         </NavBoards>
     </NavWrapper>

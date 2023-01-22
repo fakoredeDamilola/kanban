@@ -2,12 +2,14 @@ import {createSlice} from "@reduxjs/toolkit"
 
 interface displayState {
 showSideNav: boolean;
-taskView:string
+taskView:string,
+theme:string
 }
 
 const initialState: displayState = {
 showSideNav:false,
-taskView: "column"
+taskView: "column",
+theme:"light"
 }
 
 
@@ -18,12 +20,16 @@ const displaySlice = createSlice({
     reducers:{
         toggleSideNav: (state,{payload:{sideNav}}) => {
             state.showSideNav = sideNav ?? !state.showSideNav
+        },
+        switchTheme: (state,{payload:{theme}}) =>{
+            state.theme = theme
         }
     }
 })
 
 export const {
-    toggleSideNav
+    toggleSideNav,
+    switchTheme
 } = displaySlice.actions
 
 export default displaySlice.reducer

@@ -10,10 +10,10 @@ const Toggler = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
-  width:90%;
+  width:200px;
   bottom:60px;
   position:absolute;
-  left:5%;
+  left:2%;
   background-color: ${({theme}) => theme.other};
   color:white;
   font-size: 20px;
@@ -24,8 +24,8 @@ const Toggler = styled.div`
   transition:1s all ease;
   margin:0 auto;
   &:hover{
-    background-color: ${({theme}) => theme.hover};
-    opacity:0.25;
+    /* background-color: ${({theme}) => theme.hover}; */
+    /* opacity:0.25; */
   }
 `
 
@@ -85,6 +85,7 @@ const Toggle = ({  toggleTheme,theme }:IToggle) => {
        <BsSunFill style={iconStyle} />
          
         <CheckBoxWrapper >
+          
         <CheckBox id="checkbox" type="checkbox" onClick={toggleTheme} checked={theme==="dark" ?true : false} />
         <CheckBoxLabel htmlFor="checkbox" />
       </CheckBoxWrapper>

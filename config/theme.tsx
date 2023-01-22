@@ -3,12 +3,13 @@ import injectGlobal from 'styled-components';
 
 export const lightTheme = {
   primary:"#000112",
+  body:"#F4F7FD",
   other:"#F4F7FD",
+  sidenav:"#FFFFFF",
   background:"#E4EBFA",
   button:"#635FC7",
   secondary:"#A8A4FF",
   nav:"#fff",
-  body: '#E4EBFA',
   white:"#fff",
   border:"#E4EBFA",
   hover:"#635FC7",
@@ -18,6 +19,8 @@ export const lightTheme = {
 
 export const darkTheme = {
   primary:"#fff",
+  body:"#20212C",
+  sidenav:"#2B2C37",
   background:"#20212C",
   other:"#20212C",
   button:"#635FC7",
