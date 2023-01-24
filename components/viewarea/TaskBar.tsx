@@ -6,10 +6,11 @@ interface ITaskbar {
     taskbar:{
     name: string;
     quantity:number; 
-    }    
+    },
+    view:string    
 
 }
-const TaskBarStyle = styled.div`
+const TaskBarStyle = styled.div<{view:string}>`
   width:100%;
   border-radius:0px;
    height:40px;
@@ -23,17 +24,17 @@ const TaskBarStyle = styled.div`
    padding:0 5px;
 
    @media ${device.mobileM} {
-  width:90%;
-   min-width:90%;
-   border-radius:6px;
-   height:40px;
+  width:${({view}) => view==="list" ? "100%" : "90%"};
+   min-width:${({view}) => view==="list" ? "100%" : "90%"};
+   border-radius:${({view}) => view==="list" ? "0" : "6px"};
+   height:${({view}) => view==="list" ? "80px" : "40px"};
    background-color:red;
-   margin:20px auto;
+   margin:${({view}) => view==="list" ? "0%" : "20px auto"};
    }
 `
-const TaskBar = ({taskbar}:ITaskbar) => {
+const TaskBar = ({taskbar,view}:ITaskbar) => {
   return (
-    <TaskBarStyle>
+    <TaskBarStyle view={view}>
         <div>{taskbar.name}</div>
         <div>{taskbar.quantity}</div>
     </TaskBarStyle>

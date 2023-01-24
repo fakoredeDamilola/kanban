@@ -14,28 +14,29 @@ interface IView {
     openNewBoardModal:boolean
 }
 
-const FlexWrapper = styled.div`
-@media ${device.mobileM} {
+const FlexWrapper = styled.div<{view:string}>`
+/* @media ${device.mobileM} { */
   overflow-x: scroll; /* enable horizontal scrolling */
   background-color: ${({theme}) => theme.body};
-  display:flex;
-  padding:100px 20px;
+  display:${({view}) => view==="list" ? "block" : "flex"};
+  padding:${({view}) => view==="list" ? "50px 0px" : "100px 20px"};
   gap:40px; 
-  margin-top:0;
-}
-    margin-top:70px;
+  margin-top:${({view}) => view==="list" ? "20px" : "0px"};
+/* } */
  flex: 1 1 auto;
+  /*
+  margin-top:70px;
   box-sizing: border-box;
   height: 100%;
-    min-height: 100%;
+    min-height: 100%; */
    
 `
-const Columns = styled.div`
+const Columns = styled.div<{view:string}>`
      background-color: blue;
-     width:100%;
-     @media ${device.mobileM} {
-    width:300px;
-     }
+     /* width:100%; */
+     /* @media ${device.mobileM} { */
+    width:${({view}) => view==="list" ? "100%" : "300px"};
+     /* } */
 `
 const ColumnTask = styled.div<{view:string}>`
     background-color: yellow;
@@ -46,7 +47,7 @@ const ColumnTask = styled.div<{view:string}>`
     max-height:100%;
     width:100%;
   
-    & > div {
+    /* & > div {
         width:100%;
         margin:0px auto;
         height:40px;
@@ -56,19 +57,21 @@ const ColumnTask = styled.div<{view:string}>`
     border-radius:0px;
     border-top:1px solid white;
     border-bottom:1px solid white;
-    }
-     @media ${device.mobileM} {
-    width:300px;
+    } */
+     /* @media ${device.mobileM} { */
+        width:${({view}) => view==="list" ? "100%" : "300px"};
     & > div {
     border:0px;
     background-color:red;
-    width:95%;
+    width:${({view}) => view==="list" ? "100%" : "95%"};
     height:70px;
     min-height:70px;
-    border-radius:6px;
-        margin:30px auto;
+    border-radius:${({view}) => view==="list" ? "0%" : "6px"};
+    border-top:${({view}) => view==="list" ? "1px solid white" : "none"};
+    border-bottom:${({view}) => view==="list" ? "1px solid white" : "none"};
+        margin:${({view}) => view==="list" ? "0" : "30px auto"};
     }
-     }
+     /* } */
 `
 const ViewArea = ({setOpenNewBoardModal,openNewBoardModal}:IView) => {
     const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
@@ -142,12 +145,12 @@ if(columns.length===0) {
   )
 }else {
     return (
-        <FlexWrapper>
+        <FlexWrapper view={taskView}>
         
         {list.map((col,index)=>{
             return (
-               <Columns>
-               <TaskBar taskbar={col} />
+               <Columns view={taskView}>
+               <TaskBar taskbar={col} view={taskView} />
                <ColumnTask view={taskView} >
                 {tasks[index].map((cards,index)=> (
                <TaskCard cards={cards} />
