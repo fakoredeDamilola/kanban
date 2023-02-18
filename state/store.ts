@@ -4,7 +4,7 @@ import {logger} from "redux-logger";
 import reducers from "./reducers";
 
 
-const PERSISTED_KEYS = ["user"]
+const PERSISTED_KEYS = ["user","board"]
 
 const store = configureStore({
     reducer: reducers,
@@ -17,7 +17,7 @@ const store = configureStore({
         })
         .concat(logger)
         .concat(save({ states: PERSISTED_KEYS })),
-      preloadedState: load({ states: PERSISTED_KEYS }),
+      preloadedState: load({ states: PERSISTED_KEYS, }),
 
 })
 

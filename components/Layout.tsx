@@ -1,9 +1,6 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import HideSideNav from './HideSideNav'
-
-import Navbar from './navs/Navbar'
 import SideNav from './navs/SideNav'
 
 
@@ -14,15 +11,23 @@ const NavWrapper = styled.div`
   height:100%;
   max-height:100%;
   background-color: aqua;
+  max-width:100%;
+  &>div:last-child{
+  width: 100%;
+  min-height:100%;
+  overflow-x: scroll;
+
+  }
 `
 const Layout = ({children}:{children:JSX.Element}) => {
 
   return (
       <NavWrapper>
            <SideNav />
-          
-              <Navbar />
-             {children}
+            <div>
+               {children}
+            </div>
+            
       
        
       </NavWrapper>

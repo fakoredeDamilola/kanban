@@ -4,6 +4,7 @@ import {FaRegEye, FaRegEyeSlash} from 'react-icons/fa'
 import { iconStyle } from '../utils/utilData'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleSideNav } from '../state/display'
+import { RootState } from '../state/store'
 
 const Wrapper = styled.div<{showSideNav:boolean}>`
 /* position:${({showSideNav}) => showSideNav ? 'absolute' : 'fixed'}; */
@@ -27,7 +28,7 @@ const NoSide = styled.div`
 `
 
 const HideSideNav = () => {
-   const { showSideNav }= useSelector((state: any) => state.display)
+   const { showSideNav }= useSelector((state: RootState) => state.display)
    const dispatch = useDispatch()
    const removesideNav = () => {
       dispatch(toggleSideNav(!showSideNav))

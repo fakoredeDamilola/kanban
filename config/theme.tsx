@@ -15,6 +15,8 @@ export const lightTheme = {
   hover:"#635FC7",
   secondaryColor:"#828FA3",
   secondButton:"rgba(99, 95, 199, 0.1)",
+  cardHover:"",
+  color1:"#323435"
 }
 
 export const darkTheme = {
@@ -31,6 +33,8 @@ export const darkTheme = {
   hover:"#635FC7",
   secondaryColor:"#828FA3",
   secondButton:"#fff",
+  cardHover:"#1D1E2B",
+  color1:"#323435"
 }
 
 export const fontSize ={
@@ -63,7 +67,30 @@ export const GlobalStyles = createGlobalStyle`
             box-sizing: border-box;
             background-color:black;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            /* overflow-x:hidden; */
         }
+        /* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey;  */
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #2B2C37; 
+  border-radius: 3px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3E3F4E; 
+}
         *{
             padding:0;
             margin:0;

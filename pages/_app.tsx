@@ -24,11 +24,11 @@ export default function MyApp(props:AppProps) {
 
   const setMode =( mode:string) => {
       window.localStorage.setItem('theme', mode)
-      console.log({mode})
       setTheme(mode)
   };
 
-  const themeToggler = () => {
+  const themeToggler = (e:any) => {
+    // et.stopPropagation()
       theme === 'light' ? setMode('dark') : setMode('light')
   };
 
@@ -49,8 +49,7 @@ export default function MyApp(props:AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Provider store={store}>
-      {/* 
-// @ts-ignore */}
+      {/* // @ts-ignore */}
       <ThemeProvider theme={theme == 'light' ? lightTheme : darkTheme} >
         <>
         <GlobalStyles />
@@ -60,7 +59,7 @@ export default function MyApp(props:AppProps) {
         </>
        
        
-        <Toggle toggleTheme={themeToggler} theme={theme} />
+        <Toggle toggleTheme={themeToggler}  theme={theme} />
       </ThemeProvider>
       </Provider>
     </>

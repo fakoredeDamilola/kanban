@@ -19,11 +19,11 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   border: 1px solid ${({theme}) => theme.border};
   height: 70px;
   display:flex;
-  width:100%;
-  color: ${({theme}) => theme.primary};
-  
-  @media ${device.mobileM} {
   width:calc(100% - 250px);
+  color: ${({theme}) => theme.primary};
+  width:${({showSideNav}) => showSideNav ? `calc(100% - 250px)` : "100%"};
+  @media ${device.mobileM} {
+  width:calc(100% - 250px) !important;
   }
 `
 const MenuNav = styled.div`
@@ -45,15 +45,15 @@ const Hammenu = styled.div`
   display:flex;
   align-items:center;
   background-color: ${({theme}) => theme.button};
-  /* height:30px; */
   border-radius:6px;
-  /* padding:0px 10px; */
   & > div:first-child {
-    background-color: ${({taskView,theme}) => taskView === "list" ? theme.secondary : theme.button};
-  
+    background-color: ${({taskView,theme}) => taskView === "list" ?  theme.button : theme.secondary};
+    
+    border-radius:6px 0 0 6px;
   }
   & > div:last-child {
-    background-color: ${({taskView,theme}) => taskView === "column" ? theme.secondary : theme.button};
+    background-color: ${({taskView,theme}) => taskView === "column" ?  theme.button: theme.secondary};
+    border-radius:0px 6px 6px 0px;
   }
    & > div {
     cursor: pointer;
@@ -62,7 +62,6 @@ const Hammenu = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
-    border-radius:6px;
     /* min-height:100%; */
     height:30px;
     &:hover{
@@ -74,7 +73,7 @@ const Hammenu = styled.div`
   `
 
 const Navbar = () => {
-  const {currentBoard} = useSelector((state: any) => state.board)
+  const {currentWorkspace} = useSelector((state: any) => state.board)
   const {taskView,showSideNav} = useSelector((state: any) => state.display)
   const dispatch = useDispatch()
 
@@ -92,16 +91,16 @@ const changeBoardView = (view:string) => {
     <NavWrapper showSideNav={showSideNav}>
       <Hammenu>
       <Harmburger ToggleNav={toggleNav}/>
-        <h1>{currentBoard ?currentBoard :"Create New Board"}</h1>
+        <h1>{currentWorkspace ?currentWorkspace.name :"Create New Board"}</h1>
       </Hammenu>
       <MenuNav>
         
         <BoardSwitchButton taskView={taskView}>
         <div>
-          <HiOutlineViewList size="20px" onClick={()=>changeBoardView("list")}/>
+          <HiOutlineViewList color="white" size="20px" onClick={()=>changeBoardView("list")}/>
         </div>
         <div>
-          <HiViewBoards size="20px" onClick={()=>changeBoardView("column")}/>
+          <HiViewBoards size="20px" color="white" onClick={()=>changeBoardView("column")}/>
         </div>
         </BoardSwitchButton>
       
