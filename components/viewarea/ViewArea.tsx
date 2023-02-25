@@ -1,169 +1,113 @@
 import React, {useEffect,useState} from 'react'
-import { FaTasks } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { device } from '../../config/theme';
-import { IBoard, ITask } from '../../state/board';
+import { changeTaskPriority } from '../../state/board';
+import { setNewBoardModal } from '../../state/display';
 import { RootState } from '../../state/store';
-import TaskBar from './TaskBar';
 import TaskCard from './TaskCard';
 
 
 interface IView {
-    setOpenNewBoardModal:React.Dispatch<React.SetStateAction<boolean>>;
-    openNewBoardModal:boolean
+    openNewBoardModal:boolean;
+    col:any;
+    task:any
 }
-
-const FlexWrapper = styled.div`
-@media ${device.mobileM} {
-  overflow-x: scroll; /* enable horizontal scrolling */
-  background-color: ${({theme}) => theme.body};
-  display:flex;
-  padding:100px 20px;
-  gap:40px; 
-  margin-top:0;
-}
-    margin-top:70px;
- flex: 1 1 auto;
-  box-sizing: border-box;
-  height: 100%;
-    min-height: 100%;
-   
-`
-const Columns = styled.div`
-     background-color: blue;
-     width:100%;
-     @media ${device.mobileM} {
-    width:300px;
-     }
-`
-const ColumnTask = styled.div`
-    background-color: yellow;
+const ColumnTask = styled.div<{view:string;isOver:boolean}>`
     flex-shrink: 0;
+    /* background-color:${({theme,isOver})=> isOver ? theme.color1 : "transparent"}; */
+    background-color:red;
+    flex:1;
     overflow-y: auto;
-    height:100%;
-    
+    overflow-x:hidden;    
     max-height:100%;
-    width:100%;
-    & > div {
-        width:100%;
-        margin:0px auto;
-        height:40px;
-    min-height:40px;
+    min-height:100%; 
+    width:${({view}) => view==="list" ? "100%" : "330px"};
     box-sizing:border-box;
-    border-radius:0px;
-    border-top:1px solid white;
-    border-bottom:1px solid white;
-    }
-     @media ${device.mobileM} {
-    width:300px;
-    & > div {
-    border:0px;
-    width:95%;
-    height:70px;
-    min-height:70px;
-    border-radius:6px;
-        margin:30px auto;
-    }
-     }
+    padding:${({view}) => view==="list" ? "0" : "0 10px"};
+    position:relative;
 `
-const ViewArea = ({setOpenNewBoardModal,openNewBoardModal}:IView) => {
-    const {currentBoard,boardsDetails} = useSelector((state: RootState) => state.board)
+const LayerTask = styled.div`
+ background-color: ${({theme}) => theme.nav};
+ width:85%;
+ height:30px;
+ box-sizing:border-box;
+    padding: 10px;
+    color:${({theme}) => theme.white};
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    gap:10px;
+    font-size:14px;
+  border: 4px solid blue;
+  border-radius: 6px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+h4 {
+    color:#c4c0c0;
+}
+`
+const ViewArea = ({col,task}:IView) => {
+    const {currentWorkspace} = useSelector((state: RootState) => state.board)
+    const {taskView,openNewBoardModal} = useSelector((state: RootState) => state.display)
+    const dispatch = useDispatch()
 
     const [columns,setColumns] = useState<{
         name:string;
-        tasks:ITask[]
+        email?:string
+        img?:string
       }[]>([])
 
     useEffect(()=>{
-        const cols = boardsDetails.filter((board:IBoard) =>board.name===currentBoard)[0]?.columns
-        console.log({cols})
+        const cols =currentWorkspace.subItems[0].items
         setColumns(cols)
     },[])
-    const data = [
-        {
-            name:"todo",
-            quantity:7,
-            tasks:[
-                {
-                    name:"task1"
-                },
-                {
-                    name:"task1"
-                },
-                {
-                    name:"task1"
-                },
-                {
-                    name:"task1"
-                },
-                {
-                    name:"task1"
-                },
-            ]
-        },
-        {
-            name:"progress",
-            quantity:5,
-            tasks:[
-                {
-                    name:"progress1"
-                },
-                {
-                    name:"progress1"
-                },
-                {
-                    name:"progress1"
-                },
-                {
-                    name:"progress1"
-                },
-                {
-                    name:"progress1"
-                },
-            ]
-        }
-    ]
-    const list = data.map((item,index)=>({name:item.name,quantity:item.tasks.length}))
-    const tasks = data.map((item,index)=>item.tasks)
+   
+   
+    const changeStatusOfTask = (card:any) => {
+        dispatch(changeTaskPriority({id:card.id,type:col,name:"status"}))
+    }
+    
+const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
+    accept: "card",
+    drop: (item) => changeStatusOfTask(item),
+    collect: monitor => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+        getItem:monitor.getItem()
+      })
+}));
 
 if(columns.length===0) {
  return (
     <>
      <p>This board is empty. Create a new column to get started.</p>
-    <button onClick={()=>setOpenNewBoardModal(!openNewBoardModal)}>
+    <button onClick={()=> dispatch(setNewBoardModal({open:!openNewBoardModal})) }>
     + Add New Column
     </button>
     </>
   )
 }else {
     return (
-        <FlexWrapper>
-        
-        {list.map((col,index)=>{
-            return (
-               <Columns>
-               <TaskBar taskbar={col} />
-               <ColumnTask>
-                {tasks[index].map((cards,index)=> (
-               <TaskCard cards={cards} />
+               <ColumnTask view={taskView} isOver={isOver}  ref={drop} >
+                {task.map((card:any,index:any)=> (
+               <TaskCard card={card} key={index} view={taskView} />
             ))
             }
-               </ColumnTask>
-              
-               </Columns> 
-            )
-        })
-
-        }
-       
-
-
-    </FlexWrapper>
+           {isOver && <LayerTask>
+            <div>Drop here to move to this column</div>
+            <h4>This board is ordered by prioity</h4>
+            </LayerTask>
+            }
+               </ColumnTask>       
+    
     )
     
 }
  
 }
 
-export default ViewArea
+export default React.memo(ViewArea)

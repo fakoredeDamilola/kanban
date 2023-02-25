@@ -1,144 +1,348 @@
-import React from 'react'
-import { AiOutlineClose, AiOutlinePlus } from 'react-icons/ai'
+import React, { useRef,useState } from 'react'
+import { AiOutlineClose, AiOutlinePaperClip } from 'react-icons/ai'
+import { BsArrowsAngleExpand } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { addNewBoard } from '../state/board'
-import { RootState } from '../state/store'
-import CustomButton from './CustomButton'
+import {  IMembers, IWorkspace, selectSubItems } from '../state/board'
+
+import CustomInput from './CustomInput'
 import CustomModal from './CustomModal'
+import FooterMenu from './Footer/FooterMenu'
+import CustomButton from './CustomButton'
+import { handleFile } from '../utils/utilFunction'
+import { Item } from './viewarea/IViewrea'
+import dynamic from 'next/dynamic'
+import { device } from '../config/theme'
+
+// const MyEditor = dynamic(() => import('../components/Editor/MyEditor'), { ssr: false })
 
 
-const AddNewBoardStyles = styled.div`
-box-sizing:border-box;
-margin-bottom:30px;
-& button {
-  margin-top:7px;
+const Cover = styled.div`
+position:relative;
+width:100%;
+height:100%;
+`
+const Header = styled.header`
+/* position:absolute; */
+
+width:100%;
+`
+const Container = styled.div`
+  display:flex;
+font-size:12px;
+justify-content:space-between;
+& > div {
+  display:flex;
 }
 `
-
-const InputdivStyles = styled.div<{created:boolean}>`
-margin:${({created})=>created ? "13px 0px" : "30px 0"};
-display:${({created})=>created ? "flex" : "auto"};
-gap:30px;
-justify-content:${({created})=>created ? "space-between" : "auto"};
-align-items:${({created})=>created ? "center" : "auto"};
-label {
-  font-weight:400;
+const Workspace = styled.div`
+margin-right:10px;
+font-weight:500;
+background-color:${({theme})=>theme.body};
+color:#f5f5f5;
+padding:5px 10px;
+border-radius:4px;
+border: 1px solid ${({theme}) => theme.border};
+& + div {
+  font-weight:500;
   color:${({theme})=>theme.secondaryColor};
+  display:flex;
+  align-items:center;
 }
-input{
-  width:${({created})=>created ? "97%" : "95%"};
-  margin-top:${({created})=>created ? "0px" : "10px"};
-  display:block;
-  padding:0 10px;
-  height:40px;
-  border-radius:4px;
-  border: 1px solid rgba(130, 143, 163, 0.25);
-  input::placeholder{
-    color:#000012;
-    font-size:13px;
-    font-weight:500;
+
+`
+const Icon = styled.div`
+display:flex;
+gap:10px;
+& > div {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  color:${({theme})=>theme.secondaryColor};
+  &:hover{
+    background-color:${({theme})=>theme.body};
+    color:${({theme})=>theme.secondaryColor};
+    cursor:pointer;
   }
 }
 `
-const Columns = styled.div`
-padding:0px 0;
+const ModalBody = styled.div`
+margin-bottom:20px;
+height:45%;
+margin:0 auto;
+width:95%;
 `
-const Cancel = styled.div`
-width:40px;
-    color:red;
-    height:40px;
-    border-radius:6px;
+const Image = styled.div`
+cursor:pointer;
+position:relative;
+& span{
+  position:absolute;
+  top:-10px;
+  right:-10%;
+  background-color:${({theme})=>theme.body};
+  color:${({theme})=>theme.secondaryColor};
+  box-sizing:border-box;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:20px;
+  height:20px;
+  &:hover{
+    background-color:${({theme})=>theme.body};
+    color:${({theme})=>theme.secondaryColor};
+    cursor:pointer;
+  }
+}
+`
+const ImageContainer = styled.div`
+display:flex;
+gap:15px;
+padding:10px 0;
+
+`
+const IssueTitle = styled.div`
+margin:0 auto;
+margin-top:10px;
+width:95%;
+`
+const IssueDescription = styled.div`
+height:90%;
+overflow-y:auto;
+margin-top:10px;
+`
+const ModalFooter = styled.div`
+position:absolute;
+top:73%;
+width:100%;
+
+`
+const FooterLinks = styled.div`
+margin:20px auto;
+width:95%;
+  display:flex;
+  gap:15px;
+`
+const SectionModal = styled.section`
+  width: 96%;
+  @media ${device.mobileM} {
+    width: 70%;
+  }
+  padding:1.3rem;
+  min-height: 250px;
+  position: fixed;
+  /* top: 10%;
+  left:15%; */
+  position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+  height:80%;
+  max-height: 80%;
+  box-sizing:border-box;
+  /* overflow-y: auto; */
+  background-color: ${({theme}) => theme.nav};
+  border: 1px solid ${({theme}) => theme.border};
+  border-radius: 6px;
+  z-index: 2;
+`
+
+const Footer = styled.div`
+width:95%;
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid ${({theme})=>theme.border};
+  padding-top:10px;
+  & div:first-child {
     display:flex;
-    justify-content:center;
-    border: 1px solid rgba(130, 143, 163, 0.25);
     align-items:center;
-    &:hover{
-      background-color:red;
-      color:#f5f5f5;
-      cursor:pointer;
-    }
+    cursor:pointer;
+    color:${({theme})=>theme.secondaryColor};
+  }
 `
-
-
+const ImageCLip = styled.div`
+  & input {
+    display:none;
+  }
+`
 interface IBoard {
 closeNewBoardModal:()=>void;
-openNewBoardModal:boolean
+openNewBoardModal:boolean;
+createNewIssue:() => void;
+issueTitle:string;
+issueDescription:string;
+setIssueTitle:React.Dispatch<React.SetStateAction<string>>;
+setIssueDescription:React.Dispatch<React.SetStateAction<string>>;
+imgURLArray:string[];
+setImgURLArray:React.Dispatch<React.SetStateAction<string[]>>;
+currentWorkspace:{ 
+  name:string;
+  id:string;
+};
+workspaces:IWorkspace;
+user?:IMembers
+
 }
 
-const AddNewBoard = ({closeNewBoardModal,openNewBoardModal}:IBoard) => {
+const AddNewBoard = ({
+  closeNewBoardModal,
+  openNewBoardModal,
+  createNewIssue,
+  issueTitle,
+  issueDescription,
+  setIssueTitle,
+   setIssueDescription,
+  imgURLArray,
+  setImgURLArray,
+  currentWorkspace,
+  workspaces,
+  user
+}:IBoard) => {
 
-  const [BoardInput, setBoardInput] = React.useState<string>("")
-  const [BoardColumn, setBoardColumn] = React.useState<string[]>([])
+
   const dispatch = useDispatch()
-  const {boardsDetails} = useSelector((state:RootState)=>state.board)
+  const hiddenFileInput = useRef<any>();
 
-const addNewColumn = () => {
-  setBoardColumn(prev=>[...prev,""])
-}
+  const handleClick = () => {
+    hiddenFileInput.current.click();
+  };
 
-const removeBoardColumn = (idx:number) => {
-setBoardColumn(prev=>prev.filter((item,index)=>index!==idx))
-}
+  
 
-const createNewBoard = () => {
-  const boards = boardsDetails.map((board)=>board.name)
-  console.log({boards})
-  if(!boards.includes(BoardInput)){
-   const newBoard = {
-    name:BoardInput,
-    columns: BoardColumn.map((column)=>({
-      name: column,
-      tasks:[]
-    }))
-   }
-  dispatch(addNewBoard({newBoard}))
-  closeNewBoardModal()
+  const removeImage = (idx:number) => {
+    setImgURLArray(prev=>prev.filter((item,index)=>index!==idx))
   }
-}
+
+  const handleChange = (event:any,input:string) => {
+    const fileUploaded = event.target.files[0];
+    handleFiles(fileUploaded,input);
+  };
+
+
+  const handleFiles = async (event:any,input:string) => {
+  
+    try {
+      const data = await handleFile(event,input)
+
+      console.log({data},data.secure_url)
+      setImgURLArray(prev=>[...prev,data.secure_url])
+    }catch(e){
+
+    }
+  }
+
+console.log({workspaces})
 
   return (
-    <CustomModal title="Add New Board" closeNewBoardModal={closeNewBoardModal} openNewBoardModal={openNewBoardModal}>
- <AddNewBoardStyles>
-       <InputdivStyles created={false}>
-       <label>Name</label>
-       <input type="text" placeholder="e.g Web Design"   
-       value={BoardInput} 
-      onChange={(e)=>setBoardInput(e.target.value)} />
-       </InputdivStyles>
-       <Columns>
-       <p>Column</p>
-       </Columns>
-       {BoardColumn?.map((item,idx)=>(
-         <InputdivStyles key={idx} created={true}>
-          <input type="text" placeholder="e.g Web Design" 
-         value={item}
-          onChange={(e)=>setBoardColumn(prev=>prev.map((item,index)=>index===idx ? e.target.value : item))}
-          />
-          <Cancel onClick={()=>removeBoardColumn(idx)}><AiOutlineClose /></Cancel>
-          </InputdivStyles>
-          ))}
-
-      <CustomButton 
-      background="secondButton"
-      color="button"
-      onClick={addNewColumn}
-      hover="secondaryColor"
-      disabled={BoardInput.length < 1}
-      >
-      <AiOutlinePlus  />  Add New Column
-      </CustomButton>
+    <>
+    <CustomModal closeNewBoardModal={closeNewBoardModal} openNewBoardModal={openNewBoardModal}>
       
-    </AddNewBoardStyles>
-    <CustomButton 
-      background="button"
-      color="white"
-      onClick={createNewBoard}
-      hover="secondaryColor"
-      >
-        Create New Board
-      </CustomButton>
+     <SectionModal> 
+      <Cover>
+         <Header>
+        <Container>
+          
+        <div>
+          <Workspace>
+            {currentWorkspace.id}
+          </Workspace>
+          <div>
+             New Issue
+          </div>
+        </div>
+        <Icon>
+       
+          <div>
+             <BsArrowsAngleExpand />
+          </div>
+          <div onClick={()=>closeNewBoardModal()}>
+            <AiOutlineClose />
+          </div>
+        </Icon>
+        </Container>
+        <IssueTitle>
+        <CustomInput
+        type="textarea"
+        placeholder="Issue Title"
+        fontSize="22px"
+        textvalue={issueTitle}
+        setTextValue={(val:any)=> setIssueTitle(val)}
+        color="white"
+        fontWeight={700}
+        maxLength={256}
+        height={false}
+        
+      />
+      </IssueTitle>
+      </Header>
+      <ModalBody>
+        <ImageContainer>
+           {imgURLArray.length > 0 && imgURLArray.map((url,index)=>(
+          <Image>
+             <img src={url}  width="100px"/>
+             <span onClick={() =>removeImage(index)}><AiOutlineClose fontSize="13px" /></span>
+          </Image>
+        
+        ))}
+        </ImageContainer>
+       
+      
+      <IssueDescription>
+        <CustomInput
+        type="textarea"
+        placeholder="Issue description"
+        fontSize="18px"
+         textvalue={issueDescription}
+         setTextValue={(val:any)=> setIssueDescription(val)}
+        fontWeight={300}
+        color="white"
+        height
+      />
+      </IssueDescription>
+      
+      </ModalBody>
+    <ModalFooter>
+      <FooterLinks >
+        {workspaces.subItems.map((item,index)=>(
+          <FooterMenu key={index} item={item.name==="Assigned"  ? 
+          user ?  {...item,selected:{
+            name:user?.name,
+            email:user?.email,
+            username:user?.username,
+            img:user?.img
+          },items:[...item.items,...workspaces.members]} :
+          {...item,items:[...item.items,...workspaces.members]}
+            : item}
+            />
+          ))}
+      </FooterLinks>
+        
+          <Footer>
+            <ImageCLip>
+            <input
+        type="file"
+        ref={hiddenFileInput}
+        onChange={(e) =>handleChange(e,"image")}
+        style={{display: 'none'}} 
+      />
+               <AiOutlinePaperClip onClick={handleClick} />
+            </ImageCLip>
+           
+            <div>
+              {/* <Checkbox width="9px" height="9px" name="subIssue"  toggleTheme={toggleSubIssues} theme={subIssues}/> */}
+              <CustomButton background='button' color="white" hover="secondaryColor" onClick={()=>createNewIssue()}>Create Issue</CustomButton>
+            </div>
+          </Footer>
+      </ModalFooter>
+      </Cover>
+     </SectionModal>
+     
     </CustomModal>
+  
+    </>
    
   )
 }

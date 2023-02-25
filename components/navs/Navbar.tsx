@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import {HiOutlineEllipsisVertical} from 'react-icons/hi2'
 import { useDispatch, useSelector } from "react-redux"
 import { device } from "../../config/theme"
 import Harmburger from "../Harmburger"
-import { toggleSideNav } from "../../state/display"
+import { switchTaskView, toggleSideNav } from "../../state/display"
+import BoardSwitchbutton from "../BoardSwitchbutton"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -19,29 +19,11 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   border: 1px solid ${({theme}) => theme.border};
   height: 70px;
   display:flex;
-  width:100%;
-  color: ${({theme}) => theme.primary};
-  
-  @media ${device.mobileM} {
   width:calc(100% - 250px);
-  }
-`
-const Button = styled.button`
-  background-color: ${({theme}) => theme.button};
-  color: ${({theme}) => theme.white};
-  padding:0px 20px;
-  border-radius:24px;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-  width:164px;
-  height:48px;
-  margin-right:6px;
-  opacity:0.25;
-  transition: all 0.50s linear;
-  &:hover{
-    background-color: ${({theme}) => theme.secondary};
-    color: ${({theme}) => theme.button};
+  color: ${({theme}) => theme.primary};
+  width:100%;
+  @media ${device.mobileM} {
+  width:calc(100% - 250px) !important;
   }
 `
 const MenuNav = styled.div`
@@ -52,16 +34,26 @@ const MenuNav = styled.div`
   }
 `
 const Hammenu = styled.div`
-
+position:relative;
   display:flex;
+  
   align-items:center;
   div {
     margin-right:5px;
   }
   `
+
+
 const Navbar = () => {
-  const {currentBoard,showSideNav} = useSelector((state: any) => state.board)
+  const {currentWorkspace} = useSelector((state: any) => state.board)
+  const {taskView,showSideNav} = useSelector((state: any) => state.display)
   const dispatch = useDispatch()
+
+const changeBoardView = (view:string) => {
+  dispatch(switchTaskView(view))
+
+}
+
 
   const toggleNav = () => {
     console.log("toggleNav")
@@ -71,14 +63,11 @@ const Navbar = () => {
     <NavWrapper showSideNav={showSideNav}>
       <Hammenu>
       <Harmburger ToggleNav={toggleNav}/>
-        <h1>{currentBoard ?currentBoard :"Create New Board"}</h1>
+        <h1>{currentWorkspace ?currentWorkspace.name :"Create New Board"}</h1>
       </Hammenu>
       <MenuNav>
         
-        <div>
-            <HiOutlineEllipsisVertical size="23px"/>
-        </div>
-      
+       <BoardSwitchbutton taskView={taskView} changeBoardView={changeBoardView}/>
       </MenuNav>
       
     </NavWrapper>
