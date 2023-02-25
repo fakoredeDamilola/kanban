@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 import { AiOutlineCalendar } from 'react-icons/ai'
 import styled from 'styled-components'
@@ -47,7 +48,20 @@ const ActivityWrapper = styled.div`
     margin-top:4px;
   }
   `
-const ActivityCard = ({activity}:{activity:IActivity}) => {
+  const NameDiv = styled.div`
+    color:#c4c0c0;
+    cursor: pointer;
+    &:hover{
+      text-decoration:underline
+    }
+  `
+  const Name = ({name,workspaceID,username}:{name:string,workspaceID:string,username?:string})=>{
+    const router = useRouter()
+    return (
+      <NameDiv onClick={()=>router.push(`/${workspaceID}/profiles/${username}`)}>{name}</NameDiv>
+    )
+  }
+const ActivityCard = ({activity,workspaceID}:{activity:IActivity,workspaceID:string}) => {
   console.log({activity})
   return (
     <ActivityWrapper>
@@ -55,7 +69,7 @@ const ActivityCard = ({activity}:{activity:IActivity}) => {
         <>
          <ProfilePicture assigned={activity.createdby} size="25px" tooltip={true} /> 
        
-       <div><span>{activity.createdby.name}</span> {activity.description}</div>
+       <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID} /> {activity.description}</div>
         </> :
         activity.nameOfActivity==="comment" ?
         <>
@@ -69,13 +83,13 @@ const ActivityCard = ({activity}:{activity:IActivity}) => {
         activity.nameOfActivity==="Changed Status" ?
           <>
           {<CustomIcon img={activity?.icon} />}
-          <div><span>{activity.createdby.name}</span> {activity.description}</div>
+          <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID}/> {activity.description}</div>
           </> :
         activity.nameOfActivity==="Changed Label" ?
           <>
           {<CustomIcon img={activity?.icon} />}
           <div>
-            <span>{activity.createdby.name}</span> {activity.description} 
+            <Name name={activity.createdby.name} username={activity.createdby.username} workspaceID={workspaceID}/> {activity.description} 
             <Color>
            <CustomIcon type="color" img={activity.color} /> {activity.name} 
            </Color>
@@ -84,7 +98,7 @@ const ActivityCard = ({activity}:{activity:IActivity}) => {
            activity.nameOfActivity==="Changed Due Date" || "Added Due Date" ?
         <>
         <AiOutlineCalendar />
-        <div><span>{activity.createdby.name}</span> {activity.description}</div>
+        <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID} /> {activity.description}</div>
         </>
         :
         

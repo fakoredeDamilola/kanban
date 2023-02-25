@@ -16,4 +16,5 @@ export interface ITaskbar {
     img?:string;
     type?:string
     id?:string;
+    username?:string
   }

@@ -55,6 +55,8 @@ const TaskPage = ({taskInfo,workspace,taskListLength}:{taskInfo?:ITaskCards,work
     
     const dispatch = useDispatch()
     const {user} = useSelector((state:RootState)=>state.board)
+    const {taskView} = useSelector((state:RootState)=>state.display)
+    const [showTaskSideNav,setTaskShowSideNav] = useState(false)
     
 const [openCalenderModal, setOpenCalenderModal] = useState(false)
     
@@ -83,10 +85,12 @@ const Portal = usePortal(document.querySelector("#portal"));
         <TaskPageWrapper>
            {taskInfo ? 
            <TaskpageDesign>
-                <TaskPageHeader taskList={taskListLength.length}/>
+                <TaskPageHeader showTaskSideNav={showTaskSideNav} setShowTaskSideNav={setTaskShowSideNav} taskList={taskListLength.length}/>
             <TaskPageContainer>
-                <TaskPageMain task={taskInfo} setOpenCalenderModal={setOpenCalenderModal}/>
-                <TaskPageAside task={taskInfo} workspace={workspace.subItems} />
+                <TaskPageMain task={taskInfo} 
+                setOpenCalenderModal={setOpenCalenderModal}/>
+
+ <TaskPageAside task={taskInfo} workspace={workspace.subItems} showTaskSideNav={showTaskSideNav} />
             </TaskPageContainer>
             </TaskpageDesign> : 
             null

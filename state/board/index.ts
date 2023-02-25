@@ -49,11 +49,15 @@ export interface subItem {
   selected:Item;
   items :Item[]
 }
-interface IMembers {
+export interface IMembers {
   name:string;
   email:string;
   id:string;
   img:string;
+  color?:string
+  joined:string;
+  username:string;
+  taskIDs:any[]
 }
 
 export interface IWorkspace {
@@ -64,7 +68,16 @@ export interface IWorkspace {
   subItems: subItem[];
   totalMembers:number;
   owner:Item;
-  members?:IMembers[]
+  members:IMembers[]
+}
+
+export interface IUser {
+  name:string;
+  email:string;
+  id:string;
+  username:string;
+  image:string;
+  workspaces: IWorkspaces[]
 }
 export interface IWorkspaces  { 
   name:string;
@@ -77,12 +90,7 @@ export interface IWorkspaces  {
 interface boardIntialState {
   currentWorkspace: IWorkspace
   
-  user: {
-    name:string;
-    email:string;
-    id:string;
-    workspaces: IWorkspaces[]
-  }
+  user: IUser
   boardsDetails:IBoard
 }
 
@@ -129,6 +137,7 @@ const initialState: boardIntialState = {
             },
           ]
         },
+        
         {
           name:"Priority",
           icon:'BsFillBarChartFill',
@@ -178,21 +187,7 @@ const initialState: boardIntialState = {
               email:"",
               img:"FaRegUserCircle"
             },
-            {
-              name:"Fakorede Damilola",
-              email:"dfakorede29@gmail.com",
-              img:"FaRegUserCircle"
-            },
-            {
-              name:"e Damilola",
-              email:"de29@gmail.com",
-              img:"FaRegUserCircle"
-            },
-            {
-              name:"oladayo ife",
-              email:"ojek@gmail.com",
-              img:"FaRegUserCircle"
-            },
+           
           ]
         },
         {
@@ -238,12 +233,46 @@ const initialState: boardIntialState = {
       ],
       taskID:[
 
+      ],
+      members: [
+        {
+          name:"Fakorede dayo",
+          id:"iiieiie",
+          img:"",
+          color:"blue",
+          email:"dayo.fakorede@gmail.com",
+          username:"dayo.fakorede",
+          taskIDs:[],
+          joined:"1677034436637"
+        },
+        {
+          name:"Fakorede Bernice",
+          id:"iiieiie",
+          img:"",
+          color:"brown",
+          email:"bernice.fakorede@gmail.com",
+          username:"bernice.fakorede",
+          taskIDs:[],
+          joined:"1677034436637"
+        },
+        {
+          name:"Fakorede ben",
+          id:"iiieiie",
+          img:"",
+          color:"purple",
+          email:"bernice11.fakorede@gmail.com",
+          username:"bernice11.fakorede",
+          taskIDs:[],
+          joined:"1677034436637"
+        },
       ]
     },
     user: {
       name:"Fakorede Damilola",
       email:"dfakorede29@gmail.com",
       id:"87733",
+      username:"dfakorede29",
+      image:"",
       workspaces: [
         {
           name:"Product Launch",

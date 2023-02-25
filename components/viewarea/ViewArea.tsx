@@ -24,24 +24,8 @@ const ColumnTask = styled.div<{view:string;isOver:boolean}>`
     min-height:100%; 
     width:${({view}) => view==="list" ? "100%" : "330px"};
     box-sizing:border-box;
-    padding: 0 10px;
+    padding:${({view}) => view==="list" ? "0" : "0 10px"};
     position:relative;
-    & > div {
-    border:0px;
-
-    background: ${({theme})=>theme.sidenav};
-    height:${({view}) => view==="list" ? "70px" : "110px"};
-    min-height:130px;
-    border-radius:${({view}) => view==="list" ? "0%" : "6px"};
-    border-top:${({view}) => view==="list" ? "1px solid white" : "none"};
-    border-bottom:${({view}) => view==="list" ? "1px solid white" : "none"};
-    cursor:pointer;
-        margin:${({view}) => view==="list" ? "0" : "10px auto"};
-        &:hover {
-            background: ${({theme})=>theme.cardHover};
-            transition: 0.3s;
-        }
-    }
 `
 const LayerTask = styled.div`
  background-color: ${({theme}) => theme.nav};
@@ -97,8 +81,6 @@ const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
       })
 }));
 
-console.log({getItem})
-
 if(columns.length===0) {
  return (
     <>
@@ -110,11 +92,9 @@ if(columns.length===0) {
   )
 }else {
     return (
-
-        <>
                <ColumnTask view={taskView} isOver={isOver}  ref={drop} >
                 {task.map((card:any,index:any)=> (
-               <TaskCard card={card} key={index} />
+               <TaskCard card={card} key={index} view={taskView} />
             ))
             }
            {isOver && <LayerTask>
@@ -123,7 +103,7 @@ if(columns.length===0) {
             </LayerTask>
             }
                </ColumnTask>       
-    </>
+    
     )
     
 }

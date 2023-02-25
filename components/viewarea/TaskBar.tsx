@@ -31,7 +31,7 @@ const TaskBarStyle = styled.div<{view:string}>`
   width:${({view}) => view==="list" ? "100%" : "90%"};
    min-width:${({view}) => view==="list" ? "100%" : "90%"};
    border-radius:${({view}) => view==="list" ? "0" : "6px"};
-   height:${({view}) => view==="list" ? "80px" : "40px"};
+   height:${({view}) => view==="list" ? "40px" : "40px"};
 
    margin:${({view}) => view==="list" ? "0%" : "20px auto"};
    margin-left:${({view}) => view==="list" ? "0" : "10px"};
@@ -59,7 +59,7 @@ const TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
     <TaskBarStyle view={view}>
       <div>
         <Icon>
-          <CustomIcon img={taskbar.img} />
+          <CustomIcon img={taskbar.img} fontSize={view==="list" ? "16px" :"20px"} />
         <div>{taskbar.name}</div>
 
         </Icon>

@@ -3,6 +3,7 @@ import {createSlice} from "@reduxjs/toolkit"
 interface displayState {
 showSideNav: boolean;
 taskView:string,
+profileView:string,
 theme:string,
 openNewBoardModal:boolean
 }
@@ -10,6 +11,7 @@ openNewBoardModal:boolean
 const initialState: displayState = {
 showSideNav:true,
 taskView: "column",
+profileView:"column",
 theme:"light",
 openNewBoardModal:false,
 }
@@ -26,6 +28,9 @@ const displaySlice = createSlice({
         switchTaskView: (state,action) => {
             state.taskView = action.payload
         },
+        switchProfileView: (state,action) => {
+            state.profileView = action.payload
+        },
         switchTheme: (state,{payload:{theme}}) =>{
             state.theme = theme
         },
@@ -39,7 +44,8 @@ export const {
     toggleSideNav,
     switchTheme,
     switchTaskView,
-    setNewBoardModal
+    setNewBoardModal,
+    switchProfileView
 } = displaySlice.actions
 
 export default displaySlice.reducer

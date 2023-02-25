@@ -3,7 +3,7 @@ import { AiOutlineClose, AiOutlinePaperClip } from 'react-icons/ai'
 import { BsArrowsAngleExpand } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import {  IWorkspace, selectSubItems } from '../state/board'
+import {  IMembers, IWorkspace, selectSubItems } from '../state/board'
 
 import CustomInput from './CustomInput'
 import CustomModal from './CustomModal'
@@ -12,6 +12,7 @@ import CustomButton from './CustomButton'
 import { handleFile } from '../utils/utilFunction'
 import { Item } from './viewarea/IViewrea'
 import dynamic from 'next/dynamic'
+import { device } from '../config/theme'
 
 // const MyEditor = dynamic(() => import('../components/Editor/MyEditor'), { ssr: false })
 
@@ -126,14 +127,22 @@ width:95%;
   gap:15px;
 `
 const SectionModal = styled.section`
-  width: 70%;
+  width: 96%;
+  @media ${device.mobileM} {
+    width: 70%;
+  }
   padding:1.3rem;
   min-height: 250px;
   position: fixed;
-  top: 10%;
-  left:15%;
+  /* top: 10%;
+  left:15%; */
+  position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
   height:80%;
   max-height: 80%;
+  box-sizing:border-box;
   /* overflow-y: auto; */
   background-color: ${({theme}) => theme.nav};
   border: 1px solid ${({theme}) => theme.border};
@@ -173,7 +182,8 @@ currentWorkspace:{
   name:string;
   id:string;
 };
-workspaces:IWorkspace
+workspaces:IWorkspace;
+user?:IMembers
 
 }
 
@@ -188,7 +198,8 @@ const AddNewBoard = ({
   imgURLArray,
   setImgURLArray,
   currentWorkspace,
-  workspaces
+  workspaces,
+  user
 }:IBoard) => {
 
 
@@ -223,15 +234,7 @@ const AddNewBoard = ({
     }
   }
 
-
-  // const addNewColumn = () => {
-//   setBoardColumn(prev=>[...prev,""])
-// }
-
-// const removeBoardColumn = (idx:number) => {
-// setBoardColumn(prev=>prev.filter((item,index)=>index!==idx))
-// }
-
+console.log({workspaces})
 
   return (
     <>
@@ -304,7 +307,16 @@ const AddNewBoard = ({
     <ModalFooter>
       <FooterLinks >
         {workspaces.subItems.map((item,index)=>(
-          <FooterMenu key={index} item={item}/>
+          <FooterMenu key={index} item={item.name==="Assigned"  ? 
+          user ?  {...item,selected:{
+            name:user?.name,
+            email:user?.email,
+            username:user?.username,
+            img:user?.img
+          },items:[...item.items,...workspaces.members]} :
+          {...item,items:[...item.items,...workspaces.members]}
+            : item}
+            />
           ))}
       </FooterLinks>
         

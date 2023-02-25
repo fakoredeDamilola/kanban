@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import TaskPage from '../components/taskpage/TaskPage'
+import TaskPage from './taskpage/TaskPage'
 import { ITaskCards } from '../state/board'
 import { RootState } from '../state/store'
 

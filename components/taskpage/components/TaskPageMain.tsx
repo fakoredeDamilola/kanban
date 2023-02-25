@@ -12,20 +12,28 @@ import ActivityCard from './ActivityCard'
 import {v4 as uuidv4} from "uuid"
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../state/store'
+import { device } from '../../../config/theme'
 
 const TaskPageMainContainer = styled.div`
 
         flex: 1;  
       	min-height: 0; 
       	display: flex;
-        padding:0 50px;
+        padding:0 10px;
+        @media ${device.mobileM} {
+          padding:0 50px;
+        }
+       
       	flex-direction: column;
 `
 const TaskPageMainHeader = styled.div`
  
     height:50px;
     color:#c4c0c0;
-    padding:0px 40px;
+    padding:0 10px;
+        @media ${device.mobileM} {
+          padding:0 40px;
+        }
     display:flex;
     justify-content:space-between;
     border-bottom:1px solid ${({theme})=>theme.border};
@@ -221,6 +229,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
     }
   }
   const user = useSelector((state:RootState)=>state.board.user)
+  const {taskView} = useSelector((state:RootState)=>state.display)
 
   const submitComment = () => {
     const commentActivity:IActivity = {
@@ -236,6 +245,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
 
     }
     dispatch(addNewActivity({id:task.id,activity:commentActivity}))
+    setComment("")
   }
 
   const list = [
@@ -257,7 +267,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         </div>
         </TaskPageHead>
         
-       <CustomDropdown isOpen={isOpen} top="50%" noInput={true} setIsOpen={setIsOpen} items={list} selected={{name:""}} selectItem={(event,item:any)=>openPage(event,item)}>
+       <CustomDropdown isOpen={isOpen} top="50%" left={device.mobileM ? "0%" :"145%" } noInput={true} setIsOpen={setIsOpen} items={list} selected={{name:""}} selectItem={(event,item:any)=>openPage(event,item)}>
     <FooterWrapper onClick={handleButtonClick}>
       <Icon>
         <BiDotsHorizontalRounded />
@@ -310,7 +320,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
 
           </SubscribeTask>
           {task.activites ? task.activites?.map((activity:any,index:number)=>
-            <ActivityCard key={index} activity={activity} />
+            <ActivityCard key={index} activity={activity} workspaceID={task.workspaceID} />
           ) : null
           }
           <CommentInput>

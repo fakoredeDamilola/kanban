@@ -3,6 +3,7 @@ import { AiOutlineCheck } from 'react-icons/ai';
 import styled from 'styled-components';
 import Checkbox from './CustomCheckbox';
 import CustomIcon from './CustomIcon';
+import ProfilePicture from './ProfilePicture';
 import { Item } from './viewarea/IViewrea';
 
 const Wrapper = styled.div`
@@ -163,7 +164,9 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
               
               
              <Icon>
-               {item.type ==="color" ? 
+               {type==="image" && item.name !=="Unassign" ? 
+               <ProfilePicture assigned={item} tooltip={false} /> :
+               item.type ==="color" ? 
                <>
                    <Checkbox checked={checked} name={item.name} />
                 <CustomIcon img={item.img} type={item?.type} />

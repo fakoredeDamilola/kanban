@@ -28,7 +28,7 @@ const FlexWrapper = styled.div<{view:string}>`
 
 const Search = () => {
     
-  const {boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
+  const {boardsDetails} = useSelector((state:RootState)=>state.board)
     const router = useRouter()
     const [workspace,setWorkspace] = useState<any>("")
     const [tasks,setTasks] = useState([])

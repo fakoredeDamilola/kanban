@@ -11,12 +11,14 @@ import CustomDropdown from "../Customdropdown"
 import { Item } from "../viewarea/IViewrea"
 import { IBoard, IWorkspace, setCurrentWorkspace } from "../../state/board"
 import { BiEdit, BiSearch } from "react-icons/bi"
-import { setNewBoardModal } from "../../state/display"
+import { setNewBoardModal, toggleSideNav } from "../../state/display"
+import { AiOutlineClose } from "react-icons/ai"
+import { useRouter } from "next/router"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
  flex: 0 0 auto; /* fixed width */
-  position: sticky;
+ 
   padding:0 10px;
   padding-top: 20px;
   box-sizing:border-box;
@@ -24,11 +26,14 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   width:250px;
   color: ${({theme}) => theme.primary};
   max-height:100%;
+  height:100%;
   z-index:99;
- display:${({showSideNav}) => showSideNav ? 'block' : 'none'};
- transition:all 0.25s ease-in-out;
+ left:${({showSideNav}) => showSideNav ? '0' : '-310px'};
+ transition:all 0.3s;
+ position:absolute;
  @media ${device.mobileM} {
   display:block !important;
+   position: sticky;
  }
  
 `
@@ -150,7 +155,26 @@ const Button = styled.div`
   gap:10px;
   padding: 10px 5px;
   
-
+`
+const CancelBtn = styled.div`
+          width:18px;
+        height:18px;
+        background-color: ${({theme})=>theme.sideNav};
+        border-radius: 4px;
+        display:flex;
+        font-size:12px;
+        justify-content:center;
+        align-items:center;
+        border:1px solid ${({theme})=>theme.border};
+        cursor:pointer;
+        &:hover {
+            background-color: ${({theme})=>theme.cardHover};
+            transition: 0.3s;
+        }
+        margin-bottom:30px;
+        @media ${device.mobileM} {
+          display:none;
+        }
 `
 
 const SideNav = () => {
@@ -160,6 +184,9 @@ const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dispatch = useDispatch()
+  const closeSideNav = () => {
+    dispatch(toggleSideNav(!showSideNav))
+  }
 
   const selectItem = (event:any,element:Item) => {
     console.log(element)
@@ -185,9 +212,11 @@ const SideNav = () => {
     }
     dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails}))
   }
-
   return (
     <NavWrapper showSideNav={showSideNav} >
+      <CancelBtn>
+      <AiOutlineClose fontSize="12px" onClick={closeSideNav}/>
+      </CancelBtn>
         <WorkspaceInfo>
         <CustomDropdown 
     isOpen={isOpen}
@@ -224,7 +253,7 @@ const SideNav = () => {
             <p>New issue</p>
           </Button>
           <Search>
-            <BiSearch />
+            <BiSearch  />
           </Search>
         </NewIssueButton>
           <NavBoards>

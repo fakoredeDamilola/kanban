@@ -18,16 +18,32 @@ import { useDrag } from "react-dnd";
 import CalenderModal from "../modal/CalenderModal"
 
 
-const TaskCardStyle = styled.div<{isDrag:boolean}>`
+const TaskCardStyle = styled.div<{isDrag:boolean;view:string}>`
     padding:12px 14px;
     box-sizing:border-box;
     position:relative;
+    border:0px;
+
+    background: ${({theme})=>theme.sidenav};
+    min-height:${({view}) => view==="list" ? "40px" : "130px"};
+    border-radius:${({view}) => view==="list" ? "0%" : "6px"};
+    border:${({view,theme}) => view==="list" ? `1px solid ${theme.border}` : "none"};
+    border-left:0;
+    border-right:0;
+    cursor:pointer;
+        margin:${({view}) => view==="list" ? "0" : "10px auto"};
+        &:hover {
+            background: ${({theme})=>theme.cardHover};
+            transition: 0.3s;
+        }
     
 `
 const TaskStyleList = styled.div`
   
 `
-const TaskId = styled.div`
+const TaskId = styled.div<{view:string}>`
+display:${({view})=>view==="list"?"flex":"block"};
+gap:10px;
 p:first-child{
 font-weight:200;
 font-size:12px;
@@ -35,7 +51,7 @@ font-size:12px;
 p:last-child {
 font-weight:800;
 font-size:12px;
-margin-top:7px;
+margin-top:${({view})=>view==="list" ? "0px": "7px"};
 }
 `
 const Icon = styled.div<{fontSize?:string}>`
@@ -63,10 +79,11 @@ display:flex;
 justify-content:space-between;
 
 `
-const FooterWrapper = styled.div `
+const FooterWrapper = styled.div<{view:string}>`
   position:absolute;
-  display:flex;
+  /* display:flex; */
   gap:10px;
+  display:${({view}) => view==="list" ? "none" : "flex"};
   /* top:10px; */
   bottom:10%;
 `
@@ -82,7 +99,7 @@ const Label = styled.div`
 
 `
 
-const TaskCard = ({card}:{card:ITaskCards}) => {
+const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
   const [isPriorityOpen,setIsPriorityOpen] = useState(false)
   const [isFeatureOpen,setIsFeatureOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(card?.dueDate ? new Date(card?.dueDate) : null);
@@ -180,21 +197,36 @@ const TaskCard = ({card}:{card:ITaskCards}) => {
 
   return (
 
-        <TaskCardStyle 
+        <TaskCardStyle
+        view={view} 
         isDrag={isDragging}
         onClick={()=>router.push(`/${card?.workspaceID}/${card?.id}`)}
         ref={drag}
         >
       <TaskStyleContainer>
-        <TaskId>
-    <p>{card.id}</p>
+        <TaskId view={view}>
+   {view!=="list" && <p>{card.id}</p>}
+   {view==="list" &&   <CustomDropdown 
+      isOpen={isPriorityOpen} 
+      setIsOpen={setIsPriorityOpen} 
+      left="10%" 
+      items={currentWorkspace.subItems.find((item)=>item.name.toLowerCase()==="priority")?.items} selected={card.priority ?? {name:"no priority"}} 
+      selectItem={(e,element:Item) =>selectTaskPriority(e,card.id,element,"priority")}>
+       <div onClick={(e)=>handleButtonClick(e,"priority")}>
+         <CustomIcon img={card.priority?.img ?? "BiDotsHorizontalRounded"} fontSize="12px" />
+       </div>
+          
+        
+    </CustomDropdown>
+        }
+       
     <p>{card.issueTitle.slice(0,82)}...</p>
       </TaskId>
-      <ProfilePicture assigned={card.assigned} tooltip />
+      <ProfilePicture assigned={card.assigned} tooltip size={view==="list" ? "15px" : "20px"} />
       </TaskStyleContainer>
       <TaskStyleList>
     
-    <FooterWrapper >
+    <FooterWrapper view={view}>
      
       
           {card.priority &&   <CustomDropdown 

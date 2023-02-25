@@ -16,13 +16,24 @@ import { getTextDate } from '../../../utils/utilFunction'
 import {v4 as uuidv4} from "uuid"
 import { Item } from '../../viewarea/IViewrea'
 import { RootState } from '../../../state/store'
+import { device } from '../../../config/theme'
 
-const TaskPageAsideContainer = styled.div`
+const TaskPageAsideContainer = styled.div<{showTaskSideNav:boolean}>`
     /* width: 50%;
     height: 100%; */
     padding:0 20px;
+    border:1px solid ${({theme})=>theme.border};
     box-sizing: border-box;
       	flex: 0 100px;
+        position:absolute;
+        background-color: ${({theme})=>theme.sidenav};
+        width:300px ;
+        height:100%;
+        right:${({showTaskSideNav})=>showTaskSideNav?"0":"-310px"};
+        transition:all 0.3s;
+        @media ${device.mobileM} {
+          position:static;
+        }
     
     `
     const TaskPageAsideHeader = styled.div`
@@ -102,7 +113,7 @@ const ExampleCustomInput = forwardRef(({ value, onClick }:{value:any,onClick:any
 const copyLink = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
 
 
-const TaskPageAside = ({task,workspace}:{task:ITaskCards,workspace:subItem[]}) => {
+const TaskPageAside = ({task,workspace,showTaskSideNav}:{task:ITaskCards,workspace:subItem[],showTaskSideNav:boolean}) => {
   
 const user = useSelector((state:RootState)=>state.board.user)
 const copyText = (text:string) => {
@@ -168,7 +179,7 @@ const dispatch = useDispatch()
   dispatch(addNewActivity({id:task?.id,activity:CalenderActivity}))
   }
   return (
-    <TaskPageAsideContainer>
+    <TaskPageAsideContainer showTaskSideNav={showTaskSideNav}>
         <TaskPageAsideHeader>
           
         <CustomTooltip toolTipText="copy issue URL to clipboard">
@@ -233,6 +244,7 @@ const dispatch = useDispatch()
     ].map((item,index)=>{
       return (
         <AsideItems
+        workspaceID={task.workspaceID}
         selected={item.selected}
       key={index}
       name={item?.name}

@@ -5,6 +5,16 @@ import { Item } from '../viewarea/IViewrea';
 import { useDispatch } from 'react-redux';
 import { selectSubItems } from '../../state/board';
 import CustomIcon from '../CustomIcon';
+import { device } from '../../config/theme';
+import ProfilePicture from '../ProfilePicture';
+
+const FooterIcon = styled.div`
+ margin-left:10px;
+    display:none;
+  @media ${device.mobileM} {
+    display:block;
+  }
+`
 
 const FooterWrapper = styled.div`
 font-size:12px;
@@ -24,7 +34,6 @@ cursor:pointer;
 & > div {
 
     margin-left:10px;
-    /* margin-top:-2px; */
 }
 & > span {
 visibility: hidden;
@@ -90,7 +99,7 @@ const FooterMenu = ({item}:IFooter) => {
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
-  const selectItem = (name:any,item:Item) => {
+  const selectItem = (name:any,event:any,item:Item) => {
     item.type !== "color" && setIsOpen(false)
     dispatch(selectSubItems({name,item}))
    }
@@ -100,15 +109,20 @@ const FooterMenu = ({item}:IFooter) => {
     setIsOpen={setIsOpen}
     items={item.items}
     selected={item.selected}
-    selectItem={(element:Item) =>selectItem(item.name,element)}
+    selectItem={(event:any,element:Item) =>selectItem(item.name,event,element)}
     left="80%"
+    type={item.name==="Assigned" ? 'image' : ''}
     checkBox={true}
     >
     <FooterWrapper onClick={handleButtonClick}>
-       {<CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} fontSize="12px"/>} 
-      
-       {item.text && <div>{item.selected.name ?? item.name}</div>}
+       {item.name==="Assigned" && item.selected ? 
+       <ProfilePicture assigned={item.selected} tooltip={false} size="15px" />
+      : <CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} fontSize="12px"/>} 
+     
+         {item.text && <FooterIcon>{item.selected.name ?? item.name}</FooterIcon>}
       {item.text && <span>{item.text}<div>{item.name[0]}</div></span>}
+     
+      
     </FooterWrapper>
     </CustomDropdown>
      )

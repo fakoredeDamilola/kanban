@@ -1,5 +1,16 @@
 export const randomColor = () => `#${Math.floor(Math.random()*16777215).toString(16)}`
 
+export const hslColor = (str:string,s:number,l:number)=>{
+  let hash = 0;
+  console.log(str)
+  for (let i=0; i <str.length;i++){
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  let h =  hash% 360;
+  console.log('hsl('+h+'. '+s+'% ,'+l+'%)')
+  return 'hsl('+h+', '+s+'% ,'+l+'%)'
+}
+
 
 export const handleFile = async (event:any,input:string) => {
     const formData = new FormData()

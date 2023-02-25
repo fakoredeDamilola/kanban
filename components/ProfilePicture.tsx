@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaRegUserCircle } from 'react-icons/fa'
 import styled from 'styled-components'
-import { randomColor } from '../utils/utilFunction'
+import { hslColor, randomColor } from '../utils/utilFunction'
 import { Item } from './viewarea/IViewrea'
 
 const ProfilePicture = ({assigned,tooltip,size}:{assigned:Item,tooltip:boolean,size?:string}) => {
@@ -54,7 +54,7 @@ const ProfilePicture = ({assigned,tooltip,size}:{assigned:Item,tooltip:boolean,s
         & >div {
             width:${({size}) => size ? size : "20px"};
             height:${({size}) => size ? size : "20px"};
-            font-size:8px;
+            font-size:${({size}) => size ? `calc(${size}/2)` : "8px"};
             color:${({theme,color}) => theme.text};
             display:flex;
             justify-content:center;

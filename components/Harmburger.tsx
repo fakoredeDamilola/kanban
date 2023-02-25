@@ -7,7 +7,7 @@ const HarmburgerStyles = styled.div`
     flex-direction:column;
     justify-content:space-between;
     align-items:center;
-    width:30px;
+    width:20px;
     cursor:pointer;
      display:block;
         @media ${device.mobileM} {
@@ -15,9 +15,9 @@ const HarmburgerStyles = styled.div`
         }
     div{
         width:100%;
-        height:3px;
+        height:2px;
         margin:2px 0;
-        background-color: ${({theme}) => theme.primary};
+        background-color: ${({theme}) =>"#c4c0c0"};
         border-radius:5px;
        
         
