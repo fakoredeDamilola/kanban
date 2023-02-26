@@ -10,18 +10,19 @@ import store from '../state/store';
 import React, { useEffect, useState } from 'react';
 
 
-
 type ComponentWithPageLayout = AppProps & {
   Component: AppProps["Component"] & {
     PageLayout?: React.ComponentType;
   };
 };
+
 export default function MyApp(props:ComponentWithPageLayout) {
 
 
 
 
-  const { Component, pageProps } = props;
+  const { Component, pageProps, } = props;
+  const NewLayout = Component.PageLayout
   return (
     <>
       <Head>
@@ -31,10 +32,11 @@ export default function MyApp(props:ComponentWithPageLayout) {
       {/* // @ts-ignore */}
         <>
         <GlobalStyles />
-        {Component.PageLayout ? (
-        <Component.PageLayout>
+        {Component?.PageLayout ? (
+        
+        // <Component.PageLayout>
           <Component {...pageProps} />
-        </Component.PageLayout>
+        // </Component.PageLayout>
       ) : (
         <Layout>
           <Component {...pageProps} />
