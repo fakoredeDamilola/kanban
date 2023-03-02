@@ -44,6 +44,6 @@ import Layout from "../../components/Layout";
   )
 }
 
-Home.PageLayout = Layout
+// Home.PageLayout = Layout
 
 export default Home

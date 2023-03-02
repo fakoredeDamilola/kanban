@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Item } from "../../components/viewarea/IViewrea";
+import { subItems } from "../../utils/utilData";
 
 
 
@@ -63,6 +64,7 @@ export interface IMembers {
 export interface IWorkspace {
   name:string;
   id:string;
+  URL:string;
   taskID:string[];
   totalTasks:number;
   subItems: subItem[];
@@ -77,15 +79,15 @@ export interface IUser {
   id:string;
   username:string;
   image:string;
-  workspaces: IWorkspaces[]
+  workspaces: IWorkspace[]
 }
-export interface IWorkspaces  { 
-  name:string;
-  id:string;
-  noOfTasks?:number;
-  noOfMembers?:number;
-  owner?:Item;
-}[];
+// export interface IWorkspaces  { 
+//   name:string;
+//   id:string;
+//   noOfTasks?:number;
+//   noOfMembers?:number;
+//   owner?:Item;
+// }[];
 
 interface boardIntialState {
   currentWorkspace: IWorkspace
@@ -97,6 +99,7 @@ interface boardIntialState {
 const initialState: boardIntialState = {
     currentWorkspace: {
       name:"Product Launch",
+      URL:"product-yes",
       id:"PRO-L",
       totalTasks:10,
       totalMembers:0,
@@ -104,133 +107,7 @@ const initialState: boardIntialState = {
         name:"Fakorede Damilola",
         email:""
       },
-      subItems: [
-        {
-          name:"Status",
-          icon:'BiCircle',
-          tooltip:true,
-          text:"Set Status",
-          selected:{
-            name:"Todo", 
-            img:"BiCircle"
-          },
-          items:[
-            {
-              name:"Backlog",
-              img:"TbCircleDotted"
-            },
-            {
-              name:"Todo",
-              img:"BiCircle"
-            },
-            {
-              name:"In progress",
-              img:"FaDotCircle"
-            },
-            {
-              name:"Done",
-              img:"AiOutlineCheckCircle"
-            },
-            {
-              name:"Cancelled",
-              img:"MdOutlineCancel"
-            },
-          ]
-        },
-        
-        {
-          name:"Priority",
-          icon:'BsFillBarChartFill',
-          tooltip:true,
-          text:"Set Priority",
-          selected:{
-            name:"No Priority",
-            img:"BiDotsHorizontalRounded"
-          },
-          items:[
-            {
-              name:"No Priority",
-              img:"BiDotsHorizontalRounded"
-            },
-            {
-              name:"Urgent",
-              img:"GrStatusInfo"
-            },
-            {
-              name:"High",
-              img:"BsFillBarChartFill"
-            },
-            {
-              name:"Medium",
-              img:"FiBarChart"
-            },
-            {
-              name:"Low",
-              img:"BsBarChart"
-
-            },
-          ]
-        },
-        {
-          name:"Assigned",
-          icon:'FaRegUserCircle',
-          tooltip:true,
-          text:"Assign To",
-          selected:{
-            name:"Assigned",
-            img:"FaRegUserCircle"
-          },
-          items:[
-
-            {
-              name:"Unassign",
-              email:"",
-              img:"FaRegUserCircle"
-            },
-           
-          ]
-        },
-        {
-          name:"Label",
-          icon:'MdLabel',
-          tooltip:true,
-          text:'Add Label',
-          selected:{
-            name:"Label",
-            img:"MdLabel",
-          },
-          items:[
-            {
-              name:"Bug",
-              type:"color",
-              img:"red"
-            },
-            {
-              name:"Feature",
-              type:"color",
-              img:"purple"
-            },
-            {
-              name:"Improvement",
-              type:"color",
-              img:"blue"
-            },
-          ]
-        },
-        {
-          name:"Others",
-          icon:'BiDotsHorizontalRounded',
-          tooltip:true,
-          text:"",
-          selected:{
-            name:"",
-            img:"BiDotsHorizontalRounded",
-          },
-          items:[ ]
-        },
-      
-      
-      ],
+      subItems: subItems,
       taskID:[
 
       ],
@@ -277,18 +154,28 @@ const initialState: boardIntialState = {
         {
           name:"Product Launch",
           id:"PRO-L",
-          noOfTasks:10,
-          noOfMembers:0,
-          owner:{
-            name:"Fakorede Damilola",
-            email:""
-          }
+          URL:"euuue",
+          taskID:[],
+  totalTasks:0,
+  subItems: subItems,
+  totalMembers:0,
+  owner:{
+    name:"Fakorede Damilola",
+    email:"dfakorede29@gmail.com"
+  },
+  members:[
+    {
+      name:"Fakorede Damilola",
+      email:"dfakorede29@gmail.com",
+      id:"8883",
+      joined:"8377384849939",
+      username:"ieoe",
+      taskIDs:[],
+      img:"",
+    }
+  ]
 
-        },
-        {
-          name:"FAST VOTE",
-          id:"FAS-V"
-        },
+        }
       ]
     },
     boardsDetails: {
@@ -412,8 +299,8 @@ const initialState: boardIntialState = {
                       },
              ],
          
-      }
-    ,
+      },
+    
 }
 
 const boardSlice = createSlice({
@@ -513,6 +400,9 @@ const boardSlice = createSlice({
       }
       state.boardsDetails = boardsDetails
     },
+    AddNewWorkspace:(state,{payload:{newWorkspace}}) =>{
+      state.user.workspaces = [...state.user.workspaces, newWorkspace]
+    }
 
   },
 });
@@ -526,7 +416,8 @@ export const {
   addNewActivity,
   setCurrentWorkspaceStatus,
   clearCurrentWorkspaceStatus,
-  setCurrentWorkspace
+  setCurrentWorkspace,
+  AddNewWorkspace
 } = boardSlice.actions;
 
 export default boardSlice.reducer;

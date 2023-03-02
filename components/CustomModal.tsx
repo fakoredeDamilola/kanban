@@ -1,5 +1,4 @@
 import React,{useRef,useEffect} from 'react'
-import { AiOutlineClose } from 'react-icons/ai'
 import styled from 'styled-components'
 
 
