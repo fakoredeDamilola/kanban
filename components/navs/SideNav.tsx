@@ -12,8 +12,10 @@ import { Item } from "../viewarea/IViewrea"
 import { IBoard, IWorkspace, setCurrentWorkspace } from "../../state/board"
 import { BiEdit, BiSearch } from "react-icons/bi"
 import { setNewBoardModal, toggleSideNav } from "../../state/display"
-import { AiOutlineClose } from "react-icons/ai"
+import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai"
 import { useRouter } from "next/router"
+import usePortal from "../../hooks/usePortal"
+import InvitePeopleModal from "../modal/InvitePeopleModal"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -176,6 +178,13 @@ const CancelBtn = styled.div`
           display:none;
         }
 `
+const InviteButton = styled.div`
+  display:flex;
+  gap:3px;
+  cursor:pointer;
+  align-items:center;
+  font-size:12px;
+`
 
 const SideNav = () => {
   const {currentWorkspace,user} = useSelector((state: RootState) => state.board)
@@ -183,13 +192,20 @@ const SideNav = () => {
   
   const [isOpen, setIsOpen] = useState(false);
 
+  const [openInviteMembers,setOpenInviteMembers] = useState(false)
+  const Portal = usePortal(document.querySelector("#portal"));
+
   const dispatch = useDispatch()
+  const router = useRouter()
   const closeSideNav = () => {
     dispatch(toggleSideNav(!showSideNav))
   }
 
-  const selectItem = (event:any,element:Item) => {
-    console.log(element)
+  const selectItem = (event:any,element:any) => {
+    if(element.name==="create workspace"){
+        router.push("/join")
+    }else{
+      router.push(`/${element?.URL}`)
     const currentWorkspace:Partial<IWorkspace> = {
       id:element.id ? element?.id :"29",
       name:element.name,
@@ -210,7 +226,17 @@ const SideNav = () => {
       workspace:element.name,
       tasks:[]
     }
-    dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails}))
+    dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails})) 
+    }
+    
+   
+  }
+
+  const closeInviteModal = () =>{
+    setOpenInviteMembers(false)
+  }
+  const saveInvitePeople = () =>{
+
   }
   return (
     <NavWrapper showSideNav={showSideNav} >
@@ -260,14 +286,21 @@ const SideNav = () => {
     <p>ALL BOARDS ({currentWorkspace.totalTasks})</p>
     <SideDataStyle>
       {user.workspaces.map((item, index) => (
-      <LI key={index} selected={currentWorkspace.id.toLowerCase()===item.id.toLowerCase()}>
+      <LI key={index} 
+      onClick={()=>router.push(`/${item?.URL}`)}
+      selected={currentWorkspace.id.toLowerCase()===item.id.toLowerCase()}>
         <Image src={"/board_light.svg"} alt="board" width={50} height={20} />
         <p>{item.name}</p>
       </LI>
     ))}
     </SideDataStyle>
-    
+        <InviteButton onClick={()=>setOpenInviteMembers(true)}>
+         <AiOutlinePlus /> <div>invite people</div> 
+        </InviteButton>
     {/* <HideSideNav /> */}
+    <Portal>
+       {openInviteMembers ? <InvitePeopleModal saveInvitePeople={saveInvitePeople} openInvitePeople={openInviteMembers} closeInvitePeople={closeInviteModal} /> : null}
+    </Portal>
         </NavBoards>
     </NavWrapper>
   )
