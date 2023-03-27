@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import TaskPage from './taskpage/TaskPage'
 import { ITaskCards } from '../state/board'
 import { RootState } from '../state/store'
 
@@ -10,28 +9,31 @@ const SingleTask = () => {
   const [taskID,setTaskID] = useState<any>("")
   const [task,setTask] = useState<ITaskCards>()
   const router = useRouter()
-  const {boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
+  const {currentWorkspace} = useSelector((state:RootState)=>state.board)
 
   
 
   useEffect(()=>{
     if(router?.query.taskpage){
+      console.log(router.query)
        setWorkspace(router.query.taskpage[0])
     setTaskID(router.query.taskpage[1])
     }
   },[router.query])
   useEffect(()=>{
-    if(boardsDetails){
+    if(currentWorkspace){
       if(router?.query?.taskpage && router?.query.taskpage[1]){
          // @ts-ignore
-          const taskInfo = boardsDetails.tasks.find((task)=>task.id === router.query.taskpage[1])
+          const taskInfo = currentWorkspace.taskID.find((task)=>task.id === router.query.taskpage[1])
+          console.log({taskInfo})
           setTask(taskInfo)
       }
     }
-  },[boardsDetails,workspace,taskID])
+  },[currentWorkspace,workspace,taskID])
   const taskList = task?.status.name
-  const taskListLength = boardsDetails.tasks.filter((task:ITaskCards)=>task.status.name === taskList)
-  return <TaskPage taskInfo={task} workspace={currentWorkspace} taskListLength={taskListLength} />
+  const taskListLength = currentWorkspace.taskID.filter((task:ITaskCards)=>task.status.name === taskList)
+  // return <TaskPage taskInfo={task} workspace={currentWorkspace} taskListLength={taskListLength} />
+  return <div>you</div>
   
 }
 

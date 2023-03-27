@@ -241,8 +241,8 @@ const CalenderModal = ({openCalenderModal,closeCalenderModal,saveCalenderModal,d
       monthsShown={2}
     monthClassName={()=> "month-selected"}
  
-      onChange={(e:any,date) => {
-        e.stopPropagation()
+      onChange={(date) => {
+        // e.stopPropagation()
         //   @ts-ignore
         setStartDate(date)
       }}

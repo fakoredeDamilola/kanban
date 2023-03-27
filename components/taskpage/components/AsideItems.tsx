@@ -90,7 +90,6 @@ const AsideItems = ({
     setIsOpen(!isOpen);
   };
   const router = useRouter()
-  console.log({selected})
   return (
     <CustomDropdown isOpen={isOpen} setIsOpen={setIsOpen} selected={selected} selectItem={(e:any,item:Item)=>{
       changeTaskTodo(name,item)

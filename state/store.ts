@@ -4,7 +4,8 @@ import {logger} from "redux-logger";
 import reducers from "./reducers";
 
 
-const PERSISTED_KEYS = ["board","display"]
+const PERSISTED_KEYS = ["display"]
+// const PERSISTED_KEYS = ["board","display"]
 
 const store = configureStore({
     reducer: reducers,

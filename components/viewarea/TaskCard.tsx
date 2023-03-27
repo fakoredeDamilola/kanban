@@ -16,6 +16,8 @@ import {v4 as uuidv4} from "uuid"
 import { getTextDate } from "../../utils/utilFunction"
 import { useDrag } from "react-dnd";
 import CalenderModal from "../modal/CalenderModal"
+import { CHANGE_TASK_DETAIL } from "../../graphql/mutation"
+import { useMutation } from "@apollo/client"
 
 
 const TaskCardStyle = styled.div<{isDrag:boolean;view:string}>`
@@ -118,10 +120,14 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
   const dispatch = useDispatch()
   const {currentWorkspace,boardsDetails,user} = useSelector((state:RootState)=>state.board)
   const [openCalenderModal, setOpenCalenderModal] = useState(false)
+
+  const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
+
+
   const saveCalenderModal = (e:any,startDate:any) => {
    console.log(startDate)
     // e.stopPropagation()
-    dispatch(changeTaskDueDate({id:card?.id,duedate:startDate}))
+    dispatch(changeTaskDueDate({id:card?._id,duedate:startDate}))
     
         const CalenderActivity:IActivity = {
             id: uuidv4(),
@@ -129,12 +135,12 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
            description:card?.dueDate ? `changed due date from ${getTextDate(card?.dueDate)} to ${getTextDate(startDate)}` :startDate ? `set due date ${getTextDate(startDate)}` : "removed due date",
             createdby: {
               name:user.name,
-              id:user.id,
+              id:user._id,
               email:user.email
             },
             time:Date.now()
         }
-        dispatch(addNewActivity({id:card?.id,activity:CalenderActivity}))
+        dispatch(addNewActivity({id:card?._id,activity:CalenderActivity}))
          setOpenCalenderModal(false)
     }
     const closeCalenderModal = () => {
@@ -146,7 +152,22 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     setIsPriorityOpen(false)
     setIsFeatureOpen(false)
     console.log({id,type:priority,name})
-    dispatch(changeTaskPriority({id,type:priority,name}))
+    // dispatch(changeTaskPriority({id,type:priority,name}))
+    const selectedItem = {
+      name:priority.name,
+      email:priority.email ?? "",
+      img:priority.img ?? "",
+      _id:priority?._id ??""
+    }
+    changeTaskDetail({
+      variables:{
+          input: {
+              _id:id,
+              type:selectedItem,
+              name
+          }
+      },
+  })
 
     let newActivity:IActivity
     if(name ==="Label") {
@@ -157,7 +178,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
         description: `added label`,
         createdby: {
           name:user.name,
-          id:user.id,
+          id:user._id,
           email:user.email
         },
         time:Date.now(),
@@ -173,14 +194,14 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
      description: `changed ${name} from ${card[name?.toLowerCase() as keyof typeof card].name} to ${priority.name}`,
      createdby: {
       name:user.name,
-      id:user.id,
+      id:user._id,
       email:user.email
     },
       time:Date.now(),
       icon:priority.img
   }
     }
-  dispatch(addNewActivity({id:card?.id,activity:newActivity}))
+  dispatch(addNewActivity({id:card?._id,activity:newActivity}))
   }
  
 
@@ -200,18 +221,18 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
         <TaskCardStyle
         view={view} 
         isDrag={isDragging}
-        onClick={()=>router.push(`/${card?.workspaceID}/${card?.id}`)}
+        onClick={()=>router.push(`/${card?.workspaceURL}/${card?._id}`)}
         ref={drag}
         >
       <TaskStyleContainer>
         <TaskId view={view}>
-   {view!=="list" && <p>{card.id}</p>}
+   {view!=="list" && <p>{card._id.slice(0,5)}</p>}
    {view==="list" &&   <CustomDropdown 
       isOpen={isPriorityOpen} 
       setIsOpen={setIsPriorityOpen} 
       left="10%" 
       items={currentWorkspace.subItems.find((item)=>item.name.toLowerCase()==="priority")?.items} selected={card.priority ?? {name:"no priority"}} 
-      selectItem={(e,element:Item) =>selectTaskPriority(e,card.id,element,"priority")}>
+      selectItem={(e,element:Item) =>selectTaskPriority(e,card._id,element,"priority")}>
        <div onClick={(e)=>handleButtonClick(e,"priority")}>
          <CustomIcon img={card.priority?.img ?? "BiDotsHorizontalRounded"} fontSize="12px" />
        </div>
@@ -234,7 +255,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       setIsOpen={setIsPriorityOpen} 
       left="10%" 
       items={currentWorkspace.subItems.find((item)=>item.name.toLowerCase()==="priority")?.items} selected={card.priority ?? {name:"no priority"}} 
-      selectItem={(e,element:Item) =>selectTaskPriority(e,card.id,element,"priority")}>
+      selectItem={(e,element:Item) =>selectTaskPriority(e,card._id,element,"priority")}>
         <Icon onClick={(e)=>handleButtonClick(e,"priority")}>
            <CustomIcon img={card.priority?.img ?? "BiDotsHorizontalRounded"} fontSize="12px" />
          </Icon> 
@@ -247,14 +268,14 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
           e.stopPropagation()
           setOpenCalenderModal(true)
         }}  fontSize="12px">
-         <CustomIcon img="BsCalendar2" fontSize="13px" /> {getTextDate(new Date(card.dueDate),"MM, yy")}
+         <CustomIcon img="BsCalendar2" fontSize="13px" /> {getTextDate(card.dueDate,"MM, yy")}
        </Icon>
     }
         {card.label &&
           <CustomDropdown isOpen={isFeatureOpen} setIsOpen={setIsFeatureOpen} selected={card.label} selectItem={(e:any,item:Item)=>{
           
           e.stopPropagation()
-            selectTaskPriority(e,card.id,item,"Label")
+            selectTaskPriority(e,card._id,item,"Label")
             setIsFeatureOpen(false)
           }} top="30%" left="-70%" items={currentWorkspace.subItems.find(item=>item.name.toLowerCase()==="label")?.items} >
       <Label  onClick={(e)=>handleButtonClick(e,"feature")}>
@@ -263,7 +284,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       </CustomDropdown>
     }
       <Portal>
-                 {openCalenderModal ? <CalenderModal date={card?.dueDate} saveCalenderModal={saveCalenderModal} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} /> : null}
+                 {openCalenderModal ? <CalenderModal date={card.dueDate ?new Date(parseInt(card?.dueDate)*1000): Date.now()} saveCalenderModal={saveCalenderModal} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} /> : null}
             </Portal>
        
     </FooterWrapper>

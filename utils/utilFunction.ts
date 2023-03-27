@@ -55,12 +55,15 @@ export const handleFile = async (event:any,input:string) => {
 // get month and day from date
 export const getTextDate = (date:Date | any,type?:string) => {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  console.log({date})
 if(!date){
   return
 }else {
-  let month = months[date.getMonth()];
-  let day = date.getDate();
-  let year = `${date.getFullYear()}`;
+  const dateInfo = new Date(parseInt(date) *1000)
+  console.log({dateInfo})
+  let month = months[dateInfo.getMonth()];
+  let day = dateInfo.getDate();
+  let year = `${dateInfo.getFullYear()}`;
   console.log({month,day,year})
   return type ?
   `${month} ${day}` :
@@ -68,3 +71,36 @@ if(!date){
 
 }
 }
+
+export const confirmPassword = (value:string) => {
+  const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
+  const mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+
+  if(strongRegex.test(value)){
+      return "strong"
+  }else if(mediumRegex.test(value)){
+      return "medium"
+  }else{
+      return "weak"
+  }
+
+  }
+
+
+  export const checkForError = (
+    inputInfo:any,
+    setErrorTable:React.Dispatch<React.SetStateAction<string[]>>,
+    excludeInput:string[]
+    ) =>{
+    let value:keyof typeof inputInfo
+      let arr:string[]=[]
+    for( value in inputInfo){
+      let str = inputInfo[value]
+    if(str==="" && !excludeInput.includes(value)){
+        arr.push(value)
+      }
+    }
+      setErrorTable([...arr])
+      return arr
+  }

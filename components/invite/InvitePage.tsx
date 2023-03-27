@@ -36,51 +36,7 @@ const MainBox = styled.div`
 
 
 `
-const InputBox = styled.div`
-  width:90%;
-  margin: 0 auto;
-  margin-bottom:30px;
-  & > p {
-    margin-bottom:5px;
-  }
-  & input {
-    width:100%;
-    height:45px;
-    box-sizing:border-box;
-    padding:0 0px; 
-    padding-left:156px;
-    background:#151621;
-    border:1px solid ${({theme}) => "#666BE1"};
-    border-radius:3px;
-    outline:none;
-    color:white;
-  }
-  & > div {
-    position:relative;
-  }
-`
-const InputBoxName = styled.div`
-  width:90%;
-  margin: 0 auto;
-  margin-bottom:30px;
-  & > p {
-    margin-bottom:5px;
-  }
-  & input {
-    width:100%;
-    height:45px;
-    box-sizing:border-box;
-    padding:0 10px; 
-    background:#151621;
-    border:1px solid ${({theme}) => "#666BE1"};
-    border-radius:3px;
-    outline:none;
-    color:white;
-  }
-  & > div {
-    position:relative;
-  }
-`
+
 const MainText = styled.div`
   text-align:center;
   color:white;
@@ -125,7 +81,6 @@ width:100%;
         background-color:#666BE1;
         border-radius:6px;
         cursor:pointer;
-         
      margin:0 auto;
      width:90%;
         
@@ -151,16 +106,15 @@ top:0;
   height:45px;
 `
 
-const CreateWorkspace = ({workspaceName,workspaceURL,setWorkspaceURL,setWorkspaceName,createNewWorkspace,email}:{
-  workspaceName:string;
-  email:string;
-  setWorkspaceName:React.Dispatch<React.SetStateAction<string>>;
-  workspaceURL:string;
-  setWorkspaceURL:React.Dispatch<React.SetStateAction<string>>;
-  createNewWorkspace:() => void;
+const InvitePage = ({acceptInvite,email,invitee,workspaceName,workerEmail,inviteLink}:{
+ acceptInvite:() => void;
+ email:string;
+ workspaceName:string;
+ invitee:string;
+ inviteLink:string;
+ workerEmail:string;
 }) => {
   
-const [controlInput,setControlInput] = useState(true)
   return (
     <Container>
       <EmailInfo>
@@ -179,45 +133,16 @@ const [controlInput,setControlInput] = useState(true)
           <p>Workspaces are shared environments where teams can work on projects,cycles and tasks</p>
           </MainText>
         <MainBox>
-         
+         <h1>{invitee} has invited to workspace {workspaceName}</h1>
         
-        <InputBoxName>
-        <p>Workspace Name</p>
-        <input 
-  value={workspaceName}
-  name="workspaceName"
-  onChange={(e)=>{
-    setWorkspaceName(e.target.value)
-    if(controlInput){
-    setWorkspaceURL(e.target.value)
-    }
-  }}
-/>
-        </InputBoxName>
-        <InputBox>
-        <p>Workspace URL</p>
-        <div>
-             <input 
-    
-  value={workspaceURL}
-  onFocus={()=>{
-    setControlInput(false)
-  }}
-  onChange={(e)=>setWorkspaceURL(e.target.value)}
-  name="workspaceURL"
-/>
-<InputText>
-https://linear.app/
-</InputText>
-        </div>
-     
-        </InputBox>
-        </MainBox>
+        <p>To accept the invitation, please login as {workerEmail}</p>
         <ButtonDiv>
-          <button onClick ={createNewWorkspace}>
+          <button onClick ={acceptInvite}>
 Create workspace
 </button>
         </ButtonDiv>
+        </MainBox>
+        
         
         </Wrapper>
         
@@ -226,4 +151,4 @@ Create workspace
   )
 }
 
-export default CreateWorkspace
+export default InvitePage

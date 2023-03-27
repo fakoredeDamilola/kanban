@@ -16,6 +16,8 @@ import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai"
 import { useRouter } from "next/router"
 import usePortal from "../../hooks/usePortal"
 import InvitePeopleModal from "../modal/InvitePeopleModal"
+import { ADD_NEW_MEMBERS_TO_WORKSPACE } from "../../graphql/mutation"
+import { useMutation } from "@apollo/client"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -193,6 +195,7 @@ const SideNav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [openInviteMembers,setOpenInviteMembers] = useState(false)
+  const [inviteMembers,setInviteMembers] = useState("")
   const Portal = usePortal(document.querySelector("#portal"));
 
   const dispatch = useDispatch()
@@ -200,6 +203,8 @@ const SideNav = () => {
   const closeSideNav = () => {
     dispatch(toggleSideNav(!showSideNav))
   }
+
+  const [addNewMembersToWorkspace,{data:newMembersData,error:newMembersError,loading:newMembersLoading }] = useMutation(ADD_NEW_MEMBERS_TO_WORKSPACE)
 
   const selectItem = (event:any,element:any) => {
     if(element.name==="create workspace"){
@@ -224,6 +229,7 @@ const SideNav = () => {
     const boardDetails:IBoard = {
       workspaceID:element.id ? element?.id :"29",
       workspace:element.name,
+      workspaceURL:"u8838",
       tasks:[]
     }
     dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails})) 
@@ -235,8 +241,18 @@ const SideNav = () => {
   const closeInviteModal = () =>{
     setOpenInviteMembers(false)
   }
-  const saveInvitePeople = () =>{
-
+  const saveInvitePeople = async () =>{
+      await addNewMembersToWorkspace({
+         variables:{
+         input:{
+           members:inviteMembers,
+           workspaceURL:currentWorkspace.URL,
+           workspaceID:currentWorkspace._id
+         }
+       }
+     })
+     console.log({newMembersData})
+     
   }
   return (
     <NavWrapper showSideNav={showSideNav} >
@@ -299,7 +315,7 @@ const SideNav = () => {
         </InviteButton>
     {/* <HideSideNav /> */}
     <Portal>
-       {openInviteMembers ? <InvitePeopleModal saveInvitePeople={saveInvitePeople} openInvitePeople={openInviteMembers} closeInvitePeople={closeInviteModal} /> : null}
+       {openInviteMembers ? <InvitePeopleModal inviteMembers={inviteMembers} setInviteMembers={setInviteMembers} saveInvitePeople={saveInvitePeople} openInvitePeople={openInviteMembers} closeInvitePeople={closeInviteModal} /> : null}
     </Portal>
         </NavBoards>
     </NavWrapper>

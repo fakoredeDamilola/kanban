@@ -13,6 +13,8 @@ import {v4 as uuidv4} from "uuid"
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../state/store'
 import { device } from '../../../config/theme'
+import { useMutation } from '@apollo/client'
+import { ADD_NEW_ACTIVITY } from '../../../graphql/mutation'
 
 const TaskPageMainContainer = styled.div`
 
@@ -215,11 +217,14 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
   const [taskTitle,setTaskTitle] = React.useState(task.issueTitle)
   const [taskDescription,setTaskDescription] = React.useState(task.issueDescription ?? "")
   const [comment,setComment] = React.useState("")
+  const [addNewActivity,{loading,error,data}] = useMutation(ADD_NEW_ACTIVITY)
 
   const [isOpen,setIsOpen] = useState(false)
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
+console.log({loading,error,data})
+
   const openPage = (event:any,item:any) =>{
     console.log({item})
   
@@ -232,19 +237,30 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
   const {taskView} = useSelector((state:RootState)=>state.display)
 
   const submitComment = () => {
-    const commentActivity:IActivity = {
-      id: uuidv4(),
+    const commentActivity = {
+      // id: uuidv4(),
       nameOfActivity:"comment",
      description: comment,
-     createdby: {
-      name:user.name,
-      id:user.id,
-      email:user.email
-    },
-      time: Date.now(),
+    //  createdby: {
+    //   name:user.name,
+    //   id:user._id,
+    //   email:user.email
+    // },
+      // time: Date.now(),
 
     }
-    dispatch(addNewActivity({id:task.id,activity:commentActivity}))
+    console.log({commentActivity})
+    // dispatch(addNewActivity({id:task._id,activity:commentActivity}))
+    addNewActivity({
+      variables:{
+        input:{
+          taskID:task._id,
+        activity:commentActivity
+        }
+        
+      }
+    })
+
     setComment("")
   }
 
@@ -254,12 +270,12 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
       img:""
     }
   ]
-  
+  console.log({task},"kekklekle")
   return (
     <TaskPageMainContainer>
       <TaskPageMainHeader>
         <TaskPageHead>
-          <h5>{task.workspaceID}</h5>
+          <h5>{task.workspaceID.slice(0,6)}</h5>
         <BiChevronRight style={{marginTop:"1px"}} />
         <p>Task Description</p>
         <div>
@@ -288,7 +304,9 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         outline={true}
         fontWeight={700}
         maxLength={256}
-        height={false}
+        input="text"
+        name="issue title"
+        changeInput={()=>{}}
         
       />
       
@@ -300,7 +318,9 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
          setTextValue={(val:any)=> setTaskDescription(val)}
         fontWeight={300}
         color="white"
-        height
+        input="text"
+        name="issue description"
+        changeInput={()=>{}}
       />
         <SubIssues>
           <AiOutlinePlus /> <p>add sub-issues</p>
@@ -319,8 +339,8 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
             
 
           </SubscribeTask>
-          {task.activites ? task.activites?.map((activity:any,index:number)=>
-            <ActivityCard key={index} activity={activity} workspaceID={task.workspaceID} />
+          {task.activities ? task.activities?.map((activity:any,index:number)=>
+            <ActivityCard key={index} activity={activity} workspaceURL={task.workspaceURL} />
           ) : null
           }
           <CommentInput>

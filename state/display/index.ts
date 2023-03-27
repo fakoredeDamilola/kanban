@@ -1,11 +1,17 @@
 import {createSlice} from "@reduxjs/toolkit"
 
+export enum SIGNUPPAGESTATE {
+    SIGN_UP_PAGE_INDEX = "SIGN_UP_PAGE_INDEX",
+    SIGN_UP_VERIFY_EMAIL = "SIGN_UP_VERIFY_EMAIL",
+    SIGN_UP_CREATE_WORKSPACE = "SIGN_UP_CREATE_WORKSPACE" 
+  }
 interface displayState {
 showSideNav: boolean;
 taskView:string,
 profileView:string,
 theme:string,
-openNewBoardModal:boolean
+openNewBoardModal:boolean;
+current_signup_page:SIGNUPPAGESTATE
 }
 
 const initialState: displayState = {
@@ -13,6 +19,7 @@ showSideNav:true,
 taskView: "column",
 profileView:"column",
 theme:"light",
+current_signup_page:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX,
 openNewBoardModal:false,
 }
 
@@ -36,6 +43,9 @@ const displaySlice = createSlice({
         },
         setNewBoardModal: (state,{payload:{open}}) =>{
             state.openNewBoardModal = open
+        },
+        setCurrentSignupPage:(state,{payload:{current}}) =>{
+            state.current_signup_page = current
         }
     }
 })
@@ -45,7 +55,8 @@ export const {
     switchTheme,
     switchTaskView,
     setNewBoardModal,
-    switchProfileView
+    switchProfileView,
+    setCurrentSignupPage
 } = displaySlice.actions
 
 export default displaySlice.reducer
