@@ -27,7 +27,7 @@ const router = useRouter()
               {
                 name:user.name,
                 email:user.email,
-                id:user.id,
+                id:user._id,
                 img:user.image,
                 color:"red",
                 joined:`${Date.now()}`,
