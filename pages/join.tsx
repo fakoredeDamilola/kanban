@@ -50,6 +50,7 @@ const router = useRouter()
 
   return (
     <CreateWorkspace 
+    email={user.email}
     createNewWorkspace={createNewWorkspace}
     workspaceName={workspaceName} 
     setWorkspaceName={setWorkspaceName} 
