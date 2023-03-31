@@ -6,28 +6,32 @@ import { FiBarChart } from "react-icons/fi"
 import { FaDotCircle, FaRegUserCircle } from 'react-icons/fa'
 import {TbCircleDotted} from "react-icons/tb"
 import { MdLabel, MdOutlineCancel } from 'react-icons/md'
-import { AiOutlineCheckCircle } from 'react-icons/ai'
+import { AiFillCheckCircle } from 'react-icons/ai'
+import { IconContext } from 'react-icons'
 
-const CustomIcon = ({img,fontSize,type}:{img?:string,fontSize?:string,type?:string}) => {
+const CustomIcon = ({img,fontSize,type,color}:{img?:string,fontSize?:string,type?:string,color?:string}) => {
+  console.log({type,img,color})
   return (
-    <>
-    {type ==="color" ? 
+    <IconContext.Provider
+      value={{ color: color ?? '#D2D3E0', size: fontSize ?? "20px" }}
+    >
+ {type ==="color" ? 
        <div style={{width:"8px",height:"8px",borderRadius:"50%", background:img}} /> :
     
-    img ==="BiDotsHorizontalRounded" ? <BiDotsHorizontalRounded size={fontSize ?? "20px"} /> :
-     img === "GrStatusInfo" ? <GrStatusInfo size={fontSize ?? "20px"} color="white" /> :
-     img === "BsFillBarChartFill" ? <BsFillBarChartFill size={fontSize ?? "20px"} /> :
-     img === "BsBarChart" ? <BsBarChart size={fontSize ?? "20px"} /> :
-     img === "FiBarChart" ? <FiBarChart size={fontSize ?? "20px"} /> :
-     img === 'FaRegUserCircle' ? <FaRegUserCircle size={fontSize ?? "20px"}/> :
-        img === 'MdLabel' ? <MdLabel size={fontSize ?? "20px"}/> : 
-        img==="BsFillBarChartFill" ? <BsFillBarChartFill size={fontSize ?? "20px"}/> : 
-        img==="FaDotCircle" ? <FaDotCircle  size={fontSize ?? "20px"} />:
-        img === "BiCircle" ? <BiCircle size={fontSize ?? "20px"}/> :
-        img === "TbCircleDotted" ? <TbCircleDotted size={fontSize ?? "20px"}/> :
-        img === "AiOutlineCheckCircle" ? <AiOutlineCheckCircle size={fontSize ?? "20px"}/> :
-        img === "MdOutlineCancel" ? <MdOutlineCancel size={fontSize ?? "20px"}/> :
-        img === "BsCalendar2" ? <BsCalendar2 size={fontSize ?? "20px"}/> :
+    img ==="BiDotsHorizontalRounded" ? <BiDotsHorizontalRounded /> :
+     img === "GrStatusInfo" ? <GrStatusInfo color="white" /> :
+     img === "BsFillBarChartFill" ? <BsFillBarChartFill /> :
+     img === "BsBarChart" ? <BsBarChart /> :
+     img === "FiBarChart" ? <FiBarChart /> :
+     img === 'FaRegUserCircle' ? <FaRegUserCircle/> :
+        img === 'MdLabel' ? <MdLabel/> : 
+        img==="BsFillBarChartFill" ? <BsFillBarChartFill/> : 
+        img==="FaDotCircle" ? <FaDotCircle  />:
+        img === "BiCircle" ? <BiCircle/> :
+        img === "TbCircleDotted" ? <TbCircleDotted/> :
+        img === "AiFillCheckCircle" ? <AiFillCheckCircle /> :
+        img === "MdOutlineCancel" ? <MdOutlineCancel/> :
+        img === "BsCalendar2" ? <BsCalendar2/> :
     
        
         
@@ -35,7 +39,9 @@ const CustomIcon = ({img,fontSize,type}:{img?:string,fontSize?:string,type?:stri
 
 
     }
-    </>
+
+    </IconContext.Provider>
+   
   )
 }
 

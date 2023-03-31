@@ -10,6 +10,8 @@ display:flex;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+z-index:10;
+position:relative;
 
 & >div{
   font-size:20px;

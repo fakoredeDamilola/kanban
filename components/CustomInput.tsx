@@ -17,7 +17,7 @@ resize: none;
 ::placeholder{
     color:${({color})=>color};
     font-size:${({fontSize})=>fontSize};
-    font-weight:${({fontWeight})=>fontWeight};
+    font-weight:600;
 opacity:0.7;
 }
     color:${({color})=>color};
@@ -46,8 +46,9 @@ line-height:1;
     font-size:${({fontSize})=>fontSize};
 ::placeholder{
     color:${({color})=>color};
-    font-size:${({fontSize})=>fontSize};
-    font-weight:${({fontWeight})=>fontWeight};
+    font-size:12px;
+    opacity:0.5;
+    font-weight:300;
 }
 }
   

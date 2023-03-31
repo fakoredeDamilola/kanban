@@ -23,7 +23,7 @@ const Toggler = styled.div<{showSideNav:boolean}>`
   height:48px;
   font-weight: 500;
   border-radius: 10px;
-  z-index:999;
+  z-index:9;
   cursor:pointer;
   transition:1s all ease;
   margin:0 auto;

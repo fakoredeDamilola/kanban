@@ -1,7 +1,27 @@
+import { useMutation } from '@apollo/client'
+import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
+import { RESEND_OTP } from '../../graphql/mutation'
 import CenteredLogo from '../Home/CenteredLogo'
+import Timer from '../Timer'
+
+const InputVariants = {
+    hidden:{
+      opacity:0,
+      y:"-10vh"
+    },
+    visible:{
+      opacity:1,
+      y:0,
+      transition:{
+        duration:1,
+        delay:2,
+        ease: "easeIn",
+      }
+    }
+  }
 
 const NavWrapper = styled.div`
    display: flex;
@@ -24,6 +44,14 @@ const Content = styled.div`
         margin:10px;
     }
 `
+const Resend = styled.div`
+    display:flex;
+    gap:5px;
+    margin:15px;
+    align-items:center;
+    flex-direction:column;
+    color:#848598;  
+`
 const Footer = styled.div`
 
 margin:50px 0;
@@ -42,14 +70,14 @@ margin:50px 0;
     }
 `
 const CodeInput = styled.div<{displayInput:boolean}>`
-    border-top: 1px solid white;
+    border-top: 1px solid #666BE1;
   padding:10px 0;
   /* visibility:${({displayInput}) => !displayInput ? "hidden" : "visible"}; */
   display:${({displayInput}) => !displayInput ? "none" : "block"};
   opacity:${({displayInput}) => !displayInput ? "0" : "1"};
   height: ${({displayInput}) => !displayInput ? "0" : "auto"};
   transition:all 0.3s;
-  width:100%;
+  width:${device.mobileS ? "340px" : "100%"};
   & >input {
     width:100%;
     text-align:center;
@@ -83,11 +111,39 @@ const Error = styled.div<{showError:boolean}>`
    font-size:12px;
    padding-top:10px;
 `
+const LinkDiv = styled.div`
+    cursor: pointer;
+    color:#666BE1;
+    font-size:12px;
+      transition:0.3s all;
+    &:hover{
+      color:#848598; 
+    }
+`
 
 
 const VerifySignupEmail = ({email,codeInput,setCodeInput,submitCode}:{email:string,codeInput:string;setCodeInput:any;submitCode:()=>void}) => {
+
+const [resendOTP,{data,error,loading}] = useMutation(RESEND_OTP,{
+    variables:{
+        input:{
+            email:email
+        }
+    }
+})
+
+console.log({data,error,loading})
+
     const [showError,setShowError] = useState(false)
     const [displayInput,setDisplayInput] = useState(false)
+    const [showTimer,setShowTimer] = useState(false)
+
+    const updateUI = ()=>{
+        setShowTimer(!showTimer)
+    }
+    const resendCode = async ()=>{
+       await resendOTP()
+    }
   return (
     <NavWrapper>
         <CenteredLogo size={70} text="Check your email" padding='30px 0' />
@@ -96,8 +152,9 @@ const VerifySignupEmail = ({email,codeInput,setCodeInput,submitCode}:{email:stri
             <p>please check your inbox at <b>{email}</b></p>
         </Content>
         <Footer>
-            <CodeInput displayInput={displayInput}>
+            <CodeInput as={motion.div} displayInput={displayInput} variants={InputVariants} initial="hidden" animate="visible">
             <input 
+            onFocus={()=>setShowError(false)}
   value={codeInput}
   onChange={(e)=>setCodeInput(e.target.value)}
 />
@@ -105,11 +162,28 @@ const VerifySignupEmail = ({email,codeInput,setCodeInput,submitCode}:{email:stri
 <button onClick ={()=>{
    
         // submit code
-        submitCode()
+        if(codeInput){
+            submitCode()
+        }else{
+            setShowError(true)
+        }
+        
 
 }}>
     Continue with login code
 </button>
+<Resend>
+  
+  {!showTimer ? 
+  <>
+   <div>A new code in </div> 
+  <Timer secs='300' updateUI={updateUI} /> 
+  </>
+  :
+  <LinkDiv onClick={resendCode}>Resend code</LinkDiv>
+  }
+</Resend>
+
             </CodeInput>
             <p onClick={()=>{
                 if(!displayInput){

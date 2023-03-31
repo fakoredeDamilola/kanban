@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import React from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
@@ -17,7 +18,7 @@ const MainBox = styled.div`
 `
 const Container = styled.div`
     width:100%;
-  background-color: #000313;
+  /* background-color: #000313; */
 `
 const MainText = styled.div`
   text-align:center;
@@ -97,17 +98,51 @@ const InviteBtn = styled.div`
     cursor:pointer;
   }
 `
+
+
+const initialVariants = {
+  hidden: {
+    y: -100,
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
+const mainVariants = {
+  hidden: {
+    opacity: 1,
+  },
+  visible: {
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
 const InviteCoWorkers = ({setOnboardingScreen,submitCoworkers,coWorkerValue,setCoWorkerValue}:{setOnboardingScreen:any,coWorkerValue:string;submitCoworkers:any;setCoWorkerValue:any}) => {
   return (
-     <Container>
+     <Container variants={mainVariants} as={motion.div} initial="hidden" animate="visible">
           <Wrapper >
      
-    <MainText>
+    <MainText as={motion.div}  variants={initialVariants}   transition={{
+      duration: 0.15,
+      ease: "easeOut",
+      
+    }}>
        <h1>Invite co-workers to your team</h1>
    <p>Kanban is meant to be used with your team. Invite some co-workers to test it out with.</p>
    </MainText>
- <MainBox>
-  <TextArea>
+ <MainBox  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.3
+    }}>
+  <TextArea >
     Email
     <textarea
     placeholder='email@example.com, email2@example.com...'
@@ -121,8 +156,12 @@ Send Invite
 </button>
  </InviteBtn>
  </MainBox>
- <ButtonDiv>
-   <button onClick ={()=>{setOnboardingScreen("GOOD_TO_GO")}}>
+ <ButtonDiv  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.6
+    }}>
+   <button  onClick ={()=>{setOnboardingScreen("GOOD_TO_GO")}}>
 Continue
 </button>
  </ButtonDiv>

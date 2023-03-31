@@ -26,7 +26,8 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   padding:0 10px;
   padding-top: 20px;
   box-sizing:border-box;
-  background-color: ${({theme}) => theme.sidenav};
+  background-color: ${({theme}) => theme.background};
+  border-right: 1px solid ${({theme}) => theme.border};
   width:250px;
   color: ${({theme}) => theme.primary};
   max-height:100%;
@@ -89,16 +90,6 @@ const NavBoards = styled.div`
     margin: 20px;
     margin-top:50px;
   
-`
-const Logo= styled.div`
-  padding:0 20px;
-  box-sizing:border-box;
-  display:flex;
-  & div{
-    font-size:25px;
-    margin-left:10px;
-    margin-top:-5px;
-  }
 `
 const WorkspaceInfo = styled.div`
   display:flex;

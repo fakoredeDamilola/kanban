@@ -18,6 +18,7 @@ import { setNewBoardModal } from "../../state/display";
 import TaskPageView from "./TaskPageView";
 import { useMutation } from "@apollo/client";
 import { CREATE_NEW_TASK } from "../../graphql/mutation";
+import styled from "styled-components";
 
 
 export default function ViewAreaIndex({margin,tasks,user,type}:{margin?:string,tasks:ITaskCards[],user?:IMembers,type?:string}) {
@@ -52,6 +53,12 @@ const closeNewBoardModal = () => {
   }
   
 }
+
+const Container = styled.div`
+background:red;
+  height:100%;
+  max-height:100%;
+`
 const created = useSelector((state:RootState)=>state.board.user)
 const createdby = {
   name:created.name,
@@ -164,7 +171,7 @@ const newTask = (currentBar:IBarContent) =>{
 
 
   return (
-   <>
+   <Container>
    
     <DndProvider backend={HTML5Backend}>
  <TaskPageView 
@@ -209,7 +216,7 @@ draggable
 pauseOnHover
 theme="dark"
 />
-   </>
+   </Container>
    
  
   

@@ -128,6 +128,8 @@ width:95%;
 `
 const SectionModal = styled.section`
   width: 96%;
+  
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 16px 70px;
   @media ${device.mobileM} {
     width: 70%;
   }

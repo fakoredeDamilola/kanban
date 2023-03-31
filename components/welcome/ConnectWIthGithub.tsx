@@ -4,6 +4,7 @@ import { GrCheckmark } from 'react-icons/gr'
 import { IconContext } from 'react-icons/lib'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
+import {motion} from 'framer-motion'
 
 
 const MainBox = styled.div`
@@ -20,12 +21,13 @@ const MainBox = styled.div`
 `
 const Container = styled.div`
     width:100%;
-  background-color: #000313;
 `
 const GitInfo = styled.div`
   width:90%;
   margin: 0 auto;
-  margin-bottom:30px;
+ padding:15px 0;
+  border-bottom:1px solid ${({theme})=>theme.borderColor};
+  font-size:12px;
   display:flex;
   gap:20px;
   align-items:center;
@@ -75,49 +77,100 @@ const Aside = styled.div`
 cursor:pointer;
     font-size:14px;
     color:#666;
+    
     padding:30px 0;
 `
+
+const initialVariants = {
+  hidden: {
+    y: -100,
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
+const mainVariants = {
+  hidden: {
+    opacity: 1,
+  },
+  visible: {
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
+
 const ConnectWIthGithub = ({setOnboardingScreen } : {setOnboardingScreen:any} ) => {
   return (
      <Container>
-          <Wrapper >
-        <IconContext.Provider
+          <Wrapper variants={mainVariants} as={motion.div} initial="hidden" animate="visible">
+      <motion.div variants={initialVariants}   transition={{
+      duration: 0.15,
+      ease: "easeOut",
+      
+    }}>
+          <IconContext.Provider
       value={{ color: 'white', size: '70px' }}
     >
 
         <AiFillGithub  />
         </IconContext.Provider>
-    <MainText>
+      </motion.div>
+      
+    <MainText variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.3
+    }}>
        <h1>Connect with Github</h1>
    <p>Automate issue workflow when  Github pull requests are opened and merged.</p>
    </MainText>
- <MainBox>
- <IconContext.Provider
-      value={{ color:"#666BE1",size:"20px" }}
-    >
-  <GitInfo>
+ <MainBox  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.6
+    }}>
 
-    <GrCheckmark/>
-    <div>Kanban links the issue and the GitHub pull request automatically </div>
+      <div>
+        {[
+      "Kanban links the issue and the GitHub pull request automatically ",
+      "Kanban syncs the issue status when a pull request is opened,closed, merged or, reverted",
+      "Kanban will not ask for code read permissions "
+    ].map((gitItem,index)=>{
+      return (
+        <GitInfo>
+    <GrCheckmark  color="#666BE1" size="15px"/>
+    <div>{gitItem}</div>
   </GitInfo>
-  <GitInfo>
-    <GrCheckmark />
-    <div>Kanban syncs the issue status when a pull request is opened,closed, merged or, reverted </div>
-  </GitInfo>
-  <GitInfo>
-    <GrCheckmark />
-    <div>Kanban will not ask for code read permissions </div>
-  </GitInfo>
- </IconContext.Provider>
+      )
+      
+    })}
+   
+      </div>
+    
  
  </MainBox>
- <ButtonDiv>
+ <ButtonDiv  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.9
+    }}>
    <button onClick ={()=>{}}>
 Authenticate with Github
 </button>
  </ButtonDiv>
 
- <Aside onClick={()=>{setOnboardingScreen("INVITE_COWORKERS")}}>
+ <Aside variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:1.2
+    }} onClick={()=>{setOnboardingScreen("INVITE_COWORKERS")}}>
     I'll do this later
  </Aside>
  

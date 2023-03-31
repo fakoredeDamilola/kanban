@@ -7,8 +7,7 @@ import BoardSwitchbutton from "../BoardSwitchbutton"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
- 
-  background-color: ${({theme}) => theme.nav};
+ background-color: ${({theme}) => theme.background};
   justify-content:space-between;
   align-items:center;
   padding:0px 20px;

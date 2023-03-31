@@ -65,6 +65,50 @@ mutation VerifyUserRecord($input: RegisterInput) {
   verifyUserRecord(input: $input) {
     ... on RegisterSuccessResponse {
       status
+      token
+      user {
+        name
+        email
+        workspaces {
+          id
+        }
+        created_workspaces {
+          id
+        }
+        image
+        username
+      }
+    }
+    ... on RegisterFailResponse {
+      field
+      message
+      status
+    }
+    ... on VerifyRecordSuccess {
+      status
+      message
+    }
+  }
+}
+`
+export const RESEND_OTP = gql`
+mutation resendOTP($input: ResendOTPInput) {
+  resendOTP(input: $input) {
+    ... on RegisterSuccessResponse {
+      status
+      token
+      user {
+        name
+        email
+        workspaces {
+          id
+        }
+        created_workspaces {
+          id
+        }
+        image
+        username
+      }
     }
     ... on RegisterFailResponse {
       field
@@ -99,41 +143,30 @@ mutation AddNewMembersToWorkspace($input: newMembersInput) {
 `
 
 export const CREATE_NEW_WORKSPACE = gql`
-mutation CreateNewWorkspace($input:workspaceInput){
+mutation createNewWorkspace($input:workspaceInput){
   createNewWorkspace(input: $input){
     ...on WorkspaceSuccess{
       status
       workspace {
-      name
-      URL
-      _id
-      owner {
-        email
         id
-
-      }
-      taskID
-      totalMembers
-      totalTasks
-      members {
         _id
-      }
-      subItems {
+        URL
         name
-        items {
-          email
-          id
-          type
-
+        members {
+          _id
+          joined
         }
-        selected {
+        subItems {
           email
-          id
-          img
-
+          icon
+          items {
+            email
+            img
+            name
+            _id
+          }
         }
       }
-    }
     }
     ... on GeneralErrorResponse{
       status
@@ -146,21 +179,60 @@ mutation CreateNewWorkspace($input:workspaceInput){
 export const CREATE_NEW_TASK = gql`
 mutation createNewTask($input:createTaskInput){
   createNewTask(input:$input){
-    ... on CreateTaskSuccessResponse{
-      status 
+    ... on CreateTaskSuccessResponse {
+      status
       task {
+        _id
         issueTitle
         issueDescription
-        _id
+        workspaceURL
+        workspaceID
+        dueDate
+        activities {
+            description
+            icon
+            nameOfActivity
+            color
+            name
+            createdby {
+              _id
+              name
+              email
+              img
+              type
+              id
+              username
+            }
+          }
+        status {
+          _id
+          name
+          email
+          img
+          type
+          id
+          username
+        }
+        priority {
+          name
+        }
+        others {
+          name
+        }
+        label {
+         name 
+        }
+        assigned {
+         name 
+        }
+        assignee {
+          name
+        }
+        createdBy {
+          name
+        }
+        imgURLArray
       }
-    }
-    ... on CreateTaskFailResponse{
-      status
-      message
-      field
-    }
-    ... on GeneralErrorResponse{
-      message
     }
   }
 }

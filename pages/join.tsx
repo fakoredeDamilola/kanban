@@ -14,6 +14,8 @@ const [workspaceURL,setWorkspaceURL] = useState("")
 const {user} = useSelector((state:RootState)=>state.board)
 const dispatch = useDispatch()
 const router = useRouter()
+const [errorTableWorkspace,setErrorTableWorkspace] = useState([])
+const [disableWorkspaceBtn,setDisableWorkspaceBtn] = useState(false)
 
     const createNewWorkspace = () => {
         const newWorkspace: IWorkspace = {
@@ -50,6 +52,10 @@ const router = useRouter()
 
   return (
     <CreateWorkspace 
+    errorTableWorkspace={errorTableWorkspace}
+    setErrorTableWorkspace={setErrorTableWorkspace}
+    disableWorkspaceBtn={disableWorkspaceBtn}
+    setDisableWorkspaceBtn={setDisableWorkspaceBtn}
     email={user.email}
     createNewWorkspace={createNewWorkspace}
     workspaceName={workspaceName} 

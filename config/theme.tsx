@@ -6,8 +6,6 @@ export const lightTheme = {
   body:"#F4F7FD",
   other:"#F4F7FD",
   sidenav:"#FFFFFF",
-  background:"#E4EBFA",
-  button:"#635FC7",
   secondary:"#A8A4FF",
   nav:"#fff",
   white:"#fff",
@@ -16,16 +14,23 @@ export const lightTheme = {
   secondaryColor:"#828FA3",
   secondButton:"rgba(99, 95, 199, 0.1)",
   cardHover:"",
-  color1:"#323435"
+  color1:"#323435",
+
+  modalBackground:"#1D1E2B",
+  headingColor:"#ACADBA",
+  otherColor:"#858699",
+  transparent:"transparent",
+  button:"#635FC7",
+  background:"#E4EBFA",
+  dropdownButton:"#323343",
+  icon1:"#D2D3E0"
 }
 
 export const darkTheme = {
   primary:"#fff",
   body:"#20212C",
   sidenav:"#2B2C37",
-  background:"#20212C",
   other:"#20212C",
-  button:"#635FC7",
   secondary:"#3E3F4E",
   nav:"#2B2C37",
   white:"#fff",
@@ -34,7 +39,16 @@ export const darkTheme = {
   secondaryColor:"#828FA3",
   secondButton:"#fff",
   cardHover:"#1D1E2B",
-  color1:"#323435"
+  color1:"#323435",
+
+  modalBackground:"#1D1E2B",
+  headingColor:"#ACADBA",
+  otherColor:"#858699",
+  transparent:"transparent",
+  button:"#635FC7",
+  background:"#191A23",
+  dropdownButton:"#323343",
+  icon1:"#D2D3E0"
 }
 
 export const fontSize ={
@@ -63,7 +77,7 @@ export const view = "grid"
 export const GlobalStyles = createGlobalStyle`
     html,body,#__next{
             height:100%;
-            max-height:100%;
+            min-height:100%;
             box-sizing: border-box;
             background-color:black;
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -71,7 +85,8 @@ export const GlobalStyles = createGlobalStyle`
         }
         /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
+  height: 8px;;
 }
 
 /* Track */

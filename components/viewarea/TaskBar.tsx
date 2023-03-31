@@ -10,7 +10,7 @@ import { ITaskbar } from './IViewrea';
 const TaskBarStyle = styled.div<{view:string}>`
   width:100%;
   border-radius:0px;
-   height:40px;
+   height:20px;
    color:${({theme}) => theme.primary};
    margin:0;
    
@@ -18,7 +18,7 @@ const TaskBarStyle = styled.div<{view:string}>`
    display:flex;  
    justify-content:space-between; 
    align-items:center;
-   padding:0 5px;
+   padding:0px;
    & > div {
         display:flex;
         & > div:last-child{
@@ -54,7 +54,7 @@ const Plus = styled.div`
     display:flex;
     gap:10px;
   `
-const TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
+const   TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
   return (
     <TaskBarStyle view={view}>
       <div>

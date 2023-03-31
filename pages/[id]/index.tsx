@@ -9,6 +9,18 @@ import { FETCH_WORKSPACE } from "../../graphql/queries";
 import { useLazyQuery } from "@apollo/client";
 import { IBoard, setCurrentWorkspace } from "../../state/board";
 import LoadingPage from "../../components/LoadingPage";
+import styled from "styled-components";
+
+
+const Container = styled.div`
+  min-height:100%;  
+  height:100%;
+`
+const Cover = styled.div`
+  background-color:${({theme}) => "blue"};
+  min-height:100%;
+  height:100%;
+`
 
  function Home() {
     const router = useRouter()
@@ -36,6 +48,8 @@ import LoadingPage from "../../components/LoadingPage";
         }
         dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
         setWorkspace(workspace)
+      }else{
+      //  router.push("/")
       }
      
     },[data])
@@ -72,16 +86,20 @@ import LoadingPage from "../../components/LoadingPage";
   },[currentWorkspace,router.query])
 
   return (
-    <>
-       <Navbar /> 
+    <Cover>
+      {/* <LoadingPage /> */}
        
-       {loading ? <LoadingPage /> :
-        workspace && <ViewAreaIndex 
+       {loading || !workspace ? <LoadingPage /> :
+        workspace &&  
+        <Container>
+        <Navbar /> 
+        <ViewAreaIndex 
           tasks={workspace.taskID}
           />
+          </Container>
        }
   
-    </>
+    </Cover>
 
   )
 }

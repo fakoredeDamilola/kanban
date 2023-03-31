@@ -1,12 +1,14 @@
+import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
+import CustomInput from '../CustomInput'
 
 const Container = styled.div`
   width:100%;
   min-height:100%;
   padding-top:30px;
-  background-color: #000313;
+  /* background-color: #000313; */
 `
 const EmailBox = styled.div`
   & p:first-child {
@@ -125,10 +127,12 @@ width:100%;
         background-color:#666BE1;
         border-radius:6px;
         cursor:pointer;
-         
+        transition:0.3s all; 
      margin:0 auto;
      width:90%;
-        
+        &:hover{
+    box-shadow: 20px -3px 72px 1px rgba(79,82,180,0.75);
+  }     
  }
 `
 const EmailInfo = styled.div`
@@ -141,26 +145,62 @@ const EmailInfo = styled.div`
 `
 const InputText = styled.div`
   position:absolute;
-top:0;
+top:5px;
   left:0px;
   display:flex;
   justify-content:center;
+  font-size:14px;
   align-items:center;
   padding-left:10px;
   color:#666;
   height:45px;
 `
 
-const CreateWorkspace = ({workspaceName,workspaceURL,setWorkspaceURL,setWorkspaceName,createNewWorkspace,email}:{
+const textVariants = {
+  hidden: {
+     y:'-100vh',
+     opacity:0
+  },
+  visible:{
+    opacity:1,
+    y:0,
+    transition:{
+      type:'spring',
+      // stiffness:320,
+      // staggerChildren:0.4
+    }
+  }
+}
+
+const modalVariants = {
+  hidden:{
+      y:"-100vh",
+      opacity:0,
+  },
+  visible:{
+      y:0,
+      opacity:1,
+      transition:{delay:0.5}
+  }
+}
+
+const CreateWorkspace = ({workspaceName,workspaceURL,setWorkspaceURL,setWorkspaceName,createNewWorkspace,email,errorTableWorkspace,setErrorTableWorkspace,disableWorkspaceBtn,setDisableWorkspaceBtn}:{
   workspaceName:string;
   email:string;
   setWorkspaceName:React.Dispatch<React.SetStateAction<string>>;
   workspaceURL:string;
   setWorkspaceURL:React.Dispatch<React.SetStateAction<string>>;
   createNewWorkspace:() => void;
+  errorTableWorkspace:string[];
+  setErrorTableWorkspace:any;
+  disableWorkspaceBtn:boolean;
+  setDisableWorkspaceBtn:React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   
 const [controlInput,setControlInput] = useState(true)
+
+const [errorTable,setErrorTable] = useState<Array<string>>([])
+const [disableButton,setDisableButton] = useState(false)
   return (
     <Container>
       <EmailInfo>
@@ -174,38 +214,67 @@ const [controlInput,setControlInput] = useState(true)
       </EmailInfo>
        
         <Wrapper>
-           <MainText>
+           <MainText as={motion.div} variants={textVariants} initial="hidden" animate="visible">
               <h1>Create a new workspace</h1>
           <p>Workspaces are shared environments where teams can work on projects,cycles and tasks</p>
           </MainText>
-        <MainBox>
+        <MainBox as={motion.div} variants={modalVariants} initial="hidden" animate="visible">
          
         
         <InputBoxName>
         <p>Workspace Name</p>
-        <input 
-  value={workspaceName}
-  name="workspaceName"
-  onChange={(e)=>{
-    setWorkspaceName(e.target.value)
+        <CustomInput
+        fontSize='14px'
+        color="white"
+        fontWeight={700}
+        setTextValue={()=>null}
+        placeholder='Enter your workspaceName'
+        type="string"
+        input="text"
+        name="workspaceName"
+        isError={errorTable.includes("workspaceName")}
+        error ={errorTable.includes("workspaceName") ? "Put enter a workspaceName" : ""}
+        setErrorTable={setErrorTable}
+        textvalue={workspaceName}
+        changeInput={(value,name)=>{
+            setWorkspaceName(value)
     if(controlInput){
-    setWorkspaceURL(e.target.value)
+    setWorkspaceURL(value)
     }
-  }}
-/>
+        }}
+        errors={["required"]}
+        />
+      
         </InputBoxName>
         <InputBox>
         <p>Workspace URL</p>
         <div>
-             <input 
-    
+             {/* <input 
   value={workspaceURL}
-  onFocus={()=>{
-    setControlInput(false)
-  }}
+ 
   onChange={(e)=>setWorkspaceURL(e.target.value)}
   name="workspaceURL"
-/>
+  
+/> */}
+ <CustomInput
+        fontSize='14px'
+        color="white"
+        fontWeight={700}
+        setTextValue={()=>null}
+        placeholder='Enter your workspaceURL'
+        type="string"
+        input="text"
+        name="workspaceURL"
+        isError={errorTable.includes("workspaceURL")}
+        error ={errorTable.includes("workspaceURL") ? "Put enter a workspaceURL" : ""}
+        setErrorTable={setErrorTable}
+        textvalue={workspaceURL}
+        changeInput={(value,name)=>{
+          setWorkspaceURL(value)
+          setControlInput(false)
+        }}
+        errors={["required"]}
+        />
 <InputText>
 https://linear.app/
 </InputText>

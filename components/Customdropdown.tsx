@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 `
 const Dropdown = styled.div<{top?:string;left?:string;bottom:string}>`
 border: 0.5px solid ${({theme})=>theme.border};
-    background-color:${({theme}) => theme.body};
+    background-color:${({theme}) => theme.dropdownButton};
     position:absolute;
     top:${({top})=> top ?? "-300%"};
     left:${({left})=> left ?? "0%"};

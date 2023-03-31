@@ -23,9 +23,8 @@ const NavWrapper = styled.div`
   flex-wrap: nowrap;
   box-sizing:border-box;
   align-items:center;
-  height:100%;
-  max-height:100%;
-  background-color: #000313;
+  min-height:100%;
+  background-color: ${({theme}) => theme.background};
   min-width:100%;
   padding-top:10px;
  
@@ -108,6 +107,7 @@ const router = useRouter()
   
   return (
     <NavWrapper>
+      
         {onboardingScreen === ONBOARDING_SCREEN.WELCOME_SCREEN ?
     <WelcomeScreen onboardingScreen={onboardingScreen} setOnboardingScreen={setOnboardingScreen}  /> :
     onboardingScreen === ONBOARDING_SCREEN.CONNECT_WITH_GITHUB ?

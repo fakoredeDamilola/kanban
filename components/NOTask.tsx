@@ -11,7 +11,7 @@ const NoTask = styled.div`
   font-size:20px;
   font-weight:600;
   margin:0 auto;
-  background: #191A23;
+  background: ${({theme}) => theme.modalBackground};
   /* allign div to center */
   width:90%; 
   padding:40px;
@@ -22,11 +22,12 @@ const NoTask = styled.div`
   h3{
     font-size:25px;
     margin-bottom:20px;
+    color: ${({theme}) => theme.headingColor};
   }
   p{
     font-size:14px;
     margin: 20px 0;
-    color:#c4c0c0;
+    color:${({theme}) => theme.otherColor};
   }
   @media ${device.mobileS} {
   width:400px;
@@ -48,8 +49,8 @@ const NOTask = () => {
   return (
     <NoTask>
         <IconFlex>
-        {["TbCircleDotted","BiCircle","FaDotCircle","AiOutlineCheckCircle"].map((item, index) => (
-            <CustomIcon key={index} img={item} fontSize="40px" />
+        {[{icon:"BiCircle",color:"#4C4F6B"},{icon:"FaDotCircle",color:"#B19442"},{icon:"AiFillCheckCircle",color:"white"}].map((item, index) => (
+            <CustomIcon key={index} img={item.icon} color={item.color} fontSize="40px"  />
             ))
 
         }
@@ -59,7 +60,7 @@ const NOTask = () => {
       <p>All Issues in the place where you can see all of your team's work in one view</p>
       <p>Once you have created some issues for your team, they will show up here</p>
     </div>
-    <CustomButton background="button" color="white" onClick={openAddModal} hover="border" width="180px">Create a new issue</CustomButton>
+    <CustomButton background="button" color="white" onClick={openAddModal} hover="border" width="30px">Create new task</CustomButton>
    </NoTask>
   )
 }

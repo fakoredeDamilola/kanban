@@ -16,26 +16,33 @@ const NavWrapper = styled.div`
   height:100%;
   max-height:100%;
   /* background-color: #000313; */
-  background-image: linear-gradient(to right, #14143693, #4b00e029);
-  /* background-image:linear-gradient(92.88deg, rgb(69, 94, 181) 9.16%, rgb(86, 67, 204) 43.89%, rgb(103, 63, 215) 64.72%); */
+  background: radial-gradient(100% 100% at 50% 0%, #011628 0%, #001120 100%);
+ 
+  @media ${device.mobileM} {
+     &::before{
+    content:"";
+    position: absolute;
+width: 800px;
+margin:0 auto;
+height: 800px;
+left: 201px;
+top: -400px;
+border-radius:50%;
+background: #01111E;
+box-shadow: 0px 4px 50px rgba(7, 97, 169, 0.1);
+  }
+  }
   min-width:100%;
 
   
 `
 const H1 = styled.div`
- font-size:40px;
+ font-size:30px;
  font-weight:500;
  background-color: #4f4f738b;
-  
-  /* Create the gradient. */
   background-image: linear-gradient(45deg, #fffeff, #4f4f738b);
-  
-  /* Set the background size and repeat properties. */
   background-size: 100%;
   background-repeat: repeat;
-
-  /* Use the text as a mask for the background. */
-  /* This will show the gradient as a text color rather than element bg. */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent; 
   -moz-background-clip: text;
@@ -71,22 +78,23 @@ const Content = styled.div`
 const bodyVariants = {
   hidden:{
     opacity:0,
-    x:'-100vw'
+    y:'-10vh'
   },
   visible:{
     opacity:1,
-    x:0,
+    y:0,
     transition:{
-      duration:2,
+      duration:0.5,
       type:'spring',
-      stiffness:120,
+      ease:'easeOut'
+      // stiffness:120,
     }
   }
 }
 
 const textVariants = {
   hidden: {
-     y:'-100vh',
+     y:'-15vh',
      opacity:0
   },
   visible:{
@@ -94,8 +102,9 @@ const textVariants = {
     y:0,
     transition:{
       type:'spring',
-      delay:0.5,
-      stiffness:320,
+      ease:'easeOut',
+      delay:0.2,
+      // stiffness:320,
       // staggerChildren:0.4
     }
   }
@@ -110,15 +119,17 @@ const buttonVariants = {
     y:0,
     transition:{
       type:'spring',
-      delay:1,
-      duration:0.1,
-      ease:'easeInOut'
+      delay:0.4,
+      duration:0.2,
+      ease:'easeOut'
       // staggerChildren:0.4
     }
   }
 }
 
 const HomePage = () => {
+  const cloudName = process.env.NEXT_PBLIC_CLOUDNAME
+  console.log({cloudName})
   return (
     <>
      <Header />
@@ -137,7 +148,6 @@ const HomePage = () => {
          </Link>
          
       </Content>
-   
     
     </NavWrapper>
     </>

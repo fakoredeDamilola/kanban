@@ -6,19 +6,24 @@ import SideNav from './navs/SideNav'
 import Toggle from '../components/Toggle';
 import { darkTheme,lightTheme } from '../config/theme';
 
-
+const Container = styled.div`
+   height:100%;
+  min-height:100%;
+  background-color:red;
+`
 const NavWrapper = styled.div`
    display: flex;
   flex-wrap: nowrap;
   box-sizing:border-box;
   height:100%;
-  max-height:100%;
-  background-color: aqua;
+  min-height:100%;
+  background-color: ${({theme}) => theme.background};
   max-width:100%;
   &>div:last-child{
   width: 100%;
   min-height:100%;
-  overflow-x: scroll;
+  overflow-x: hidden;
+  height:100%;
 
   }
   & >div{
@@ -61,7 +66,7 @@ if(!mountedComponent) return <div/>
     
     <ThemeProvider theme={theme == 'light' ? lightTheme : darkTheme} >
       {token ? 
-      <>
+      <Container>
       <NavWrapper>
            <SideNav />
             <div>
@@ -72,7 +77,7 @@ if(!mountedComponent) return <div/>
        
       </NavWrapper> 
       <Toggle toggleTheme={themeToggler}  theme={theme} />
-      </>
+      </Container>
       :
       <h1 style={{color:"white"}}>no auth</h1>
       }

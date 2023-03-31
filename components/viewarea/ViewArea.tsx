@@ -19,11 +19,12 @@ interface IView {
 const ColumnTask = styled.div<{view:string;isOver:boolean}>`
     flex-shrink: 0;
     /* background-color:${({theme,isOver})=> isOver ? theme.color1 : "transparent"}; */
-    background-color:red;
+  
+   margin-top:10px;
     flex:1;
     overflow-y: auto;
     overflow-x:hidden;    
-    max-height:100%;
+    height:100%;
     min-height:100%; 
     width:${({view}) => view==="list" ? "100%" : "330px"};
     box-sizing:border-box;

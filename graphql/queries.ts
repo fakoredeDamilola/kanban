@@ -97,12 +97,12 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         icon
         tooltip
         text
-        
         items {
           name
           img
           email
           _id
+        type
         }
         selected {
           name

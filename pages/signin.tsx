@@ -47,24 +47,21 @@ const dispatch = useDispatch()
 const router = useRouter()
 
 
-const [login,{data,loading,error}] = useMutation(
-  LOGIN, {
+const [login,{data,loading,error}] = useMutation(LOGIN)
+
+const signinWithOAuth =async  (data:any) =>{
+ console.log({data})
+  await login( {
     variables : {
       input:{
-        email:signinObj.email,
-        password:signinObj.password,
+        email:data.email,
+        password:data.id,
       }
     }
-  }
-)
-
-
-useMemo(()=>{
-if(data?.login?.status){
+  })
 }
 
 
-},[data])
 if(data?.login?.status){
   storeDataInLocalStorage("token",data?.login?.token) 
   dispatch(setCurrentUser({user:data?.login?.user})) 
@@ -92,14 +89,22 @@ const handleInput = (name:string,value:string) => {
 }
 
 const loginUser = async () => {
-    await login()
+    await login({
+      variables : {
+        input:{
+          email:signinObj.email,
+          password:signinObj.password,
+        }
+      }
+    })
 }
 
   return (
     <NavWrapper>
      <>
       <CenteredLogo size={70} text="Signin to your kanban account" />
-        <SignupButtons 
+        <SignupButtons
+        signupWithOAuth={signinWithOAuth} 
         handleInput={handleInput}
         errorTable={errorTable}
         setErrorTable={setErrorTable}

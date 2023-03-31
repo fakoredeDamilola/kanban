@@ -99,6 +99,7 @@ const FooterMenu = ({item}:IFooter) => {
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
+  console.log({item})
   const selectItem = (name:any,event:any,item:Item) => {
     item.type !== "color" && setIsOpen(false)
     dispatch(selectSubItems({name,item}))
@@ -115,9 +116,9 @@ const FooterMenu = ({item}:IFooter) => {
     checkBox={true}
     >
     <FooterWrapper onClick={handleButtonClick}>
-       {item.name==="Assigned" && item.selected ? 
+       {item.name==="Assigned" && item.selected.name!=="Assigned" ? 
        <ProfilePicture assigned={item.selected} tooltip={false} size="15px" />
-      : <CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} fontSize="12px"/>} 
+      : <CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} color="#D2D3E0" fontSize="12px"/>} 
      
          {item.text && <FooterIcon>{item.selected.name ?? item.name}</FooterIcon>}
       {item.text && <span>{item.text}<div>{item.name[0]}</div></span>}

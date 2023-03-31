@@ -7,9 +7,9 @@ import { GrDocumentUser } from 'react-icons/gr'
 import { IconContext } from 'react-icons'
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 const Container = styled.div`
     width:100%;
-  background-color: #000313;
 `
 const MainText = styled.div`
   text-align:center;
@@ -100,19 +100,52 @@ const Content = styled.div`
   }
 `
 
+
+const initialVariants = {
+  hidden: {
+    y: -100,
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
+const mainVariants = {
+  hidden: {
+    opacity: 1,
+  },
+  visible: {
+    opacity: 1,
+    // transition: {
+     
+    // },
+  },
+};
 const GoodToGo = ({workspaceID}:{workspaceID:string}) => {
   return (
-    <Container>
+    <Container variants={mainVariants} as={motion.div} initial="hidden" animate="visible">
     <Wrapper >
     
-<MainText>
+<MainText as={motion.div} variants={initialVariants}   transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      
+    }}>
  <h1>You're good to go</h1>
 <p>Next, explore the features and create issues by pressing c when you're in the app.</p>
 </MainText>
 <IconContext.Provider
       value={{ color: 'white', size: '70px' }}
     >
-<GridDiv>
+<GridDiv  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.3
+    }}>
 <Grid>
    <div>
     <HiOutlineUserGroup />
@@ -142,7 +175,11 @@ const GoodToGo = ({workspaceID}:{workspaceID:string}) => {
 </Grid>
 </GridDiv>
 </IconContext.Provider>
-<ButtonDiv>
+<ButtonDiv  variants={initialVariants} as={motion.div}  transition={{
+      duration: 0.3,
+      ease: "easeOut",
+      delay:0.6
+    }}>
     <Link href={`/${workspaceID}`}>
     <button >
 Open Linear

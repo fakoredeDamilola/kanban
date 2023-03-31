@@ -66,7 +66,7 @@ const ProfilePicture = ({assigned,tooltip,size}:{assigned:Item,tooltip:boolean,s
         }
     `
   return (
-  <ProfilePictureStyle color={randomColor()} size={size} tooltip={tooltip}>
+  <ProfilePictureStyle color="#4c33bd" size={size} tooltip={tooltip}>
    
        {
         assigned?.img 
