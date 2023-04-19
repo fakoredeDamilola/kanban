@@ -229,7 +229,6 @@ const AddNewBoard = ({
     try {
       const data = await handleFile(event,input)
 
-      console.log({data},data.secure_url)
       setImgURLArray(prev=>[...prev,data.secure_url])
     }catch(e){
 

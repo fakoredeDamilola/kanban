@@ -54,7 +54,6 @@ const displaySlice = createSlice({
             state.current_signup_page = current
         },
         setModalData:(state,{payload:{modal,modalType,modalMessage}})=>{
-            console.log({modal,modalType,modalMessage})
             state.modal = modal
             state.modalMessage = modalMessage
             state.modalType = modalType

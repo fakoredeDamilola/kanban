@@ -3,7 +3,6 @@ import injectGlobal from 'styled-components';
 
 export const lightTheme = {
   primary:"#000112",
-  body:"#F4F7FD",
   other:"#F4F7FD",
   sidenav:"#FFFFFF",
   secondary:"#A8A4FF",
@@ -23,12 +22,13 @@ export const lightTheme = {
   button:"#635FC7",
   background:"#E4EBFA",
   dropdownButton:"#323343",
-  icon1:"#D2D3E0"
+  icon1:"#D2D3E0",
+  cardBackground:"#1F2130",
+  body:"#14151C"
 }
 
 export const darkTheme = {
   primary:"#fff",
-  body:"#20212C",
   sidenav:"#2B2C37",
   other:"#20212C",
   secondary:"#3E3F4E",
@@ -48,7 +48,9 @@ export const darkTheme = {
   button:"#635FC7",
   background:"#191A23",
   dropdownButton:"#323343",
-  icon1:"#D2D3E0"
+  icon1:"#D2D3E0",
+  cardBackground:"#1F2130",
+  body:"#14151C"
 }
 
 export const fontSize ={

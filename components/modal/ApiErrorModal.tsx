@@ -61,7 +61,6 @@ const ApiErrorModal = () => {
     
 const dispatch = useDispatch()
     const {modal,modalMessage,modalType} =  useSelector((state: RootState) => state.display)
-    console.log({modal})
 const backdrop = {
     visible:{opacity:1},
     hidden: {opacity:0}

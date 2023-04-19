@@ -26,8 +26,8 @@ const TaskCardStyle = styled.div<{isDrag:boolean;view:string}>`
     position:relative;
     border:0px;
 
-    background: ${({theme})=>theme.sidenav};
-    min-height:${({view}) => view==="list" ? "40px" : "130px"};
+    background: ${({theme})=>theme.cardBackground};
+    min-height:${({view}) => view==="list" ? "40px" : "110px"};
     border-radius:${({view}) => view==="list" ? "0%" : "6px"};
     border:${({view,theme}) => view==="list" ? `1px solid ${theme.border}` : "none"};
     border-left:0;
@@ -68,7 +68,7 @@ font-size:${({fontSize})=>fontSize ?? "12px"};
 justify-content:center;
 align-items:center;
 cursor:pointer;
-background-color: ${({theme})=>theme.secondary};
+/* background-color: ${({theme})=>theme.secondary}; */
 border:1px solid ${({theme})=>"#777474"};
 &:hover {
   background: ${({theme})=>theme.cardHover};
@@ -118,14 +118,14 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
   const Portal = usePortal(document.querySelector("#portal"));
 
   const dispatch = useDispatch()
-  const {currentWorkspace,boardsDetails,user} = useSelector((state:RootState)=>state.board)
+  const {currentWorkspace,boardsDetails} = useSelector((state:RootState)=>state.board)
+  const user = useSelector((state:RootState)=>state.user)
   const [openCalenderModal, setOpenCalenderModal] = useState(false)
 
   const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
 
 
   const saveCalenderModal = (e:any,startDate:any) => {
-   console.log(startDate)
     // e.stopPropagation()
     dispatch(changeTaskDueDate({id:card?._id,duedate:startDate}))
     
@@ -134,7 +134,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
             nameOfActivity:card?.dueDate? "changed due date" : "added due date",
            description:card?.dueDate ? `changed due date from ${getTextDate(card?.dueDate)} to ${getTextDate(startDate)}` :startDate ? `set due date ${getTextDate(startDate)}` : "removed due date",
             createdby: {
-              name:user.name,
+              name:user.name ?? "name",
               id:user._id,
               email:user.email
             },
@@ -151,7 +151,6 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     e.stopPropagation()
     setIsPriorityOpen(false)
     setIsFeatureOpen(false)
-    console.log({id,type:priority,name})
     // dispatch(changeTaskPriority({id,type:priority,name}))
     const selectedItem = {
       name:priority.name,
@@ -177,7 +176,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
         // @ts-ignore
         description: `added label`,
         createdby: {
-          name:user.name,
+          name:user.name ?? "name",
           id:user._id,
           email:user.email
         },
@@ -193,7 +192,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       // @ts-ignore
      description: `changed ${name} from ${card[name?.toLowerCase() as keyof typeof card].name} to ${priority.name}`,
      createdby: {
-      name:user.name,
+      name:user.name ??"name",
       id:user._id,
       email:user.email
     },

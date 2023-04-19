@@ -6,7 +6,6 @@ export const useDarkMode = () => {
 
     const setMode =( mode:string) => {
         window.localStorage.setItem('theme', mode)
-        console.log({mode})
         setTheme(mode)
     };
 
@@ -16,7 +15,6 @@ export const useDarkMode = () => {
 
     useEffect(() => {
         const localTheme = window.localStorage.getItem('theme');
-        console.log({localTheme})
         localTheme && setTheme(localTheme)
         setMountedComponent(true)
     }, []);

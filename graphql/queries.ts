@@ -23,6 +23,7 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         totalTasks
         totalMembers
         URL
+        name
         members{
           _id
           name
@@ -85,7 +86,6 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         }
         imgURLArray
       }
-        name
         owner {
         email
         username
@@ -219,4 +219,45 @@ query FetchMember($input: FetchMemberInput) {
   }
 }
 
+`
+
+export const VERIFY_MEMBERS_LINK = gql`
+query verifyMembersLink($input:verifyMembersInput) {
+  verifyMembersLink(input: $input) {
+    ...on InviteSuccess{
+      status
+      workspace {
+        _id
+        id
+        totalTasks
+        totalMembers
+        URL
+        name
+        owner {
+        email
+        username
+        _id
+      }
+      }
+      invite {
+        email
+        inviteToken
+      }
+      user {
+        _id
+        email
+      }
+      
+    }
+    ... on WorkspaceFail {
+      status
+      message
+      field
+    }
+    ... on GeneralErrorResponse {
+      status
+      message
+    }
+  }
+}
 `

@@ -6,6 +6,8 @@ import TaskPage from '../../components/taskpage/TaskPage'
 import { FETCH_TASK, FETCH_WORKSPACE } from '../../graphql/queries'
 import { IBoard, ITaskCards, setCurrentWorkspace } from '../../state/board'
 import { RootState } from '../../state/store'
+import LoadingPage from '../../components/LoadingPage'
+import NoAuth from '../../components/NoAuth'
 
 const SingleTask = () => {
   const [workspace,setWorkspace] = useState<any>()
@@ -18,7 +20,6 @@ const SingleTask = () => {
 
   useEffect(()=>{
     if(router?.query.taskID){
-      console.log(router.query)
        setWorkspace(router.query.taskID)
     setTaskID(router.query.taskID)
     }
@@ -31,7 +32,6 @@ const SingleTask = () => {
         }
     }
   })
-  console.log({data,error,loading})
   useMemo(()=>{
     // if(data?.fetchTask?.status){
         setTask(data?.fetchTask?.task)
@@ -63,7 +63,6 @@ const SingleTask = () => {
   useMemo(()=>{
     if(workspaceData?.fetchWorkspace.status){
       const workspace = workspaceData?.fetchWorkspace.workspace
-      console.log({workspace})
       const boardDetails:IBoard = {
         workspaceID:workspace._id ?? "29",
         workspace:workspace.name,
@@ -83,6 +82,7 @@ const SingleTask = () => {
           setWorkspace(workspace)
         }else {
           fetchWorkspace()
+          
         }
         
     }
@@ -90,16 +90,12 @@ const SingleTask = () => {
 
   const taskList = task?.status?.name
   const taskListLength = currentWorkspace.taskID.filter((task:ITaskCards)=>task.status.name === taskList)
-  if(loading){
-    return <div>
-        <h1>loading</h1>
-    </div>
+  if(loading || workspaceLoading){
+    return <LoadingPage />
   }else if(task && workspace) {
     return <TaskPage taskInfo={task} workspace={workspace} taskListLength={taskListLength} />
   }else if(!task) {
-    return (<div>
-        <h1>task not found</h1>
-    </div>)
+    return (<NoAuth />)
   }
    
 //   return <div>you</div>

@@ -3,7 +3,7 @@ import Image from "next/image"
 
 import { RootState } from "../../state/store"
 import { useDispatch, useSelector } from "react-redux"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import HideSideNav from "../HideSideNav"
 import { device } from "../../config/theme"
 import ProfilePicture from "../ProfilePicture"
@@ -18,6 +18,8 @@ import usePortal from "../../hooks/usePortal"
 import InvitePeopleModal from "../modal/InvitePeopleModal"
 import { ADD_NEW_MEMBERS_TO_WORKSPACE } from "../../graphql/mutation"
 import { useMutation } from "@apollo/client"
+import { NotifyComponent } from "../Notify/Notify"
+import { toast } from "react-toastify"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -88,8 +90,9 @@ const LI = styled.li<{selected: boolean}>`
 `
 const NavBoards = styled.div`
     margin: 20px;
-    margin-top:50px;
-  
+    padding-top:50px;
+    position:relative;
+    height:70%;
 `
 const WorkspaceInfo = styled.div`
   display:flex;
@@ -177,10 +180,13 @@ const InviteButton = styled.div`
   cursor:pointer;
   align-items:center;
   font-size:12px;
+  position:absolute;
+        bottom:5px;
 `
 
 const SideNav = () => {
-  const {currentWorkspace,user} = useSelector((state: RootState) => state.board)
+  const {currentWorkspace} = useSelector((state: RootState) => state.board)
+  const {user} = useSelector((state: RootState) => state)
   const {showSideNav,openNewBoardModal} = useSelector((state: RootState) => state.display)
   
   const [isOpen, setIsOpen] = useState(false);
@@ -195,13 +201,14 @@ const SideNav = () => {
     dispatch(toggleSideNav(!showSideNav))
   }
 
+  const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
+
   const [addNewMembersToWorkspace,{data:newMembersData,error:newMembersError,loading:newMembersLoading }] = useMutation(ADD_NEW_MEMBERS_TO_WORKSPACE)
 
   const selectItem = (event:any,element:any) => {
     if(element.name==="create workspace"){
         router.push("/join")
     }else{
-      router.push(`/${element?.URL}`)
     const currentWorkspace:Partial<IWorkspace> = {
       id:element.id ? element?.id :"29",
       name:element.name,
@@ -224,10 +231,25 @@ const SideNav = () => {
       tasks:[]
     }
     dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails})) 
+    setIsOpen(false)
+      router.push(`/${element?.URL}`)
     }
     
    
   }
+
+  useMemo(()=>{
+         if(newMembersData?.addNewMembersToWorkspace?.status){
+           
+           notifyMess("Invites sent",newMembersData?.addNewMembersToWorkspace?.message)
+           setInviteMembers("")
+           setOpenInviteMembers(false)
+           // setOnboardingScreen(ONBOARDING_SCREEN.GOOD_TO_GO)
+         }
+       
+     
+    
+   },[newMembersData])
 
   const closeInviteModal = () =>{
     setOpenInviteMembers(false)
@@ -235,15 +257,14 @@ const SideNav = () => {
   const saveInvitePeople = async () =>{
       await addNewMembersToWorkspace({
          variables:{
-         input:{
-           members:inviteMembers,
-           workspaceURL:currentWorkspace.URL,
-           workspaceID:currentWorkspace._id
-         }
+          input:{
+            members:inviteMembers,
+            workspaceURL:currentWorkspace.URL,
+            workspaceID:currentWorkspace._id,
+            workspaceName:currentWorkspace.name,
+          }
        }
-     })
-     console.log({newMembersData})
-     
+     })  
   }
   return (
     <NavWrapper showSideNav={showSideNav} >
@@ -265,8 +286,9 @@ const SideNav = () => {
     type="sidenav"
     noInput={true}
     user={{
-      name:user.name,
-      email:user.email
+      name:user.name ?? "name",
+      email:user.email,
+      _id:user._id
     }}
     >
     <Workspaces onClick={()=>setIsOpen(!isOpen)}>
@@ -275,7 +297,7 @@ const SideNav = () => {
     </Workspaces>
     </CustomDropdown>
       <ProfilePicture assigned={{
-        name: user.name,
+        name: user.name ?? "name",
       
       }} tooltip={false} />
         </WorkspaceInfo>
@@ -290,9 +312,9 @@ const SideNav = () => {
           </Search>
         </NewIssueButton>
           <NavBoards>
-    <p>ALL BOARDS ({currentWorkspace.totalTasks})</p>
+    {/* <p>ALL BOARDS ({currentWorkspace.totalTasks})</p>
     <SideDataStyle>
-      {user.workspaces.map((item, index) => (
+      {user.workspaces.filter((workspace)=>workspace?.owner?._id === user._id).map((item, index) => (
       <LI key={index} 
       onClick={()=>router.push(`/${item?.URL}`)}
       selected={currentWorkspace.id.toLowerCase()===item.id.toLowerCase()}>
@@ -300,7 +322,7 @@ const SideNav = () => {
         <p>{item.name}</p>
       </LI>
     ))}
-    </SideDataStyle>
+    </SideDataStyle> */}
         <InviteButton onClick={()=>setOpenInviteMembers(true)}>
          <AiOutlinePlus /> <div>invite people</div> 
         </InviteButton>

@@ -7,32 +7,26 @@ import DashboardLayout from '../components/Dashboardlayout'
 import CenteredLogo from '../components/Home/CenteredLogo'
 import SignupButtons from '../components/Home/SignupButtons'
 import { LOGIN} from '../graphql/mutation'
-import { setCurrentUser } from '../state/board'
+import { setCurrentUser } from '../state/user'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import {  confirmPassword } from '../utils/utilFunction'
 
 const NavWrapper = styled.div`
-   display: flex;
+    display: flex;
    flex-direction:column;
   flex-wrap: nowrap;
   box-sizing:border-box;
   align-items:center;
-  height:100%;
-  max-height:100%;
-  background-color: #000313;
+  /* height:100%; */
+  min-height:100%;
+  background-color: ${({ theme }) => theme.background} ;
   min-width:100%;
   padding-top:10px;
+  padding-bottom:20px;
  
-`
-const Terms = styled.div`
-    margin-top:15px;
-    font-size:14px;
-    color: #c4c4c4;
 `
 const signin = () => {
   
-
-
 const [signinObj,setSigninObject] = useState({
   email:"",
   password:""
@@ -41,6 +35,7 @@ const [signinObj,setSigninObject] = useState({
 
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
+const [axiosLoading,setAxiosLoading] = useState(false)
 
 
 const dispatch = useDispatch()
@@ -50,7 +45,6 @@ const router = useRouter()
 const [login,{data,loading,error}] = useMutation(LOGIN)
 
 const signinWithOAuth =async  (data:any) =>{
- console.log({data})
   await login( {
     variables : {
       input:{
@@ -63,13 +57,11 @@ const signinWithOAuth =async  (data:any) =>{
 
 
 if(data?.login?.status){
-  storeDataInLocalStorage("token",data?.login?.token) 
+  storeDataInLocalStorage("token",data?.login?.token)
   dispatch(setCurrentUser({user:data?.login?.user})) 
 router.push(`/${data?.login?.user?.workspaces[0].URL}`)
 }
 
-
-console.log({data,error,loading})
 const handleInput = (name:string,value:string) => {
   setErrorTable([])
     setSigninObject((prevState) => {
@@ -104,6 +96,7 @@ const loginUser = async () => {
      <>
       <CenteredLogo size={70} text="Signin to your kanban account" />
         <SignupButtons
+        setAxiosLoading={setAxiosLoading}
         signupWithOAuth={signinWithOAuth} 
         handleInput={handleInput}
         errorTable={errorTable}

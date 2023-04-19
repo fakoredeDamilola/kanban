@@ -21,7 +21,7 @@ const TaskPageMainContainer = styled.div`
         flex: 1;  
       	min-height: 0; 
       	display: flex;
-        padding:0 10px;
+        padding:0 5px;
         @media ${device.mobileM} {
           padding:0 50px;
         }
@@ -223,18 +223,14 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
-console.log({loading,error,data})
 
   const openPage = (event:any,item:any) =>{
-    console.log({item})
   
     if(item.name=== "Change due date..."){
       setOpenCalenderModal(true)
       setIsOpen(false)
     }
   }
-  const user = useSelector((state:RootState)=>state.board.user)
-  const {taskView} = useSelector((state:RootState)=>state.display)
 
   const submitComment = () => {
     const commentActivity = {
@@ -249,7 +245,6 @@ console.log({loading,error,data})
       // time: Date.now(),
 
     }
-    console.log({commentActivity})
     // dispatch(addNewActivity({id:task._id,activity:commentActivity}))
     addNewActivity({
       variables:{
@@ -270,7 +265,6 @@ console.log({loading,error,data})
       img:""
     }
   ]
-  console.log({task},"kekklekle")
   return (
     <TaskPageMainContainer>
       <TaskPageMainHeader>

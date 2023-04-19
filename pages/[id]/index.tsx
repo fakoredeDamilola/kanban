@@ -7,7 +7,7 @@ import ViewAreaIndex from "../../components/viewarea";
 import { RootState } from "../../state/store";
 import { FETCH_WORKSPACE } from "../../graphql/queries";
 import { useLazyQuery } from "@apollo/client";
-import { IBoard, setCurrentWorkspace } from "../../state/board";
+import { IBoard, refetchWorkspace, setCurrentWorkspace } from "../../state/board";
 import LoadingPage from "../../components/LoadingPage";
 import styled from "styled-components";
 
@@ -25,21 +25,26 @@ const Cover = styled.div`
  function Home() {
     const router = useRouter()
     const dispatch = useDispatch()
-    
+    const {refetch} = useSelector((state:RootState)=>state.board)
 
-    const [fetchWorkspace,{data,loading,error}] = useLazyQuery(FETCH_WORKSPACE,{
+    const [fetchWorkspace,{data,refetch:refetchWork,loading,error}] = useLazyQuery(FETCH_WORKSPACE,{
       variables: {
         input: {
          workspaceURL: router?.query.id
         }
       }
     })
+    if(refetch){
+      console.log("ue")
+      fetchWorkspace()
+      console.log({data})
+      dispatch(refetchWorkspace({refetchWorkspace:false}))
+    }
     const [workspace,setWorkspace] = useState<any>()
-
     useMemo(()=>{
       if(data?.fetchWorkspace.status){
+        console.log("fetched")
         const workspace = data?.fetchWorkspace.workspace
-        console.log({workspace})
         const boardDetails:IBoard = {
           workspaceID:workspace._id ?? "29",
           workspace:workspace.name,

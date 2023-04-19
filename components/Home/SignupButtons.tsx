@@ -102,12 +102,7 @@ const SignupButtons = ({
 const [user,setUser] = useState<any>(null)
 const [profile,setProfile] = useState<any>(null)
 
-// const responseMessage = (response:any) => {
-//   console.log(response);
-// };
-// const errorMessage = (error:any) => {
-//   console.log(error);
-// };
+
 
 useEffect(
   () => {
@@ -122,7 +117,6 @@ useEffect(
               })
               .then((res) => {
                   setProfile(res.data);
-                  console.log({res})
                   
                   signupWithOAuth(res.data)
               })

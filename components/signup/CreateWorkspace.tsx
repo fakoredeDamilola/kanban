@@ -239,7 +239,7 @@ const [disableButton,setDisableButton] = useState(false)
         changeInput={(value,name)=>{
             setWorkspaceName(value)
     if(controlInput){
-    setWorkspaceURL(value)
+    setWorkspaceURL(value.split(" ").join("-"))
     }
         }}
         errors={["required"]}

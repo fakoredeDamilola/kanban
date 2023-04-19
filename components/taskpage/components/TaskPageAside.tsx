@@ -117,7 +117,6 @@ const copyLink = (title:string,text:string) => toast(<NotifyComponent title={tit
 
 const TaskPageAside = ({task,workspace,showTaskSideNav,members}:{task:ITaskCards,workspace:subItem[],showTaskSideNav:boolean,members:IMembers[]}) => {
   
-const user = useSelector((state:RootState)=>state.board.user)
 const copyText = (text:string) => {
   navigator.clipboard.writeText(text)
 }
@@ -235,7 +234,6 @@ const selectedItem = {
  
 
   }
-  console.log({workspace},"eiiejieiie")
   return (
     <TaskPageAsideContainer showTaskSideNav={showTaskSideNav}>
         <TaskPageAsideHeader>

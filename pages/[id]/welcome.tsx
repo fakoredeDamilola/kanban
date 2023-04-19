@@ -53,8 +53,6 @@ const router = useRouter()
     const [coWorkerValue,setCoWorkerValue] = useState("")
 
     const [addNewMembersToWorkspace,{data:newMembersData,error:newMembersError,loading:newMembersLoading }] = useMutation(ADD_NEW_MEMBERS_TO_WORKSPACE)
-
-    console.log({data,loading,error})
     useMemo(()=>{
       if(data?.fetchWorkspace.status){
         const workspace = data?.fetchWorkspace.workspace
@@ -69,7 +67,6 @@ const router = useRouter()
      
     },[data])
     useMemo(()=>{
-     console.log({newMembersData})
           if(newMembersData?.addNewMembersToWorkspace?.status){
             
             notifyMess("Invites sent","Your team members can check their emails for the invites")
@@ -87,12 +84,12 @@ const router = useRouter()
         variables:{
         input:{
           members:coWorkerValue,
-          workspaceURL:data?.fetchWorkspace.workspace.name,
-          workspaceID:data?.fetchWorkspace.workspace._id
+          workspaceURL:data?.fetchWorkspace.workspace.URL,
+          workspaceID:data?.fetchWorkspace.workspace._id,
+          workspaceName:data?.fetchWorkspace.workspace.name,
         }
       }
     })
-    console.log({data})
     }
 
     useEffect(()=>{

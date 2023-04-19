@@ -10,6 +10,7 @@ import ViewArea from './ViewArea'
 
 const FlexWrapper = styled.div<{view:string;margin?:string}>`
  color:${({theme}) => theme.primary};
+ background-color:${({theme})=>theme.background};
   overflow-x: scroll; /* enable horizontal scrolling */
   overflow-y:hidden;
   display:${({view}) => view==="list" ? "block" : "flex"};

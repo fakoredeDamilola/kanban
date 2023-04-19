@@ -55,7 +55,6 @@ const changeBoardView = (view:string) => {
 
 
   const toggleNav = () => {
-    console.log("toggleNav")
     dispatch(toggleSideNav(!showSideNav))
   }
   return (

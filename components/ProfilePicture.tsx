@@ -5,7 +5,7 @@ import { hslColor, randomColor } from '../utils/utilFunction'
 import { Item } from './viewarea/IViewrea'
 
 const ProfilePicture = ({assigned,tooltip,size}:{assigned:Item,tooltip:boolean,size?:string}) => {
-
+console.log({assigned})
     const ProfilePictureStyle = styled.div<{color:string;tooltip:boolean;size?:string}>`
 
      position: relative;
@@ -69,11 +69,11 @@ const ProfilePicture = ({assigned,tooltip,size}:{assigned:Item,tooltip:boolean,s
   <ProfilePictureStyle color="#4c33bd" size={size} tooltip={tooltip}>
    
        {
-        assigned?.img 
+        assigned?.img && assigned?.name!=="Assigned" 
         ? <img src={assigned.img} /> :
-        assigned.name ?
+        assigned.name!=="Assigned"  ?
         <div>{assigned.name.split("")[0]}{assigned.name.split("")[assigned.name.length-1]}</div> :
-        <FaRegUserCircle />
+        <FaRegUserCircle size="18px"/>
     } 
    <span>Assigned to {assigned.name ? `${assigned?.name.split("")[0]}${assigned?.name.split("")[assigned.name.length-1]}` : <div>A</div>}</span>
     

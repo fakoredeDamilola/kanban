@@ -6,6 +6,8 @@ import DashboardLayout from '../components/Dashboardlayout'
 import CenteredLogo from '../components/Home/CenteredLogo'
 import Header from '../components/Home/Header'
 import { device } from '../config/theme'
+import { useSelector } from 'react-redux'
+import { RootState } from '../state/store'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -129,7 +131,7 @@ const buttonVariants = {
 
 const HomePage = () => {
   const cloudName = process.env.NEXT_PBLIC_CLOUDNAME
-  console.log({cloudName})
+  const {user} = useSelector((state:RootState)=>state)
   return (
     <>
      <Header />

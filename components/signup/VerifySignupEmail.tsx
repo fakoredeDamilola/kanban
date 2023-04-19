@@ -6,6 +6,7 @@ import { device } from '../../config/theme'
 import { RESEND_OTP } from '../../graphql/mutation'
 import CenteredLogo from '../Home/CenteredLogo'
 import Timer from '../Timer'
+import { useRouter } from 'next/router'
 
 const InputVariants = {
     hidden:{
@@ -31,7 +32,7 @@ const NavWrapper = styled.div`
   align-items:center;
   height:100%;
   max-height:100%;
-  background-color: #000313;
+  /* background-color: #000313; */
   min-width:100%;
   padding-top:10px;
  
@@ -123,6 +124,7 @@ const LinkDiv = styled.div`
 
 
 const VerifySignupEmail = ({email,codeInput,setCodeInput,submitCode}:{email:string,codeInput:string;setCodeInput:any;submitCode:()=>void}) => {
+  const router = useRouter()
 
 const [resendOTP,{data,error,loading}] = useMutation(RESEND_OTP,{
     variables:{
@@ -132,7 +134,6 @@ const [resendOTP,{data,error,loading}] = useMutation(RESEND_OTP,{
     }
 })
 
-console.log({data,error,loading})
 
     const [showError,setShowError] = useState(false)
     const [displayInput,setDisplayInput] = useState(false)
@@ -190,7 +191,7 @@ console.log({data,error,loading})
                     setDisplayInput(true)
                 }
             }}>Enter code manually</p>
-            <p>Back to login</p>
+            <p onClick={()=>router.push("/signin")}>Back to login</p>
         </Footer>
     </NavWrapper>
   )

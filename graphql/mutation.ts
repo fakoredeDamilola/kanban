@@ -7,16 +7,22 @@ mutation Register($input: RegisterOTPInput) {
     ...on RegisterSuccessResponse{
       status
       user {
+        _id
+        username
+        image
         name
         email
         workspaces {
+          _id
           id
-        }
-        created_workspaces {
-          id
-        }
-        image
+          name
+          URL
+          owner {
+        email
         username
+        _id
+      }
+        }
       }
       token
     }
@@ -46,6 +52,11 @@ mutation Login($input: loginInput) {
           id
           name
           URL
+          owner {
+        email
+        username
+        _id
+      }
         }
       }
       token
@@ -152,6 +163,11 @@ mutation createNewWorkspace($input:workspaceInput){
         _id
         URL
         name
+        owner {
+        email
+        username
+        _id
+      }
         members {
           _id
           joined
@@ -422,4 +438,28 @@ mutation AddNewActivity($input: changeActivityInput) {
   }
 }
 
+`
+export const ADD_MEMBERS = gql`
+mutation AddNewMember($input: NewMemberInput) {
+  AddNewMember(input: $input) {
+    ... on NewMemberResponse {
+      status
+      workspaceInfo {
+        workspaceID {
+        _id
+        id
+        URL
+        name
+      }
+        status
+        # invited
+      }
+    }
+    ... on CreateMemberFailResponse {
+      status
+      message
+      field
+    }
+  }
+}
 `

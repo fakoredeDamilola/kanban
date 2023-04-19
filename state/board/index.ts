@@ -81,17 +81,10 @@ export interface IMinWorkspace{
   id:string;
   _id:string;
   URL:string;
+  owner?:Item;
 }
 
-export interface IUser {
-  name:string;
-  email:string;
-  _id:string;
-  username:string;
-  image:string;
-  workspaces: IMinWorkspace[]
-  created_workspaces?: IMinWorkspace[]
-}
+
 // export interface IWorkspaces  { 
 //   name:string;
 //   id:string;
@@ -102,12 +95,12 @@ export interface IUser {
 
 interface boardIntialState {
   currentWorkspace: IWorkspace
-  
-  user: IUser
-  boardsDetails:IBoard
+  boardsDetails:IBoard;
+  refetch:boolean
 }
 
 const initialState: boardIntialState = {
+  refetch:false,
     currentWorkspace: {
       name:"Product Launch",
       URL:"product-yes",
@@ -154,41 +147,6 @@ const initialState: boardIntialState = {
           taskIDs:[],
           joined:"1677034436637"
         },
-      ]
-    },
-    user: {
-      name:"Fakorede Damilola",
-      email:"dfakorede29@gmail.com",
-      _id:"87733",
-      username:"dfakorede29",
-      image:"",
-      workspaces: [
-        {
-          _id:"eje",
-          name:"Product Launch",
-          id:"PRO-L",
-          URL:"euuue",
-  //         taskID:[],
-  // totalTasks:0,
-  // subItems: subItems,
-  // totalMembers:0,
-  // owner:{
-  //   name:"Fakorede Damilola",
-  //   email:"dfakorede29@gmail.com"
-  // },
-  // members:[
-  //   {
-  //     name:"Fakorede Damilola",
-  //     email:"dfakorede29@gmail.com",
-  //     id:"8883",
-  //     joined:"8377384849939",
-  //     username:"ieoe",
-  //     taskIDs:[],
-  //     img:"",
-  //   }
-  // ]
-
-        }
       ]
     },
     boardsDetails: {
@@ -325,7 +283,6 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     addNewTask: (state, {payload:{ newTask }}) =>{
-        console.log({newTask},state.boardsDetails.workspaceID)
       if(state.boardsDetails.workspaceID === newTask.workspaceID){
         state.boardsDetails.tasks.push(newTask)
       }
@@ -333,21 +290,16 @@ const boardSlice = createSlice({
      
     },
     selectSubItems: (state, {payload:{ name, item }}) =>{
-      console.log({name,item})
       const subItem = state.currentWorkspace.subItems.find((item)=>item.name===name)
-      console.log({subItem})
       if(subItem){
         subItem.selected =item
       }
     },
     increaseNumberOfTasks:(state,{payload:{id}}) => {
-      console.log({id})
         state.currentWorkspace.totalTasks = id
     },
     changeTaskPriority:(state,{payload:{id,type,name}}) => {
-      console.log({id,type,name})
       const task = state.boardsDetails.tasks.find((item)=>item._id===id)
-      console.log({task})
       if(task){
         // task.priority = item
         // @ts-ignore
@@ -355,23 +307,19 @@ const boardSlice = createSlice({
       }
     },
     changeTaskDueDate:(state,{payload:{id,duedate}}) => {
-      console.log({id,duedate},"kejjejje")
       const task = state.boardsDetails.tasks.find((item)=>item._id===id)
       if(task){
         task.dueDate = duedate
       }
     },
     addNewActivity:(state,{payload:{id,activity}}) => {
-      console.log({id,activity})
       const task = state.boardsDetails.tasks.find((item)=>item._id===id)
       if(task){
         task.activities?.push(activity)
       }
     },
     setCurrentWorkspaceStatus:(state,{payload:{selected,type}}) => {
-      console.log({selected,type},'meke')
       const board = state.currentWorkspace.subItems.find(item=>item.name.toLowerCase() ===type)
-      console.log({board})
       if(board){
         board.selected = selected
       }
@@ -379,7 +327,6 @@ const boardSlice = createSlice({
     clearCurrentWorkspaceStatus:(state,payload) => {
     //  mutate state to inital value
       state.currentWorkspace.subItems.map((item)=>{
-        console.log({item})
         if(item.name.toLowerCase() === "status"){
           item.selected = item.items[0]
         }
@@ -417,15 +364,11 @@ const boardSlice = createSlice({
       }
       state.boardsDetails = boardsDetails
     },
-    AddNewWorkspace:(state,{payload:{newWorkspace}}) =>{
-      state.user.workspaces = [...state.user.workspaces, newWorkspace]
-    },
-    setCurrentUser:(state,{payload:{user}})=> {
-      console.log(user,"kekk")
-      state.user = user
-    }
-
+   refetchWorkspace:(state,{payload:{refetchWorkspace}}) => {
+      state.refetch=refetchWorkspace
+   }
   },
+ 
 });
 
 export const {
@@ -438,8 +381,8 @@ export const {
   setCurrentWorkspaceStatus,
   clearCurrentWorkspaceStatus,
   setCurrentWorkspace,
-  AddNewWorkspace,
-  setCurrentUser
+  refetchWorkspace
+
 } = boardSlice.actions;
 
 export default boardSlice.reducer;

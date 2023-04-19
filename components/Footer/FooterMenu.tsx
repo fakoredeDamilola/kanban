@@ -11,6 +11,7 @@ import ProfilePicture from '../ProfilePicture';
 const FooterIcon = styled.div`
  margin-left:10px;
     display:none;
+    font-size:12px;
   @media ${device.mobileM} {
     display:block;
   }
@@ -99,11 +100,11 @@ const FooterMenu = ({item}:IFooter) => {
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
-  console.log({item})
   const selectItem = (name:any,event:any,item:Item) => {
     item.type !== "color" && setIsOpen(false)
     dispatch(selectSubItems({name,item}))
    }
+   console.log({item},"new data info")
   return (
     <CustomDropdown 
     isOpen={isOpen}
@@ -112,7 +113,7 @@ const FooterMenu = ({item}:IFooter) => {
     selected={item.selected}
     selectItem={(event:any,element:Item) =>selectItem(item.name,event,element)}
     left="80%"
-    type={item.name==="Assigned" ? 'image' : ''}
+    type={item.name==="Assigned" ? 'image' : 'icon'}
     checkBox={true}
     >
     <FooterWrapper onClick={handleButtonClick}>

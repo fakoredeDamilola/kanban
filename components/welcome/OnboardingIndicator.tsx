@@ -23,7 +23,6 @@ const OnboardingIndicator = ({currentIndicator,indicator}:{
   currentIndicator:number,
   indicator:number
 }) => {
-  console.log({currentIndicator,indicator})
   return (
     <Indicators>
      

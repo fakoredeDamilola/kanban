@@ -109,13 +109,13 @@ const CustomInput = ({
             disabled = {disable ?true : false}
             onBlur={(e)=>{
               if(errors?.includes("required") && e.target.value === ""){
-                console.log({name})
+
                 if(setErrorTable){
                   setErrorTable(prev=>prev.includes(name) ? prev : [...prev,name])
                 }
               }
               if(errors?.includes("length") && e.target.value.length < 5){
-                console.log(e.target.value.length)
+            
                 if(setErrorTable){
                   setErrorTable(prev=>prev.includes(name) ? prev : [...prev,"length"])
                 }

@@ -100,9 +100,10 @@ const AsideItems = ({
 <div>{name}</div>
 <Icon>
   {name.toLowerCase() === "assigned" ?
+  
     <ProfilePicture assigned={selected} tooltip={true} />
    : <CustomIcon img={selected.img} type={selected.type} />}
-   <div>{value}</div>
+   <div>{name.toLowerCase() === "assigned" ? "Unassigned" : value}</div>
    </Icon>
 </TaskPageItem>
 {name.toLowerCase() === "assigned" &&

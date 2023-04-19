@@ -89,9 +89,6 @@ const initialVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    // transition: {
-     
-    // },
   },
 };
 const mainVariants = {
@@ -100,9 +97,6 @@ const mainVariants = {
   },
   visible: {
     opacity: 1,
-    // transition: {
-     
-    // },
   },
 };
 

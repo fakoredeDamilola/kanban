@@ -13,7 +13,7 @@ const TaskBarStyle = styled.div<{view:string}>`
    height:20px;
    color:${({theme}) => theme.primary};
    margin:0;
-   
+   font-size:14px;
     box-sizing:border-box;
    display:flex;  
    justify-content:space-between; 
@@ -52,6 +52,7 @@ const Plus = styled.div`
   `
   const Icon = styled.div`
     display:flex;
+    align-items:center;
     gap:10px;
   `
 const   TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
@@ -59,7 +60,7 @@ const   TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
     <TaskBarStyle view={view}>
       <div>
         <Icon>
-          <CustomIcon img={taskbar.img} fontSize={view==="list" ? "16px" :"20px"} />
+          <CustomIcon img={taskbar.img} fontSize={view==="list" ? "16px" :"15px"} />
         <div>{taskbar.name}</div>
 
         </Icon>

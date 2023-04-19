@@ -11,7 +11,7 @@ import ApiErrorModal from '../components/modal/ApiErrorModal'
 import CreateWorkspace from '../components/signup/CreateWorkspace'
 import VerifySignupEmail from '../components/signup/VerifySignupEmail'
 import { CREATE_NEW_WORKSPACE, REGISTER, VERIFY_USER_RECORD } from '../graphql/mutation'
-import  { AddNewWorkspace, IBoard, IWorkspace, setCurrentUser, setCurrentWorkspace } from '../state/board'
+import { setCurrentUser } from '../state/user'
 import { setCurrentSignupPage, setModalData, SIGNUPPAGESTATE } from '../state/display'
 import { RootState } from '../state/store'
 import { storeDataInLocalStorage } from '../utils/localStorage'
@@ -26,7 +26,7 @@ const NavWrapper = styled.div`
   align-items:center;
   /* height:100%; */
   min-height:100%;
-  background-color: #191A23;
+  background-color: ${({ theme }) => theme.background} ;
   min-width:100%;
   padding-top:10px;
   padding-bottom:20px;
@@ -52,18 +52,17 @@ const [codeInput,setCodeInput] = useState("")
 const [workspaceName,setWorkspaceName] = useState("")
 const [workspaceURL,setWorkspaceURL] = useState("")
 const [passwordIndicator,setPasswordIndicator] = useState("empty")
-const [axiosLoading,setAxiosLoading] = useState(false)
+  const [axiosLoading,setAxiosLoading] = useState(false)
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
 const [signupPageState,setSignupPageState] = useState(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
 const [type,setType] = useState("")
 
 useEffect(()=>{
-  console.log({current_signup_page})
 setSignupPageState(current_signup_page)
 },[])
 
-const {user} = useSelector((state:RootState)=>state.board)
+// const {user} = useSelector((state:RootState)=>state.board)
 const dispatch = useDispatch()
 const router = useRouter()
 
@@ -96,13 +95,11 @@ const [createWorkspace] = useMutation(
     },
     onCompleted: (data) =>{
       const workspace =data.createNewWorkspace.workspace
-      console.log({workspace})
       dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
 
       router.push(`/${workspace.URL}/welcome`)
     },
     onError:(err)=>{
-      console.log({err})
       dispatch(setModalData({modalType:"error",modalMessage:"no auth found,sign up again",modal:true}))
       dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
       setCurrentSignupPage(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
@@ -110,11 +107,7 @@ const [createWorkspace] = useMutation(
   }
 ) 
 
-
-console.log({data,error,loading})
-console.log({registerData,registerError,registerLoading})
 useMemo(()=>{
-  console.log({data})
   try{
     if(data?.verifyUserRecord?.status ===true){
       setAxiosLoading(false)
@@ -140,12 +133,11 @@ useMemo(()=>{
   try{
     if(registerData?.register?.status ===true){
         storeDataInLocalStorage("token",registerData?.register?.token)
-        console.log(registerData?.register?.user,"user")
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         dispatch(setCurrentUser({user:registerData?.register?.user}))
   setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
 }else if(registerData?.register?.status ===false){
-  alert("wrong OTP")
+  dispatch(setModalData({modalType:"error",modalMessage:"Wrong OTP",modal:true}))
 }
   }catch(e:any){
     console.log(e?.message)
@@ -175,7 +167,6 @@ const submitEmail =async () => {
   const passwordStrength = confirmPassword(signupObject.password)
   setPasswordIndicator(passwordStrength)
   const arr= checkForError(signupObject,setErrorTable,[])
-       console.log({arr})
        if(arr.length===0){
         setType("password")
         await verifyUser( {
@@ -247,8 +238,6 @@ const createNewWorkspace =async () => {
     workspaceURL,
     workspaceName
   },setErrorTable,[])
-  console.log({workspaceName,workspaceURL,subItems})
-  console.log({arr})
   if(arr.length===0){
   await createWorkspace()
 
