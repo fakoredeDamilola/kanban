@@ -45,7 +45,7 @@ position:relative;
 
 const Navbar = () => {
   const {currentWorkspace} = useSelector((state: any) => state.board)
-  const {taskView,showSideNav} = useSelector((state: any) => state.display)
+const {taskView,showSideNav} = useSelector((state: any) => state.display)
   const dispatch = useDispatch()
 
 const changeBoardView = (view:string) => {

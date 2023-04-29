@@ -150,7 +150,6 @@ const logOut = () => {
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='Enter your email'
         type="email"
         input="text"
@@ -169,7 +168,6 @@ const logOut = () => {
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='****'
         type="password"
         input="text"

@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import { device } from '../../config/theme'
 import { setModalData } from '../../state/display'
 import { RootState } from '../../state/store'
+import { AiOutlineClose } from 'react-icons/ai'
 
 
 const Backdrop = styled.div`
@@ -23,37 +24,40 @@ const Backdrop = styled.div`
 const Model = styled.div`
   max-width:400px;
   margin:0 auto;
-  background:white;
-  border-radius: 10px;
+  background:${({theme})=>theme.modalBackground};
+  border-radius: 5px;
   text-align: center;
-  padding:20px;
+  padding:10px 20px;
   display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-& button{
+  z-index: 99;
   color:white;
+  justify-content:space-between;
+  box-sizing:border-box;
+  align-items:center;
+
+& button{
         font-size:15px;
         border:none;
-        height:45px;
-        background-color:#666BE1;
+        background-color:tra;
+        height:30px;
+        color:#666BE1;
         border-radius:6px;
         cursor:pointer;
-         width:250px;
+         width:30px;
+         display:flex;
+         justify-content:center;
+         align-items:center;
          &:hover{
           background-color:#2A2B38;
          }
          
          transition:0.3s all;
-        @media ${device.mobileS} {
-     width:250px;
-}
+
 }
 & p {
-  color:#444;
   font-weight:bold;
   font-size:14px;
-  margin-bottom:30px
+  /* margin-bottom:30px */
 }
 `
 
@@ -73,7 +77,7 @@ const modalVariants = {
         opacity:0,
     },
     visible:{
-        y:"200px",
+        y:"10px",
         opacity:1,
         transition:{delay:0.5}
     }
@@ -97,7 +101,7 @@ const setErrorModal = ()=>{
             variants={modalVariants}
 
             >
-              {
+              {/* {
                 modalType==="error"?
                 <IconContext.Provider
                 value={{ color: 'red', size: '70px' }}
@@ -105,10 +109,10 @@ const setErrorModal = ()=>{
                 <BiError  style={{padding:"15px 0"}}/>
                 </IconContext.Provider>
                  : null
-              }
+              } */}
             <p>{modalMessage}</p>
             
-            <button onClick={setErrorModal}>Close</button>
+            <button onClick={setErrorModal}><AiOutlineClose /></button>
            
             </Model>
         </Backdrop>

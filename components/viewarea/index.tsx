@@ -170,7 +170,8 @@ const newTask = (currentBar:IBarContent) =>{
 
   return (
   
-    <DndProvider backend={HTML5Backend}> <Container>
+    <DndProvider backend={HTML5Backend}> 
+    <Container>
    
  <TaskPageView 
  tasks={tasks}
@@ -180,27 +181,7 @@ const newTask = (currentBar:IBarContent) =>{
  taskView={taskView}
   margin={margin}
   />
-
-    <Portal>
-        {openNewBoardModal ? <AddNewBoard  
-        openNewBoardModal={openNewBoardModal} 
-        closeNewBoardModal={closeNewBoardModal} 
-        createNewIssue={createNewIssue}
-        issueTitle={issueTitle}
-        user={user}
-        issueDescription= {issueDescription}
-        setIssueTitle={setIssueTitle}
-        setIssueDescription={setIssueDescription}
-        imgURLArray= {imgURLArray}
-        setImgURLArray= {setImgURLArray}
-        currentWorkspace={currentWorkspace}
-        workspaces={currentWorkspace}
-        /> : null}
-      </Portal>
-      <Portal2>
-      
-      {openErrorModal ? <ErrorModal openErrorModal={openErrorModal} closeErrorModal={closeErrorModal} /> : null}
-      </Portal2>
+  
       <ToastContainer
 position="bottom-right"
 autoClose={5000}

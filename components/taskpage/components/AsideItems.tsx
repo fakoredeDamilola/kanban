@@ -73,6 +73,7 @@ const AsideItems = ({
   workspaceID,
     changeTaskTodo,
     workspace,
+    type,
     name,
     value,
     selected
@@ -81,20 +82,31 @@ const AsideItems = ({
     changeTaskTodo:(name:string,item:Item)=>void,
     workspace:Item[],
     name:string,
+    type?:string,
     value:string,
     selected:Item
 
 }) => {
+  console.log({workspace,type})
   const [isOpen,setIsOpen] = useState(false)
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
+  console.log({workspace},"jjejjiei")
   const router = useRouter()
   return (
-    <CustomDropdown isOpen={isOpen} setIsOpen={setIsOpen} selected={selected} selectItem={(e:any,item:Item)=>{
+    <CustomDropdown
+    isOpen={isOpen}
+    setIsOpen={setIsOpen}
+    selected={selected}
+    selectItem={(e:any,item:Item)=>{
       changeTaskTodo(name,item)
       setIsOpen(false)
-    }} top="30%" left="-70%" items={workspace} >
+    }}
+    type={type}
+    top="30%"
+    left="-70%"
+    items={workspace} >
       <Container hover={name.toLowerCase() === "assigned" ? true : false}>
            <TaskPageItem onClick={handleButtonClick}>
 <div>{name}</div>
@@ -103,7 +115,7 @@ const AsideItems = ({
   
     <ProfilePicture assigned={selected} tooltip={true} />
    : <CustomIcon img={selected.img} type={selected.type} />}
-   <div>{name.toLowerCase() === "assigned" ? "Unassigned" : value}</div>
+   <div>{name.toLowerCase() === "assigned" ? value : "Unassigned"}</div>
    </Icon>
 </TaskPageItem>
 {name.toLowerCase() === "assigned" &&

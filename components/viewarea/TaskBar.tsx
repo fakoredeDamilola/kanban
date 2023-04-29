@@ -28,7 +28,7 @@ const TaskBarStyle = styled.div<{view:string}>`
    }
 
    @media ${device.mobileM} {
-  width:${({view}) => view==="list" ? "100%" : "90%"};
+  width:${({view}) => view==="list" ? "100%" : "95%"};
    min-width:${({view}) => view==="list" ? "100%" : "90%"};
    border-radius:${({view}) => view==="list" ? "0" : "6px"};
    height:${({view}) => view==="list" ? "40px" : "40px"};

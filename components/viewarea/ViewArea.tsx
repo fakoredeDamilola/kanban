@@ -4,7 +4,7 @@ import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { CHANGE_TASK_DETAIL } from '../../graphql/mutation';
-import { FETCH_TASK } from '../../graphql/queries';
+
 import { changeTaskPriority } from '../../state/board';
 import { setNewBoardModal } from '../../state/display';
 import { RootState } from '../../state/store';
@@ -18,8 +18,9 @@ interface IView {
 }
 const ColumnTask = styled.div<{view:string;isOver:boolean}>`
     flex-shrink: 0;
-  height:100px;
+  height:90px;
    margin-top:10px;
+   margin:0 auto;
     flex:1;
     overflow-y: auto;
     overflow-x:hidden;    
@@ -54,6 +55,9 @@ const LayerTask = styled.div`
 h4 {
     color:#c4c0c0;
 }
+`
+const TaskCardWrapper = styled.div`
+    position:relative;
 `
 const ViewArea = ({col,task}:IView) => {
 
@@ -104,9 +108,14 @@ const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
 
     return (
                <ColumnTask view={taskView} isOver={isOver}  ref={drop} >
-                {task.map((card:any,index:any)=> (
-               <TaskCard card={card} key={index} view={taskView} />
-            ))
+                {task.map((card:any,index:any)=> {
+                    console.log({card})
+                    return(
+                    <TaskCardWrapper>
+                         <TaskCard card={card} key={index} view={taskView} />
+                    </TaskCardWrapper>
+              
+            )})
             }
            {isOver && <LayerTask>
             <div>Drop here to move to this column</div>

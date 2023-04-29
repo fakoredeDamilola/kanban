@@ -57,32 +57,32 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
             }
           }
           status {
+          _id
+          name
+          email
+          img
+          type
+          id
+          username
+        }
+        priority {
           name
           img
         }
-        priority {
-           name
-          img
-        }
         others {
-           name
-          img
+          name
         }
         label {
-           name
-          img
+         name 
         }
         assigned {
-           name
-          img
+         name 
         }
         assignee {
-           name
-          img
+          name
         }
         createdBy {
-           name
-          img
+          name
         }
         imgURLArray
       }
@@ -135,12 +135,12 @@ query FetchTask($input: FetchTaskInput) {
         workspaceURL
         workspaceID
         dueDate
-        activities {
+       activities {
             description
             icon
-            nameOfActivity
             color
             name
+            nameOfActivity
             createdby {
               _id
               name
@@ -162,6 +162,7 @@ query FetchTask($input: FetchTaskInput) {
         }
         priority {
           name
+          img
         }
         others {
           name

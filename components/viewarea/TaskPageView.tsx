@@ -16,7 +16,7 @@ const FlexWrapper = styled.div<{view:string;margin?:string}>`
   display:${({view}) => view==="list" ? "block" : "flex"};
   padding:${({view,margin}) => view==="list" ? margin ?? "50px 0px" : margin?? "0px 20px"};
   max-height:100%;
-  height:calc(100%-70px);
+  /* height:calc(100%-70px); */
   /* margin-top:70px; */
   gap:40px; 
   margin-top:${({view}) => view==="list" ? "20px" : "70px"};

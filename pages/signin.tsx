@@ -10,6 +10,8 @@ import { LOGIN} from '../graphql/mutation'
 import { setCurrentUser } from '../state/user'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import {  confirmPassword } from '../utils/utilFunction'
+import LoadingPage from '../components/LoadingPage'
+import { setModalData } from '../state/display'
 
 const NavWrapper = styled.div`
     display: flex;
@@ -56,11 +58,16 @@ const signinWithOAuth =async  (data:any) =>{
 }
 
 
-if(data?.login?.status){
-  storeDataInLocalStorage("token",data?.login?.token)
-  dispatch(setCurrentUser({user:data?.login?.user})) 
-router.push(`/${data?.login?.user?.workspaces[0].URL}`)
-}
+useMemo(()=>{
+  console.log(data?.login)
+  if(data?.login?.status){
+    storeDataInLocalStorage("token",data?.login?.token)
+    dispatch(setCurrentUser({user:data?.login?.user})) 
+  router.push(`/${data?.login?.user?.workspaces[0].URL}`)
+  }else if(!data?.login?.status && data?.login?.message){
+    dispatch(setModalData({modalType:"error",modalMessage:data?.login?.message,modal:true}))
+  }
+},[data])
 
 const handleInput = (name:string,value:string) => {
   setErrorTable([])

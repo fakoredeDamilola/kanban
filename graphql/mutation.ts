@@ -66,6 +66,11 @@ mutation Login($input: loginInput) {
       status
       message
     }
+    ... on RegisterFailResponse{
+      status
+      message
+      field
+    }
   }
   
 }

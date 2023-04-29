@@ -16,7 +16,7 @@ border: 0.5px solid ${({theme})=>theme.border};
     top:${({top})=> top ?? "-300%"};
     left:${({left})=> left ?? "0%"};
     padding:15px 0;
-  z-index:999;
+  z-index:9999;
     font-size:12px;
     height:auto;
     width:240px;
@@ -201,7 +201,6 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
             
  <List className="dropdown-list">
             {filteredItems?.map((item, index) =>{
-                console.log({itemsss:item},"data item")
                 return (
               <li key={index} onClick={(e:any)=>selectItem(e,item)}>
               

@@ -8,6 +8,7 @@ import { IBoard, ITaskCards, setCurrentWorkspace } from '../../state/board'
 import { RootState } from '../../state/store'
 import LoadingPage from '../../components/LoadingPage'
 import NoAuth from '../../components/NoAuth'
+import NoTaskFound from '../../components/NoTaskFound'
 
 const SingleTask = () => {
   const [workspace,setWorkspace] = useState<any>()
@@ -15,6 +16,7 @@ const SingleTask = () => {
   const [task,setTask] = useState<ITaskCards>()
   const router = useRouter()
   const {currentWorkspace} = useSelector((state:RootState)=>state.board)
+  const {user} = useSelector((state:RootState)=>state)
 
   const dispatch = useDispatch()
 
@@ -95,7 +97,7 @@ const SingleTask = () => {
   }else if(task && workspace) {
     return <TaskPage taskInfo={task} workspace={workspace} taskListLength={taskListLength} />
   }else if(!task) {
-    return (<NoAuth />)
+    return (<NoTaskFound title="No Task Found" text="Please go back to home page" email={user.email} link={()=>router.push(`/${router?.query.id}`)}/>)
   }
    
 //   return <div>you</div>

@@ -234,6 +234,7 @@ const selectedItem = {
  
 
   }
+  console.log({task})
   return (
     <TaskPageAsideContainer showTaskSideNav={showTaskSideNav}>
         <TaskPageAsideHeader>
@@ -273,6 +274,7 @@ const selectedItem = {
         name:"Status",
         value:task.status.name,
         items:workspace.filter(item=>item.name.toLowerCase()==="status")[0].items,
+        type:"icon",
         selected:task.status,
         top:"50%",
       },
@@ -280,6 +282,7 @@ const selectedItem = {
         name:"Priority",
         value:task.priority.name,
         items:workspace.filter(item=>item.name.toLowerCase()==="priority")[0].items,
+        type:"icon",
         selected:task.priority,
         top:"50%",
       },
@@ -297,6 +300,7 @@ const selectedItem = {
         items:workspace.filter(item=>item.name.toLowerCase()==="label")[0].items,
         selected:task.label,
         top:"50%",
+        type:"icon",
       },
     ].map((item,index)=>{
       return (
@@ -304,6 +308,7 @@ const selectedItem = {
         workspaceID={task.workspaceID}
         selected={item.selected}
       key={index}
+      type={item?.type}
       name={item?.name}
       value={item?.value}
       workspace={item.items}

@@ -170,6 +170,33 @@ const ImageCLip = styled.div`
     display:none;
   }
 `
+const CustomTextareaStyles = styled.div<{fontSize:string;color:string;fontWeight:number;outline?:boolean}>`
+ & >textarea {
+  width:100%;
+border:none;
+/* background:transparent; */
+line-height:1;
+width:100%;
+padding:6px;
+box-sizing:border-box;
+/* outline:none; */
+resize: none; 
+::placeholder{
+    color:${({color})=>color};
+    font-size:${({fontSize})=>fontSize};
+    font-weight:600;
+opacity:0.7;
+}
+    /* color:${({color})=>color}; */
+    font-size:${({fontSize})=>fontSize};
+    &:focus{
+        outline:${({outline})=>outline ? "auto" : "none"};
+        outline-width:10px;
+        outline-color:${({color})=>color};
+
+    }
+  }
+`
 interface IBoard {
 closeNewBoardModal:()=>void;
 openNewBoardModal:boolean;
@@ -265,19 +292,25 @@ console.log({workspaces})
         </Icon>
         </Container>
         <IssueTitle>
+        <CustomTextareaStyles color="white"  fontSize="22px" fontWeight={700}>
         <CustomInput
-        changeInput={(v,n)=>null}
-        input="textarea"
+        type="textarea"
+        input='textarea'
         placeholder="Issue Title"
         fontSize="22px"
+        changeInput={(value,name)=>setIssueTitle(value)}
+        name="issueTitle"
         textvalue={issueTitle}
-        setTextValue={(val:any)=> setIssueTitle(val)}
+        
+        // setTextValue={(val:any)=> setIssueTitle(val)}
         color="white"
         fontWeight={700}
         maxLength={256}
-        name="title"
+        // height={false}
         
       />
+        </CustomTextareaStyles>
+    
       </IssueTitle>
       </Header>
       <ModalBody>
@@ -294,12 +327,11 @@ console.log({workspaces})
       
       <IssueDescription>
         <CustomInput
-        changeInput={(v,n)=>null}
+        changeInput={(value,name)=>setIssueDescription(value)}
         input="textarea"
         placeholder="Issue description"
         fontSize="18px"
          textvalue={issueDescription}
-         setTextValue={(val:any)=> setIssueDescription(val)}
         fontWeight={300}
         color="white"
         name="description"
@@ -348,4 +380,4 @@ console.log({workspaces})
   )
 }
 
-export default AddNewBoard
+export default React.memo(AddNewBoard)

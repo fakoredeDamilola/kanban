@@ -11,10 +11,11 @@ import ProfilePicture from '../../ProfilePicture'
 import ActivityCard from './ActivityCard'
 import {v4 as uuidv4} from "uuid"
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../../state/store'
 import { device } from '../../../config/theme'
 import { useMutation } from '@apollo/client'
 import { ADD_NEW_ACTIVITY } from '../../../graphql/mutation'
+import { FETCH_TASK } from '../../../graphql/queries'
+import { useRouter } from 'next/router'
 
 const TaskPageMainContainer = styled.div`
 
@@ -218,7 +219,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
   const [taskDescription,setTaskDescription] = React.useState(task.issueDescription ?? "")
   const [comment,setComment] = React.useState("")
   const [addNewActivity,{loading,error,data}] = useMutation(ADD_NEW_ACTIVITY)
-
+  const router = useRouter()
   const [isOpen,setIsOpen] = useState(false)
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
@@ -245,6 +246,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
       // time: Date.now(),
 
     }
+    console.log(router.query,"kekikeokoe")
     // dispatch(addNewActivity({id:task._id,activity:commentActivity}))
     addNewActivity({
       variables:{
@@ -253,7 +255,17 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         activity:commentActivity
         }
         
-      }
+      },
+      refetchQueries:() => [{
+        query: FETCH_TASK,
+        variables: { 
+         
+           input: {
+            id:router?.query.taskID,
+            URL:router?.query.id
+        }
+        },
+    }]
     })
 
     setComment("")
@@ -293,14 +305,14 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         placeholder="Issue Title"
         fontSize="22px"
         textvalue={taskTitle}
-        setTextValue={(val:any)=> setTaskTitle(val)}
+        // setTextValue={(val:any)=> setTaskTitle(val)}
         color="white"
         outline={true}
         fontWeight={700}
         maxLength={256}
         input="text"
         name="issue title"
-        changeInput={()=>{}}
+        changeInput={(value,name)=>setTaskTitle(value)}
         
       />
       
@@ -309,12 +321,12 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         placeholder="Issue description..."
         fontSize="18px"
          textvalue={taskDescription}
-         setTextValue={(val:any)=> setTaskDescription(val)}
+        //  setTextValue={(val:any)=> setTaskDescription(val)}
         fontWeight={300}
         color="white"
         input="text"
         name="issue description"
-        changeInput={()=>{}}
+        changeInput={(value,name)=>setTaskDescription(value)}
       />
         <SubIssues>
           <AiOutlinePlus /> <p>add sub-issues</p>
@@ -347,7 +359,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
             value={comment}
             onChange={(e)=>setComment(e.target.value)}
           />
-          <button onClick ={()=>submitComment()}>Submit</button>
+          <button onClick ={submitComment}>Submit</button>
  
             </div>
            

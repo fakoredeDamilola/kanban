@@ -54,7 +54,7 @@ console.log({assigned})
         & >div {
             width:${({size}) => size ? size : "20px"};
             height:${({size}) => size ? size : "20px"};
-            font-size:${({size}) => size ? `calc(${size}/2)` : "8px"};
+            font-size:${({size}) => size ? `11px` : "8px"};
             color:${({theme,color}) => theme.text};
             display:flex;
             justify-content:center;

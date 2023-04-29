@@ -18,14 +18,17 @@ import { useDrag } from "react-dnd";
 import CalenderModal from "../modal/CalenderModal"
 import { CHANGE_TASK_DETAIL } from "../../graphql/mutation"
 import { useMutation } from "@apollo/client"
+import { FETCH_TASK } from "../../graphql/queries"
 
 
 const TaskCardStyle = styled.div<{isDrag:boolean;view:string}>`
     padding:12px 14px;
     box-sizing:border-box;
-    position:relative;
+    /* position:relative; */
+    z-index:9;
     border:0px;
-
+    overflow-x:hidden;
+overflow-y:hidden;
     background: ${({theme})=>theme.cardBackground};
     min-height:${({view}) => view==="list" ? "40px" : "110px"};
     border-radius:${({view}) => view==="list" ? "0%" : "6px"};
@@ -68,6 +71,7 @@ font-size:${({fontSize})=>fontSize ?? "12px"};
 justify-content:center;
 align-items:center;
 cursor:pointer;
+
 /* background-color: ${({theme})=>theme.secondary}; */
 border:1px solid ${({theme})=>"#777474"};
 &:hover {
@@ -79,6 +83,9 @@ border:1px solid ${({theme})=>"#777474"};
 const TaskStyleContainer = styled.div`
 display:flex;
 justify-content:space-between;
+word-wrap:break-word;
+overflow-x:hidden;
+overflow-y:hidden;
 
 `
 const FooterWrapper = styled.div<{view:string}>`
@@ -99,6 +106,10 @@ const Label = styled.div`
   gap:3px;
   align-items:center;
 
+`
+const TaskTitle = styled.p`
+  /* width:50%; */
+  word-wrap:break-word;
 `
 
 const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
@@ -122,7 +133,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
   const user = useSelector((state:RootState)=>state.user)
   const [openCalenderModal, setOpenCalenderModal] = useState(false)
 
-  const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
+  const [changeTaskDetail,{data,error,loading}] = useMutation(CHANGE_TASK_DETAIL)
 
 
   const saveCalenderModal = (e:any,startDate:any) => {
@@ -164,8 +175,19 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
               _id:id,
               type:selectedItem,
               name
-          }
+          },
+          
       },
+      refetchQueries:() => [{
+        query: FETCH_TASK,
+        variables: { 
+         
+           input: {
+            id:router?.query.taskID,
+            URL:router?.query.id
+        }
+        },
+    }]
   })
 
     let newActivity:IActivity
@@ -213,7 +235,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     
   }));
 
-  
+  console.log(card.priority,"jjijieieieiiieiieiieiieiieii")
 
   return (
 
@@ -240,7 +262,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     </CustomDropdown>
         }
        
-    <p>{card.issueTitle.slice(0,82)}...</p>
+    <TaskTitle>{card.issueTitle.slice(0,82)} </TaskTitle>
       </TaskId>
       <ProfilePicture assigned={card.assigned} tooltip size={view==="list" ? "15px" : "20px"} />
       </TaskStyleContainer>
@@ -253,6 +275,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       isOpen={isPriorityOpen} 
       setIsOpen={setIsPriorityOpen} 
       left="10%" 
+      type="icon"
       items={currentWorkspace.subItems.find((item)=>item.name.toLowerCase()==="priority")?.items} selected={card.priority ?? {name:"no priority"}} 
       selectItem={(e,element:Item) =>selectTaskPriority(e,card._id,element,"priority")}>
         <Icon onClick={(e)=>handleButtonClick(e,"priority")}>
@@ -270,13 +293,21 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
          <CustomIcon img="BsCalendar2" fontSize="13px" /> {getTextDate(card.dueDate,"MM, yy")}
        </Icon>
     }
-        {card.label &&
-          <CustomDropdown isOpen={isFeatureOpen} setIsOpen={setIsFeatureOpen} selected={card.label} selectItem={(e:any,item:Item)=>{
-          
-          e.stopPropagation()
+        {card.label && card.label.name !== "Label" &&
+          <CustomDropdown
+          isOpen={isFeatureOpen}
+          setIsOpen={setIsFeatureOpen}
+          selected={card.label}
+          type="icon"
+          selectItem={(e:any,item:Item)=>{
+            e.stopPropagation()
             selectTaskPriority(e,card._id,item,"Label")
             setIsFeatureOpen(false)
-          }} top="30%" left="-70%" items={currentWorkspace.subItems.find(item=>item.name.toLowerCase()==="label")?.items} >
+          }}
+          top="30%"
+          left="-70%"
+          items={currentWorkspace.subItems.find(item=>item.name.toLowerCase()==="label")?.items}
+          >
       <Label  onClick={(e)=>handleButtonClick(e,"feature")}>
         <CustomIcon img={card.label?.img} fontSize="12px" type="color" /> <div>{card.label?.name}</div>
       </Label>
