@@ -4,8 +4,9 @@ import {useState,useRef} from 'react'
 import useAutosizeTextArea from '../hooks/useAutosizeTextarea';
 
 
-const CustomTextareaStyles = styled.textarea<{fontSize:string;color:string;fontWeight:number;outline?:boolean}>`
-width:100%;
+const CustomTextareaStyles = styled.div<{fontSize:string;color:string;fontWeight:number;outline?:boolean}>`
+ & >textarea {
+  width:100%;
 border:none;
 background:transparent;
 line-height:1;
@@ -17,7 +18,7 @@ resize: none;
 ::placeholder{
     color:${({color})=>color};
     font-size:${({fontSize})=>fontSize};
-    font-weight:${({fontWeight})=>fontWeight};
+    font-weight:600;
 opacity:0.7;
 }
     color:${({color})=>color};
@@ -28,6 +29,7 @@ opacity:0.7;
         outline-color:${({color})=>color};
 
     }
+  }
 `
 const Input = styled.div<{isError?:boolean;fontSize:string;color:string;fontWeight:number;}>`
 & > input {
@@ -46,8 +48,9 @@ line-height:1;
     font-size:${({fontSize})=>fontSize};
 ::placeholder{
     color:${({color})=>color};
-    font-size:${({fontSize})=>fontSize};
-    font-weight:${({fontWeight})=>fontWeight};
+    font-size:12px;
+    opacity:0.5;
+    font-weight:300;
 }
 }
   
@@ -61,7 +64,6 @@ interface IInput {
     maxLength?:number;
     fontWeight:number;
     textvalue:string;
-    setTextValue:React.Dispatch<React.SetStateAction<string>>
     outline?:boolean;
     input:string;
     name:string;
@@ -76,20 +78,20 @@ interface IInput {
 const CustomInput = ({
   type,
   placeholder,
-  fontSize,color,maxLength,fontWeight,textvalue,setTextValue,outline,input,isError,name,error,errors,setErrorTable,disable,changeInput}:IInput) => {
+  fontSize,color,maxLength,fontWeight,textvalue,outline,input,isError,name,error,errors,setErrorTable,disable,changeInput}:IInput) => {
 
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
 
-    setValue(val);
-    setTextValue(val)
+    // setValue(val);
+    // setTextValue(val)
   };
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 //   const textAreaRef1 = useRef<HTMLTextAreaElement>(null);
 
-  useAutosizeTextArea(textAreaRef.current, value);
+  // useAutosizeTextArea(textAreaRef.current, value);
 //   useAutosizeTextArea(null, value);
 
 
@@ -108,13 +110,13 @@ const CustomInput = ({
             disabled = {disable ?true : false}
             onBlur={(e)=>{
               if(errors?.includes("required") && e.target.value === ""){
-                console.log({name})
+
                 if(setErrorTable){
                   setErrorTable(prev=>prev.includes(name) ? prev : [...prev,name])
                 }
               }
               if(errors?.includes("length") && e.target.value.length < 5){
-                console.log(e.target.value.length)
+            
                 if(setErrorTable){
                   setErrorTable(prev=>prev.includes(name) ? prev : [...prev,"length"])
                 }
@@ -131,20 +133,23 @@ const CustomInput = ({
 {error ?? "This input is wrong"}
             </div> }
             </Input>
-    :
-    <CustomTextareaStyles
-        placeholder={placeholder}
-        fontSize={fontSize}
+    : input==="textarea"?
+    <CustomTextareaStyles fontSize={fontSize} outline={outline} fontWeight={fontWeight} color={color}>
+<textarea
+placeholder={placeholder}
         value={textvalue}
+        onChange={(event)=>changeInput(event.target.value, event.target.name)}
         // height={height}
-        outline={outline}
-        fontWeight={fontWeight}
-        color={color}
+        
+        
         ref={textAreaRef}
-        onChange={handleChange}
+        // onChange={handleChange}
         maxLength={maxLength}
         rows={1}
     />
+
+    </CustomTextareaStyles> : null
+        
     
    
 

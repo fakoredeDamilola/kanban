@@ -112,7 +112,8 @@ enum SELECT {
     const [profile,setProfile] = useState<any | null>()
     const [selected,setSelected] = useState(SELECT.ASSIGNED)
     const [profileSideNav,setProfileSideNav] = useState(false)
-    const {user,boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
+    const {boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
+    const {user} = useSelector((state:RootState)=>state)
     const [tasks,setTasks] = useState<any>([])
     const [current,setCurrent] = useState<any[]>([])
 
@@ -124,17 +125,14 @@ enum SELECT {
       }
     })
 
-    console.log({data,error,loading})
     useMemo(()=>{
       if(data?.FetchMember?.__typename==="CreateMemberFailResponse"){
         setProfile(null)
       }else if(data?.FetchMember?.__typename==="CreateMemberSuccessResponse"){
-        console.log(data?.FetchMember?.member)
         setProfile(data?.FetchMember?.member)
       }
     },[data])
     useEffect(()=>{
-      console.log(router.query.username)
         if(router?.query.username && router?.query.id){
           // @ts-ignore
           // const info = currentWorkspace.members.find((item:Item)=>item.username===router.query?.username)
@@ -147,7 +145,6 @@ enum SELECT {
          
            // @ts-ignore
            setWorkspaceID(router.query?.id)
-           console.log(boardsDetails.tasks)  
            // @ts-ignore
            const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
            if(workspace){
@@ -157,7 +154,6 @@ enum SELECT {
            }
            
         }
-        console.log(router.query)
       },[router.query])
 
 
@@ -173,7 +169,6 @@ enum SELECT {
       useMemo(()=>{
         if(workspaceData?.fetchWorkspace.status){
           const workspace = workspaceData?.fetchWorkspace.workspace
-          console.log({workspace})
           const boardDetails:IBoard = {
             workspaceID:workspace._id ?? "29",
             workspace:workspace.name,
@@ -190,12 +185,10 @@ enum SELECT {
 
       useEffect(()=>{
         if(currentWorkspace.URL === router?.query?.id && profile){
-          console.log(boardsDetails.tasks,{boardsDetails,workspace,profile})
           const currentTask = workspace.taskID.filter((task:ITaskCards)=> task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress")
         const taskArray = selected === SELECT.ASSIGNED ? workspace.taskID.filter((task:ITaskCards)=>task.assigned.name ===profile?.name) :
        workspace.taskID.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
 
-       console.log({currentTask,taskArray})
        if(taskArray){
           setCurrent(currentTask)
          setTasks(taskArray)

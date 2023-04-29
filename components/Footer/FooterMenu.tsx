@@ -11,6 +11,7 @@ import ProfilePicture from '../ProfilePicture';
 const FooterIcon = styled.div`
  margin-left:10px;
     display:none;
+    font-size:12px;
   @media ${device.mobileM} {
     display:block;
   }
@@ -103,6 +104,7 @@ const FooterMenu = ({item}:IFooter) => {
     item.type !== "color" && setIsOpen(false)
     dispatch(selectSubItems({name,item}))
    }
+   console.log({item},"new data info")
   return (
     <CustomDropdown 
     isOpen={isOpen}
@@ -111,13 +113,13 @@ const FooterMenu = ({item}:IFooter) => {
     selected={item.selected}
     selectItem={(event:any,element:Item) =>selectItem(item.name,event,element)}
     left="80%"
-    type={item.name==="Assigned" ? 'image' : ''}
+    type={item.name==="Assigned" ? 'image' : 'icon'}
     checkBox={true}
     >
     <FooterWrapper onClick={handleButtonClick}>
-       {item.name==="Assigned" && item.selected ? 
+       {item.name==="Assigned" && item.selected.name!=="Assigned" ? 
        <ProfilePicture assigned={item.selected} tooltip={false} size="15px" />
-      : <CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} fontSize="12px"/>} 
+      : <CustomIcon img={item.selected.img ?? item.icon} type={item.selected.type} color="#D2D3E0" fontSize="12px"/>} 
      
          {item.text && <FooterIcon>{item.selected.name ?? item.name}</FooterIcon>}
       {item.text && <span>{item.text}<div>{item.name[0]}</div></span>}

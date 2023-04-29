@@ -86,7 +86,6 @@ const CalenderButton = styled.button`
     `
 
 const CalenderModal = ({openCalenderModal,closeCalenderModal,saveCalenderModal,date}:{openCalenderModal:boolean,date:any,closeCalenderModal:() => void,saveCalenderModal:(e:any,date:any) => void}) => {
-    console.log({date},new Date(date))
     const [startDate, setStartDate] = useState(date ? new Date(date) : new Date());
     const Months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 

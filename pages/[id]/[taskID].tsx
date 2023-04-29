@@ -6,6 +6,9 @@ import TaskPage from '../../components/taskpage/TaskPage'
 import { FETCH_TASK, FETCH_WORKSPACE } from '../../graphql/queries'
 import { IBoard, ITaskCards, setCurrentWorkspace } from '../../state/board'
 import { RootState } from '../../state/store'
+import LoadingPage from '../../components/LoadingPage'
+import NoAuth from '../../components/NoAuth'
+import NoTaskFound from '../../components/NoTaskFound'
 
 const SingleTask = () => {
   const [workspace,setWorkspace] = useState<any>()
@@ -13,12 +16,12 @@ const SingleTask = () => {
   const [task,setTask] = useState<ITaskCards>()
   const router = useRouter()
   const {currentWorkspace} = useSelector((state:RootState)=>state.board)
+  const {user} = useSelector((state:RootState)=>state)
 
   const dispatch = useDispatch()
 
   useEffect(()=>{
     if(router?.query.taskID){
-      console.log(router.query)
        setWorkspace(router.query.taskID)
     setTaskID(router.query.taskID)
     }
@@ -31,7 +34,6 @@ const SingleTask = () => {
         }
     }
   })
-  console.log({data,error,loading})
   useMemo(()=>{
     // if(data?.fetchTask?.status){
         setTask(data?.fetchTask?.task)
@@ -63,7 +65,6 @@ const SingleTask = () => {
   useMemo(()=>{
     if(workspaceData?.fetchWorkspace.status){
       const workspace = workspaceData?.fetchWorkspace.workspace
-      console.log({workspace})
       const boardDetails:IBoard = {
         workspaceID:workspace._id ?? "29",
         workspace:workspace.name,
@@ -83,6 +84,7 @@ const SingleTask = () => {
           setWorkspace(workspace)
         }else {
           fetchWorkspace()
+          
         }
         
     }
@@ -90,16 +92,12 @@ const SingleTask = () => {
 
   const taskList = task?.status?.name
   const taskListLength = currentWorkspace.taskID.filter((task:ITaskCards)=>task.status.name === taskList)
-  if(loading){
-    return <div>
-        <h1>loading</h1>
-    </div>
+  if(loading || workspaceLoading){
+    return <LoadingPage />
   }else if(task && workspace) {
     return <TaskPage taskInfo={task} workspace={workspace} taskListLength={taskListLength} />
   }else if(!task) {
-    return (<div>
-        <h1>task not found</h1>
-    </div>)
+    return (<NoTaskFound title="No Task Found" text="Please go back to home page" email={user.email} link={()=>router.push(`/${router?.query.id}`)}/>)
   }
    
 //   return <div>you</div>

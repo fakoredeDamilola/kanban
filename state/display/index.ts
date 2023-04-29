@@ -11,6 +11,9 @@ taskView:string,
 profileView:string,
 theme:string,
 openNewBoardModal:boolean;
+modal:boolean;
+modalMessage:string;
+modalType:string;
 current_signup_page:SIGNUPPAGESTATE
 }
 
@@ -19,6 +22,9 @@ showSideNav:true,
 taskView: "column",
 profileView:"column",
 theme:"light",
+modal:false,
+modalMessage:"",
+modalType:"",
 current_signup_page:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX,
 openNewBoardModal:false,
 }
@@ -46,6 +52,11 @@ const displaySlice = createSlice({
         },
         setCurrentSignupPage:(state,{payload:{current}}) =>{
             state.current_signup_page = current
+        },
+        setModalData:(state,{payload:{modal,modalType,modalMessage}})=>{
+            state.modal = modal
+            state.modalMessage = modalMessage
+            state.modalType = modalType
         }
     }
 })
@@ -56,7 +67,8 @@ export const {
     switchTaskView,
     setNewBoardModal,
     switchProfileView,
-    setCurrentSignupPage
+    setCurrentSignupPage,
+    setModalData
 } = displaySlice.actions
 
 export default displaySlice.reducer

@@ -1,5 +1,7 @@
+import { GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google'
+import axios from 'axios'
 import { motion } from 'framer-motion'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
 import CustomInput from '../CustomInput'
@@ -53,12 +55,6 @@ const EmailInput = styled.div`
     font-size:12px;
   }
 `
-const Error = styled.div<{showError:boolean}>`
-   display: ${({showError}) => showError ? "block": "none"};
-   color:red;
-   font-size:12px;
-   padding-top:10px;
-`
 const InputContainer = styled.div`
 border-top: 1px solid ${({theme}) => theme.borderColor};
 
@@ -73,6 +69,8 @@ interface ISignup {
   setErrorTable:any,
   disabled:boolean;
   indicator?:boolean
+  signupWithOAuth:(data:any)=>void;
+  setAxiosLoading:any;
 }
 
 
@@ -84,6 +82,8 @@ const SignupButtons = ({
   submitEmail,
   passwordIndicator,
   indicator,
+  signupWithOAuth,
+  setAxiosLoading,
   disabled}:ISignup) => {
   const [displayInput,setDisplayInput] = useState(false)
   const colorbackground = passwordIndicator ==="weak" ? "red": passwordIndicator==="medium" ? "orange" : "green"
@@ -99,11 +99,50 @@ const SignupButtons = ({
         transition:{delay:0.1}
     }
 }
+const [user,setUser] = useState<any>(null)
+const [profile,setProfile] = useState<any>(null)
+
+
+
+useEffect(
+  () => {
+      if (user) {
+        setAxiosLoading(true)
+          axios
+              .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+                  headers: {
+                      Authorization: `Bearer ${user.access_token}`,
+                      Accept: 'application/json'
+                  }
+              })
+              .then((res) => {
+                  setProfile(res.data);
+                  
+                  signupWithOAuth(res.data)
+              })
+              .catch((err) => console.log(err));
+      }
+  },
+  [ user ]
+);
+
+const login = useGoogleLogin({
+  onSuccess: (codeResponse) => setUser(codeResponse),
+  onError: (error) => console.log('Login Failed:', error)
+});
+
+const logOut = () => {
+  googleLogout();
+  setProfile(null);
+};
+
+
   return (
     <ButtonFlex>
-        <Button field="google">
+        <Button field="google" onClick={() => login()}>
             Continue with Google
         </Button>
+          {/* <GoogleLogin onSuccess={responseMessage} onError={errorMessage} /> */}
       { displayInput &&  <InputContainer as={motion.div} variants={modal} initial="hidden" animate="visible">
         <EmailInput > 
         <label htmlFor="email">Email</label>
@@ -111,7 +150,6 @@ const SignupButtons = ({
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='Enter your email'
         type="email"
         input="text"
@@ -130,7 +168,6 @@ const SignupButtons = ({
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='****'
         type="password"
         input="text"

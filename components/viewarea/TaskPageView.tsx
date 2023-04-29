@@ -10,18 +10,23 @@ import ViewArea from './ViewArea'
 
 const FlexWrapper = styled.div<{view:string;margin?:string}>`
  color:${({theme}) => theme.primary};
+ background-color:${({theme})=>theme.background};
   overflow-x: scroll; /* enable horizontal scrolling */
+  overflow-y:hidden;
   display:${({view}) => view==="list" ? "block" : "flex"};
-  padding:${({view,margin}) => view==="list" ? margin ?? "50px 0px" : margin?? "70px 20px"};
+  padding:${({view,margin}) => view==="list" ? margin ?? "50px 0px" : margin?? "0px 20px"};
   max-height:100%;
+  /* height:calc(100%-70px); */
+  /* margin-top:70px; */
   gap:40px; 
-  margin-top:${({view}) => view==="list" ? "20px" : "0px"};
+  margin-top:${({view}) => view==="list" ? "20px" : "70px"};
  flex: 1 1 auto;
    
 `
 
 const Columns = styled.div<{view:string}>`
     width:${({view}) => view==="list" ? "100%" : "330px"};
+    height:90%;
 
 `
 
@@ -29,7 +34,7 @@ const Container = styled.div`
   background-color: ${({theme}) => theme.body};
   display:flex;
   width:100%;
-  max-height:100%;
+  min-height:100%;
   height:100%;
 `
 

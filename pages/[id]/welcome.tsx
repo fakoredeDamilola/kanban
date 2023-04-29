@@ -23,9 +23,8 @@ const NavWrapper = styled.div`
   flex-wrap: nowrap;
   box-sizing:border-box;
   align-items:center;
-  height:100%;
-  max-height:100%;
-  background-color: #000313;
+  min-height:100%;
+  background-color: ${({theme}) => theme.background};
   min-width:100%;
   padding-top:10px;
  
@@ -54,8 +53,6 @@ const router = useRouter()
     const [coWorkerValue,setCoWorkerValue] = useState("")
 
     const [addNewMembersToWorkspace,{data:newMembersData,error:newMembersError,loading:newMembersLoading }] = useMutation(ADD_NEW_MEMBERS_TO_WORKSPACE)
-
-    console.log({data,loading,error})
     useMemo(()=>{
       if(data?.fetchWorkspace.status){
         const workspace = data?.fetchWorkspace.workspace
@@ -70,7 +67,6 @@ const router = useRouter()
      
     },[data])
     useMemo(()=>{
-     console.log({newMembersData})
           if(newMembersData?.addNewMembersToWorkspace?.status){
             
             notifyMess("Invites sent","Your team members can check their emails for the invites")
@@ -88,12 +84,12 @@ const router = useRouter()
         variables:{
         input:{
           members:coWorkerValue,
-          workspaceURL:data?.fetchWorkspace.workspace.name,
-          workspaceID:data?.fetchWorkspace.workspace._id
+          workspaceURL:data?.fetchWorkspace.workspace.URL,
+          workspaceID:data?.fetchWorkspace.workspace._id,
+          workspaceName:data?.fetchWorkspace.workspace.name,
         }
       }
     })
-    console.log({data})
     }
 
     useEffect(()=>{
@@ -108,6 +104,7 @@ const router = useRouter()
   
   return (
     <NavWrapper>
+      
         {onboardingScreen === ONBOARDING_SCREEN.WELCOME_SCREEN ?
     <WelcomeScreen onboardingScreen={onboardingScreen} setOnboardingScreen={setOnboardingScreen}  /> :
     onboardingScreen === ONBOARDING_SCREEN.CONNECT_WITH_GITHUB ?

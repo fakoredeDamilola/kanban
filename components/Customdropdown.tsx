@@ -11,12 +11,12 @@ const Wrapper = styled.div`
 `
 const Dropdown = styled.div<{top?:string;left?:string;bottom:string}>`
 border: 0.5px solid ${({theme})=>theme.border};
-    background-color:${({theme}) => theme.body};
+    background-color:${({theme}) => theme.dropdownButton};
     position:absolute;
     top:${({top})=> top ?? "-300%"};
     left:${({left})=> left ?? "0%"};
     padding:15px 0;
-  z-index:999;
+  z-index:9999;
     font-size:12px;
     height:auto;
     width:240px;
@@ -37,7 +37,11 @@ const List = styled.ul`
   list-style-type:none;
  padding:5px 0px;
   margin:auto;
-
+    & h4{
+      margin-left:20px;
+      padding:4px 0;
+      font-weight:900;
+    }
   & li {
     padding: 9px 20px;
   color:${({theme}) => theme.primary};
@@ -46,6 +50,7 @@ const List = styled.ul`
   margin: 0px 9px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
   &:hover {
     background:${({theme}) => theme.nav};
     color:${({theme}) => theme.white};
@@ -119,7 +124,7 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
 
   const filteredItems = items?.filter(
     (item) =>
-      item.name?.toLowerCase().indexOf(searchValue?.toLowerCase()) !== -1
+      item?.name?.toLowerCase().indexOf(searchValue?.toLowerCase()) !== -1
   );
 
 
@@ -156,8 +161,45 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
           <User>
             {user.email}
           </User>}
-         
-          <List className="dropdown-list">
+          { type==="sidenav" ?
+           <List className="dropdown-list">
+            <h4>Your workspace</h4>
+           {filteredItems?.filter((workspace)=>workspace?.owner?._id === user?._id).map((item, index) =>{
+          
+               return (
+             <li key={index} onClick={(e:any)=>selectItem(e,item)}>  
+              <Icon>
+               <ProfilePicture assigned={item} tooltip={false} /> 
+               <div>{item.name}</div> 
+             </Icon>          
+              {selected.name &&( selected.name?.toLowerCase() === item?.name?.toLowerCase() || selected.name?.toLowerCase() === item?.email?.toLowerCase()) && !item.type ? <AiOutlineCheck color="white" /> : null}
+             
+             </li>
+           )
+           } )}
+            <h4>Invited workspace</h4>
+           {filteredItems?.filter((workspace)=>workspace?.owner?._id !== user?._id).map((item, index) =>{
+               return (
+             <li key={index} onClick={(e:any)=>selectItem(e,item)}> 
+              <Icon>
+               <ProfilePicture assigned={item} tooltip={false} /> 
+               <div>{item?.name}</div> 
+             </Icon>
+                        
+              {selected.name &&( selected.name?.toLowerCase() === item?.name?.toLowerCase() || selected.name?.toLowerCase() === item?.email?.toLowerCase()) && !item.type ? <AiOutlineCheck color="white" /> : null}
+            
+             </li>
+           )
+           } )}
+             <>
+              <div />
+              <li onClick={(e:any)=>selectItem(e,{name:"create workspace"})} style={{marginTop:"10px"}}>Create or Join a workspace   </li>
+              <li onClick={(e:any)=>selectItem(e,{name:"Add new"})}>Log out</li>
+              </>
+         </List>
+              :
+            
+ <List className="dropdown-list">
             {filteredItems?.map((item, index) =>{
                 return (
               <li key={index} onClick={(e:any)=>selectItem(e,item)}>
@@ -165,6 +207,8 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
               
              <Icon>
                {type==="image" && item.name !=="Unassign" ? 
+               <ProfilePicture assigned={item} tooltip={false} /> :
+               item.name && item.name !=="Unassign" && type!=="icon" ?
                <ProfilePicture assigned={item} tooltip={false} /> :
                item.type ==="color" ? 
                <>
@@ -178,17 +222,11 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
               </li>
             )
             } )}
-             { type==="sidenav" && 
-              <>
-              <div />
-              <li onClick={(e:any)=>selectItem(e,{name:"create workspace"})} style={{marginTop:"10px"}}>Create or Join a workspace   </li>
-              <li onClick={(e:any)=>selectItem(e,{name:"Add new"})}>Log out</li>
-              </>
-            
-
+             
+          </List>
 
             }
-          </List>
+         
          
         </Dropdown>
       )}

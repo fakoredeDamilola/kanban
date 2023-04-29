@@ -10,15 +10,15 @@ import { ITaskbar } from './IViewrea';
 const TaskBarStyle = styled.div<{view:string}>`
   width:100%;
   border-radius:0px;
-   height:40px;
+   height:20px;
    color:${({theme}) => theme.primary};
    margin:0;
-   
+   font-size:14px;
     box-sizing:border-box;
    display:flex;  
    justify-content:space-between; 
    align-items:center;
-   padding:0 5px;
+   padding:0px;
    & > div {
         display:flex;
         & > div:last-child{
@@ -28,7 +28,7 @@ const TaskBarStyle = styled.div<{view:string}>`
    }
 
    @media ${device.mobileM} {
-  width:${({view}) => view==="list" ? "100%" : "90%"};
+  width:${({view}) => view==="list" ? "100%" : "95%"};
    min-width:${({view}) => view==="list" ? "100%" : "90%"};
    border-radius:${({view}) => view==="list" ? "0" : "6px"};
    height:${({view}) => view==="list" ? "40px" : "40px"};
@@ -52,14 +52,15 @@ const Plus = styled.div`
   `
   const Icon = styled.div`
     display:flex;
+    align-items:center;
     gap:10px;
   `
-const TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
+const   TaskBar = ({taskbar,view,newTask}:ITaskbar) => {
   return (
     <TaskBarStyle view={view}>
       <div>
         <Icon>
-          <CustomIcon img={taskbar.img} fontSize={view==="list" ? "16px" :"20px"} />
+          <CustomIcon img={taskbar.img} fontSize={view==="list" ? "16px" :"15px"} />
         <div>{taskbar.name}</div>
 
         </Icon>

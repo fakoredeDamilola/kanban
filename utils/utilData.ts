@@ -30,7 +30,7 @@ export const subItems = [
         },
         {
           name:"Done",
-          img:"AiOutlineCheckCircle"
+          img:"AiFillCheckCircle"
         },
         {
           name:"Cancelled",

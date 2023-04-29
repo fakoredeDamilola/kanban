@@ -4,7 +4,7 @@ import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { CHANGE_TASK_DETAIL } from '../../graphql/mutation';
-import { FETCH_TASK } from '../../graphql/queries';
+
 import { changeTaskPriority } from '../../state/board';
 import { setNewBoardModal } from '../../state/display';
 import { RootState } from '../../state/store';
@@ -18,16 +18,19 @@ interface IView {
 }
 const ColumnTask = styled.div<{view:string;isOver:boolean}>`
     flex-shrink: 0;
-    /* background-color:${({theme,isOver})=> isOver ? theme.color1 : "transparent"}; */
-    background-color:red;
+  height:90px;
+   margin-top:10px;
+   margin:0 auto;
     flex:1;
     overflow-y: auto;
     overflow-x:hidden;    
-    max-height:100%;
+    height:100%;
     min-height:100%; 
+    margin-bottom:390px;
     width:${({view}) => view==="list" ? "100%" : "330px"};
     box-sizing:border-box;
     padding:${({view}) => view==="list" ? "0" : "0 10px"};
+    padding-bottom:40px;
     position:relative;
 `
 const LayerTask = styled.div`
@@ -53,6 +56,9 @@ h4 {
     color:#c4c0c0;
 }
 `
+const TaskCardWrapper = styled.div`
+    position:relative;
+`
 const ViewArea = ({col,task}:IView) => {
 
 const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
@@ -60,7 +66,6 @@ const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
     const {currentWorkspace} = useSelector((state: RootState) => state.board)
     const {taskView,openNewBoardModal} = useSelector((state: RootState) => state.display)
     const dispatch = useDispatch()
-    console.log({data,error,loading})
     const [columns,setColumns] = useState<{
         name:string;
         email?:string
@@ -74,8 +79,6 @@ const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
    
    
     const changeStatusOfTask = (card:any) => {
-        // dispatch(changeTaskPriority({id:card.id,type:col,name:"status"}))
-        console.log({card})
         const selectedItem = {
             name:col.name,
             email:col.email ?? "",
@@ -92,8 +95,6 @@ const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
             },
         })
     }
-    
-    console.log({task})
 const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
     accept: "card",
     drop: (item) => changeStatusOfTask(item),
@@ -104,21 +105,17 @@ const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
       })
 }));
 
-if(columns.length===0) {
- return (
-    <>
-     <p>This board is empty. Create a new column to get started.</p>
-    <button onClick={()=> dispatch(setNewBoardModal({open:!openNewBoardModal})) }>
-    + Add New Column
-    </button>
-    </>
-  )
-}else {
+
     return (
                <ColumnTask view={taskView} isOver={isOver}  ref={drop} >
-                {task.map((card:any,index:any)=> (
-               <TaskCard card={card} key={index} view={taskView} />
-            ))
+                {task.map((card:any,index:any)=> {
+                    console.log({card})
+                    return(
+                    <TaskCardWrapper>
+                         <TaskCard card={card} key={index} view={taskView} />
+                    </TaskCardWrapper>
+              
+            )})
             }
            {isOver && <LayerTask>
             <div>Drop here to move to this column</div>
@@ -129,8 +126,7 @@ if(columns.length===0) {
     
     )
     
-}
- 
+
 }
 
 export default React.memo(ViewArea)

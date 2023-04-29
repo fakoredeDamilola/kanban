@@ -23,6 +23,7 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         totalTasks
         totalMembers
         URL
+        name
         members{
           _id
           name
@@ -56,36 +57,35 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
             }
           }
           status {
+          _id
+          name
+          email
+          img
+          type
+          id
+          username
+        }
+        priority {
           name
           img
         }
-        priority {
-           name
-          img
-        }
         others {
-           name
-          img
+          name
         }
         label {
-           name
-          img
+         name 
         }
         assigned {
-           name
-          img
+         name 
         }
         assignee {
-           name
-          img
+          name
         }
         createdBy {
-           name
-          img
+          name
         }
         imgURLArray
       }
-        name
         owner {
         email
         username
@@ -97,12 +97,12 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         icon
         tooltip
         text
-        
         items {
           name
           img
           email
           _id
+        type
         }
         selected {
           name
@@ -135,12 +135,12 @@ query FetchTask($input: FetchTaskInput) {
         workspaceURL
         workspaceID
         dueDate
-        activities {
+       activities {
             description
             icon
-            nameOfActivity
             color
             name
+            nameOfActivity
             createdby {
               _id
               name
@@ -162,6 +162,7 @@ query FetchTask($input: FetchTaskInput) {
         }
         priority {
           name
+          img
         }
         others {
           name
@@ -219,4 +220,45 @@ query FetchMember($input: FetchMemberInput) {
   }
 }
 
+`
+
+export const VERIFY_MEMBERS_LINK = gql`
+query verifyMembersLink($input:verifyMembersInput) {
+  verifyMembersLink(input: $input) {
+    ...on InviteSuccess{
+      status
+      workspace {
+        _id
+        id
+        totalTasks
+        totalMembers
+        URL
+        name
+        owner {
+        email
+        username
+        _id
+      }
+      }
+      invite {
+        email
+        inviteToken
+      }
+      user {
+        _id
+        email
+      }
+      
+    }
+    ... on WorkspaceFail {
+      status
+      message
+      field
+    }
+    ... on GeneralErrorResponse {
+      status
+      message
+    }
+  }
+}
 `

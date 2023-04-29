@@ -7,32 +7,28 @@ import DashboardLayout from '../components/Dashboardlayout'
 import CenteredLogo from '../components/Home/CenteredLogo'
 import SignupButtons from '../components/Home/SignupButtons'
 import { LOGIN} from '../graphql/mutation'
-import { setCurrentUser } from '../state/board'
+import { setCurrentUser } from '../state/user'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import {  confirmPassword } from '../utils/utilFunction'
+import LoadingPage from '../components/LoadingPage'
+import { setModalData } from '../state/display'
 
 const NavWrapper = styled.div`
-   display: flex;
+    display: flex;
    flex-direction:column;
   flex-wrap: nowrap;
   box-sizing:border-box;
   align-items:center;
-  height:100%;
-  max-height:100%;
-  background-color: #000313;
+  /* height:100%; */
+  min-height:100%;
+  background-color: ${({ theme }) => theme.background} ;
   min-width:100%;
   padding-top:10px;
+  padding-bottom:20px;
  
-`
-const Terms = styled.div`
-    margin-top:15px;
-    font-size:14px;
-    color: #c4c4c4;
 `
 const signin = () => {
   
-
-
 const [signinObj,setSigninObject] = useState({
   email:"",
   password:""
@@ -41,38 +37,38 @@ const [signinObj,setSigninObject] = useState({
 
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
+const [axiosLoading,setAxiosLoading] = useState(false)
 
 
 const dispatch = useDispatch()
 const router = useRouter()
 
 
-const [login,{data,loading,error}] = useMutation(
-  LOGIN, {
+const [login,{data,loading,error}] = useMutation(LOGIN)
+
+const signinWithOAuth =async  (data:any) =>{
+  await login( {
     variables : {
       input:{
-        email:signinObj.email,
-        password:signinObj.password,
+        email:data.email,
+        password:data.id,
       }
     }
-  }
-)
+  })
+}
 
 
 useMemo(()=>{
-if(data?.login?.status){
-}
-
-
+  console.log(data?.login)
+  if(data?.login?.status){
+    storeDataInLocalStorage("token",data?.login?.token)
+    dispatch(setCurrentUser({user:data?.login?.user})) 
+  router.push(`/${data?.login?.user?.workspaces[0].URL}`)
+  }else if(!data?.login?.status && data?.login?.message){
+    dispatch(setModalData({modalType:"error",modalMessage:data?.login?.message,modal:true}))
+  }
 },[data])
-if(data?.login?.status){
-  storeDataInLocalStorage("token",data?.login?.token) 
-  dispatch(setCurrentUser({user:data?.login?.user})) 
-router.push(`/${data?.login?.user?.workspaces[0].URL}`)
-}
 
-
-console.log({data,error,loading})
 const handleInput = (name:string,value:string) => {
   setErrorTable([])
     setSigninObject((prevState) => {
@@ -92,14 +88,23 @@ const handleInput = (name:string,value:string) => {
 }
 
 const loginUser = async () => {
-    await login()
+    await login({
+      variables : {
+        input:{
+          email:signinObj.email,
+          password:signinObj.password,
+        }
+      }
+    })
 }
 
   return (
     <NavWrapper>
      <>
       <CenteredLogo size={70} text="Signin to your kanban account" />
-        <SignupButtons 
+        <SignupButtons
+        setAxiosLoading={setAxiosLoading}
+        signupWithOAuth={signinWithOAuth} 
         handleInput={handleInput}
         errorTable={errorTable}
         setErrorTable={setErrorTable}

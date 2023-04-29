@@ -2,12 +2,10 @@ export const randomColor = () => `#${Math.floor(Math.random()*16777215).toString
 
 export const hslColor = (str:string,s:number,l:number)=>{
   let hash = 0;
-  console.log(str)
   for (let i=0; i <str.length;i++){
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
   let h =  hash% 360;
-  console.log('hsl('+h+'. '+s+'% ,'+l+'%)')
   return 'hsl('+h+', '+s+'% ,'+l+'%)'
 }
 
@@ -33,7 +31,7 @@ export const handleFile = async (event:any,input:string) => {
   }
   export const CloudImage=async(form_data:FormData)=>{
     const cloudinary_url = process.env.NEXT_PUBLIC_CLOUDINARY_URL
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDNAME
+    const cloudName = process.env.NEXT_PBLIC_CLOUDNAME
     try{
         const imgUpload = await fetch(`${cloudinary_url}/${cloudName}/image/upload`,{
             method:"POST",
@@ -55,16 +53,13 @@ export const handleFile = async (event:any,input:string) => {
 // get month and day from date
 export const getTextDate = (date:Date | any,type?:string) => {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  console.log({date})
 if(!date){
   return
 }else {
   const dateInfo = new Date(parseInt(date) *1000)
-  console.log({dateInfo})
   let month = months[dateInfo.getMonth()];
   let day = dateInfo.getDate();
   let year = `${dateInfo.getFullYear()}`;
-  console.log({month,day,year})
   return type ?
   `${month} ${day}` :
   `${month} ${day}, ${year}`

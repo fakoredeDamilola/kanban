@@ -36,7 +36,6 @@ const Search = () => {
         if(router?.query.id){
            setWorkspace(router.query.id)
         }
-        console.log(router.query)
       },[router.query])
       useEffect(()=>{
         if(boardsDetails){

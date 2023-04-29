@@ -7,8 +7,7 @@ import BoardSwitchbutton from "../BoardSwitchbutton"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
- 
-  background-color: ${({theme}) => theme.nav};
+ background-color: ${({theme}) => theme.background};
   justify-content:space-between;
   align-items:center;
   padding:0px 20px;
@@ -46,7 +45,7 @@ position:relative;
 
 const Navbar = () => {
   const {currentWorkspace} = useSelector((state: any) => state.board)
-  const {taskView,showSideNav} = useSelector((state: any) => state.display)
+const {taskView,showSideNav} = useSelector((state: any) => state.display)
   const dispatch = useDispatch()
 
 const changeBoardView = (view:string) => {
@@ -56,7 +55,6 @@ const changeBoardView = (view:string) => {
 
 
   const toggleNav = () => {
-    console.log("toggleNav")
     dispatch(toggleSideNav(!showSideNav))
   }
   return (

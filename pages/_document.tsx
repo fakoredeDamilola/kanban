@@ -38,6 +38,7 @@ export default class MyDocument extends Document {
               <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;500;700;800&display=swap" rel="stylesheet" />          
             </Head>
                 <body>
+                  
                     <Main />
                     <div id="portal"></div>
                     <div id="portal2"></div>

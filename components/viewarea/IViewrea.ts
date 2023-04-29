@@ -18,4 +18,5 @@ export interface ITaskbar {
     id?:string;
     _id?:string;
     username?:string
+    owner?:any
   }

@@ -7,16 +7,22 @@ mutation Register($input: RegisterOTPInput) {
     ...on RegisterSuccessResponse{
       status
       user {
+        _id
+        username
+        image
         name
         email
         workspaces {
+          _id
           id
-        }
-        created_workspaces {
-          id
-        }
-        image
+          name
+          URL
+          owner {
+        email
         username
+        _id
+      }
+        }
       }
       token
     }
@@ -46,6 +52,11 @@ mutation Login($input: loginInput) {
           id
           name
           URL
+          owner {
+        email
+        username
+        _id
+      }
         }
       }
       token
@@ -54,6 +65,11 @@ mutation Login($input: loginInput) {
     ... on VerifyRecordSuccess {
       status
       message
+    }
+    ... on RegisterFailResponse{
+      status
+      message
+      field
     }
   }
   
@@ -65,6 +81,50 @@ mutation VerifyUserRecord($input: RegisterInput) {
   verifyUserRecord(input: $input) {
     ... on RegisterSuccessResponse {
       status
+      token
+      user {
+        name
+        email
+        workspaces {
+          id
+        }
+        created_workspaces {
+          id
+        }
+        image
+        username
+      }
+    }
+    ... on RegisterFailResponse {
+      field
+      message
+      status
+    }
+    ... on VerifyRecordSuccess {
+      status
+      message
+    }
+  }
+}
+`
+export const RESEND_OTP = gql`
+mutation resendOTP($input: ResendOTPInput) {
+  resendOTP(input: $input) {
+    ... on RegisterSuccessResponse {
+      status
+      token
+      user {
+        name
+        email
+        workspaces {
+          id
+        }
+        created_workspaces {
+          id
+        }
+        image
+        username
+      }
     }
     ... on RegisterFailResponse {
       field
@@ -99,41 +159,35 @@ mutation AddNewMembersToWorkspace($input: newMembersInput) {
 `
 
 export const CREATE_NEW_WORKSPACE = gql`
-mutation CreateNewWorkspace($input:workspaceInput){
+mutation createNewWorkspace($input:workspaceInput){
   createNewWorkspace(input: $input){
     ...on WorkspaceSuccess{
       status
       workspace {
-      name
-      URL
-      _id
-      owner {
-        email
         id
-
-      }
-      taskID
-      totalMembers
-      totalTasks
-      members {
+        _id
+        URL
+        name
+        owner {
+        email
+        username
         _id
       }
-      subItems {
-        name
-        items {
-          email
-          id
-          type
-
+        members {
+          _id
+          joined
         }
-        selected {
+        subItems {
           email
-          id
-          img
-
+          icon
+          items {
+            email
+            img
+            name
+            _id
+          }
         }
       }
-    }
     }
     ... on GeneralErrorResponse{
       status
@@ -146,21 +200,60 @@ mutation CreateNewWorkspace($input:workspaceInput){
 export const CREATE_NEW_TASK = gql`
 mutation createNewTask($input:createTaskInput){
   createNewTask(input:$input){
-    ... on CreateTaskSuccessResponse{
-      status 
+    ... on CreateTaskSuccessResponse {
+      status
       task {
+        _id
         issueTitle
         issueDescription
-        _id
+        workspaceURL
+        workspaceID
+        dueDate
+        activities {
+            description
+            icon
+            nameOfActivity
+            color
+            name
+            createdby {
+              _id
+              name
+              email
+              img
+              type
+              id
+              username
+            }
+          }
+        status {
+          _id
+          name
+          email
+          img
+          type
+          id
+          username
+        }
+        priority {
+          name
+        }
+        others {
+          name
+        }
+        label {
+         name 
+        }
+        assigned {
+         name 
+        }
+        assignee {
+          name
+        }
+        createdBy {
+          name
+        }
+        imgURLArray
       }
-    }
-    ... on CreateTaskFailResponse{
-      status
-      message
-      field
-    }
-    ... on GeneralErrorResponse{
-      message
     }
   }
 }
@@ -350,4 +443,28 @@ mutation AddNewActivity($input: changeActivityInput) {
   }
 }
 
+`
+export const ADD_MEMBERS = gql`
+mutation AddNewMember($input: NewMemberInput) {
+  AddNewMember(input: $input) {
+    ... on NewMemberResponse {
+      status
+      workspaceInfo {
+        workspaceID {
+        _id
+        id
+        URL
+        name
+      }
+        status
+        # invited
+      }
+    }
+    ... on CreateMemberFailResponse {
+      status
+      message
+      field
+    }
+  }
+}
 `

@@ -17,7 +17,7 @@ const TaskPageWrapper = styled.div`
     width:100%;
     height:100%;
     overflow-y:hidden;
-    background-color: ${({theme}) => theme.sidenav};
+    background-color: ${({theme}) => theme.background};
     border:1px solid ${({theme}) => theme.border};
     color: ${({theme}) => theme.text};
     display:flex;
@@ -37,7 +37,7 @@ const TaskPageWrapper = styled.div`
 const TaskpageDesign = styled.div`
     width:100%;
     height:100%;
-    background-color: ${({theme}) => theme.background};
+    background-color: ${({theme}) => theme.body};
     border:1px solid ${({theme}) => theme.border};
     color: ${({theme}) => theme.text};
     border-radius:8px;
@@ -58,7 +58,7 @@ const TaskPage = ({taskInfo,workspace,taskListLength}:{taskInfo?:ITaskCards,work
     const [changeTaskDate,{data,loading,error}] = useMutation(CHANGE_TASK_DUE_DATE)
     
     const dispatch = useDispatch()
-    const {user} = useSelector((state:RootState)=>state.board)
+    const user = useSelector((state:RootState)=>state.user)
     const {taskView} = useSelector((state:RootState)=>state.display)
     const [showTaskSideNav,setTaskShowSideNav] = useState(false)
     
@@ -66,7 +66,6 @@ const [openCalenderModal, setOpenCalenderModal] = useState(false)
     
 const Portal = usePortal(document.querySelector("#portal"));
    const saveCalenderDate = (e:any,startDate:any) => {
-    console.log({e,startDate},typeof startDate,`${new Date(startDate).getTime()/1000}` )
     
     // dispatch(changeTaskDueDate({id:taskInfo?._id,duedate:startDate}))
     changeTaskDate({
@@ -84,7 +83,7 @@ const Portal = usePortal(document.querySelector("#portal"));
             nameOfActivity:taskInfo?.dueDate? "changed due date" : "added due date",
            description:taskInfo?.dueDate ? `changed due date from ${getTextDate(taskInfo?.dueDate)} to ${getTextDate(startDate)}` :startDate ? `set due date ${getTextDate(startDate)}` : "removed due date",
             createdby: {
-              name:user.name,
+              name:user.name ?? "da",
               id:user._id,
               email:user.email
             },

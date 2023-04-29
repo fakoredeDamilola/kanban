@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { device } from '../../config/theme'
+import { device } from '../config/theme'
 import { motion } from 'framer-motion'
-import PictureLogo from '../PictureLogo'
 import { useRouter } from 'next/router'
 
 const Container = styled.div`
@@ -118,14 +117,11 @@ const EmailInfo = styled.div`
   justify-content:space-between;
  
 `
-const InvitePage = ({acceptInvite,email,invitee,workspaceName,workerEmail,inviteLink,userInviteIssue}:{
- acceptInvite:(value:string) => void;
+const NoTaskFound = ({link,email,title,text}:{
+ link:() => void;
  email:string;
- workspaceName:string;
- invitee:string;
- inviteLink:string;
- workerEmail:string;
- userInviteIssue:string;
+ title:string;
+ text:string;
 }) => {
   
   const router= useRouter()
@@ -180,27 +176,15 @@ const GoBack = () =>{
       ease: "easeOut",
       delay:0.9
     }}>
-         {  userInviteIssue==="link" ?
         <>
-        <h1>Invitation not found</h1>
-        <p>If you think this is a mistake or if you have trouble logging into the workspace, please contact the workspace admins or Linear support.</p>
+        <h1>{title}</h1>
+        <p>{text}</p>
         <ButtonDiv>
-          <button onClick ={GoBack}>
+          <button onClick ={link}>
             Go back
           </button>
         </ButtonDiv>
-        </> :
-        <>
-         <PictureLogo type="text" src="AA" color="red" />
-         <h1>{invitee} has invited you to workspace {workspaceName}</h1>
-        
-        {userInviteIssue==="accept" ?<p>To accept the invitation, click here</p> : <p>To accept the invitation, please login as {workerEmail}</p>}
-        <ButtonDiv>
-          <button onClick ={() =>acceptInvite(userInviteIssue)}>
-{  userInviteIssue==="accept" ? "accept":userInviteIssue==="login" ?  "login":null}
-</button>
-        </ButtonDiv>
-        </> }
+        </> 
      
         </MainBox>
        
@@ -214,4 +198,4 @@ const GoBack = () =>{
   )
 }
 
-export default InvitePage
+export default NoTaskFound

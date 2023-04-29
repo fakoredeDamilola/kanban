@@ -6,11 +6,13 @@ import styled from 'styled-components'
 import DashboardLayout from '../components/Dashboardlayout'
 import CenteredLogo from '../components/Home/CenteredLogo'
 import SignupButtons from '../components/Home/SignupButtons'
+import LoadingPage from '../components/LoadingPage'
+import ApiErrorModal from '../components/modal/ApiErrorModal'
 import CreateWorkspace from '../components/signup/CreateWorkspace'
 import VerifySignupEmail from '../components/signup/VerifySignupEmail'
 import { CREATE_NEW_WORKSPACE, REGISTER, VERIFY_USER_RECORD } from '../graphql/mutation'
-import  { AddNewWorkspace, IBoard, IWorkspace, setCurrentUser, setCurrentWorkspace } from '../state/board'
-import { setCurrentSignupPage, SIGNUPPAGESTATE } from '../state/display'
+import { setCurrentUser } from '../state/user'
+import { setCurrentSignupPage, setModalData, SIGNUPPAGESTATE } from '../state/display'
 import { RootState } from '../state/store'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import { subItems } from '../utils/utilData'
@@ -24,7 +26,7 @@ const NavWrapper = styled.div`
   align-items:center;
   /* height:100%; */
   min-height:100%;
-  background-color: #000313;
+  background-color: ${({ theme }) => theme.background} ;
   min-width:100%;
   padding-top:10px;
   padding-bottom:20px;
@@ -45,34 +47,28 @@ const [signupObject,setSignupObject] = useState({
 })
 
 
-const {current_signup_page} = useSelector((state:RootState)=>state.display)
+const {current_signup_page,modal} = useSelector((state:RootState)=>state.display)
 const [codeInput,setCodeInput] = useState("")
 const [workspaceName,setWorkspaceName] = useState("")
 const [workspaceURL,setWorkspaceURL] = useState("")
 const [passwordIndicator,setPasswordIndicator] = useState("empty")
+  const [axiosLoading,setAxiosLoading] = useState(false)
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
 const [signupPageState,setSignupPageState] = useState(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
+const [type,setType] = useState("")
 
 useEffect(()=>{
-  console.log({current_signup_page})
 setSignupPageState(current_signup_page)
 },[])
 
-const {user} = useSelector((state:RootState)=>state.board)
+// const {user} = useSelector((state:RootState)=>state.board)
 const dispatch = useDispatch()
 const router = useRouter()
 
 
 const [verifyUser,{data,loading,error}] = useMutation(
-  VERIFY_USER_RECORD, {
-    variables : {
-      input:{
-        email:signupObject.email,
-        password:signupObject.password,
-      }
-    }
-  }
+  VERIFY_USER_RECORD
 )
 
 const [register,{data:registerData,loading:registerLoading,error:registerError}] = useMutation(
@@ -84,6 +80,10 @@ const [register,{data:registerData,loading:registerLoading,error:registerError}]
     }
   }
 ) 
+
+const [errorTableWorkspace,setErrorTableWorkspace] = useState([])
+const [disableWorkspaceBtn,setDisableWorkspaceBtn] = useState(false)
+
 const [createWorkspace] = useMutation(
   CREATE_NEW_WORKSPACE, {
     variables: {
@@ -95,23 +95,34 @@ const [createWorkspace] = useMutation(
     },
     onCompleted: (data) =>{
       const workspace =data.createNewWorkspace.workspace
-      console.log({workspace})
-      dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL}))
+      dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
 
       router.push(`/${workspace.URL}/welcome`)
+    },
+    onError:(err)=>{
+      dispatch(setModalData({modalType:"error",modalMessage:"no auth found,sign up again",modal:true}))
+      dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
+      setCurrentSignupPage(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
     }
   }
 ) 
 
-
-console.log({data,error,loading})
-console.log({registerData,registerError,registerLoading})
 useMemo(()=>{
   try{
     if(data?.verifyUserRecord?.status ===true){
-      dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL}))
-      
-  setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL)
+      setAxiosLoading(false)
+      if(type==="oauth"){
+        dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
+        setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
+        storeDataInLocalStorage("token",data?.verifyUserRecord?.token)
+        dispatch(setCurrentUser({user:data?.verifyUserRecord?.user}))
+      }else{
+        dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL})) 
+        setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL)
+      } 
+}else if(data?.verifyUserRecord?.status ===false) {
+  // alert("user exist")
+  dispatch(setModalData({modalType:"error",modalMessage:data?.verifyUserRecord?.message,modal:true}))
 }
   }catch(e:any){
     console.log(e?.message)
@@ -122,12 +133,11 @@ useMemo(()=>{
   try{
     if(registerData?.register?.status ===true){
         storeDataInLocalStorage("token",registerData?.register?.token)
-        console.log(registerData?.register?.user,"user")
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         dispatch(setCurrentUser({user:registerData?.register?.user}))
   setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
 }else if(registerData?.register?.status ===false){
-  alert("wrong OTP")
+  dispatch(setModalData({modalType:"error",modalMessage:"Wrong OTP",modal:true}))
 }
   }catch(e:any){
     console.log(e?.message)
@@ -157,12 +167,34 @@ const submitEmail =async () => {
   const passwordStrength = confirmPassword(signupObject.password)
   setPasswordIndicator(passwordStrength)
   const arr= checkForError(signupObject,setErrorTable,[])
-       console.log({arr})
        if(arr.length===0){
-        await verifyUser()
+        setType("password")
+        await verifyUser( {
+          variables : {
+            input:{
+              email:signupObject.email,
+              password:signupObject.password,
+              type:"password",
+              image:""
+            }
+          }
+        })
         
        }
   // 
+}
+const signupWithOAuth =async  (data:any) =>{
+  setType("oauth")
+  await verifyUser( {
+    variables : {
+      input:{
+        email:data.email,
+        password:data.id,
+        type:"oauth",
+        image:data.picture
+      }
+    }
+  })
 }
 
 const submitCode = () => {
@@ -202,17 +234,25 @@ const createNewWorkspace =async () => {
   // router.push(`/${workspaceName}/welcome`)
 
   // create new workspace in the backend
+  const arr= checkForError({
+    workspaceURL,
+    workspaceName
+  },setErrorTable,[])
+  if(arr.length===0){
   await createWorkspace()
 
-  
+  }
 }
 
   return (
     <NavWrapper>
-     {signupPageState === SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX ?
+     {loading|| registerLoading || axiosLoading ? 
+     <LoadingPage /> :
+     signupPageState === SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX ?
      <>
       <CenteredLogo size={70} text="Create your kanban account" />
         <SignupButtons 
+        setAxiosLoading={setAxiosLoading}
         handleInput={handleInput}
         errorTable={errorTable}
         setErrorTable={setErrorTable}
@@ -220,6 +260,7 @@ const createNewWorkspace =async () => {
         signupObj={signupObject}
         disabled={disableButton}
         passwordIndicator={passwordIndicator}
+        signupWithOAuth={signupWithOAuth}
         />
 
         <Terms>
@@ -229,14 +270,20 @@ const createNewWorkspace =async () => {
      <VerifySignupEmail submitCode={submitCode} email={signupObject.email} codeInput={codeInput} setCodeInput={setCodeInput} /> : 
      signupPageState === SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE ?
       <CreateWorkspace 
+      errorTableWorkspace={errorTableWorkspace}
+      setErrorTableWorkspace={setErrorTableWorkspace}
+      disableWorkspaceBtn={disableWorkspaceBtn}
+      setDisableWorkspaceBtn={setDisableWorkspaceBtn}
       createNewWorkspace={createNewWorkspace}
-      email={user?.email}
+      email={registerData?.register?.user.email}
       workspaceName={workspaceName} 
       setWorkspaceName={setWorkspaceName} 
       workspaceURL={workspaceURL}
       setWorkspaceURL={setWorkspaceURL}
       /> : null
     }
+    
+    {modal &&  <ApiErrorModal />}
     </NavWrapper>
   )
 }
