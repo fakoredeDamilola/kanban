@@ -4,8 +4,7 @@ import styled, { ThemeProvider } from 'styled-components'
 import SideNav from './navs/SideNav'
 
 import Toggle from '../components/Toggle';
-import { switchTheme } from '../state/display';
-import { darkTheme,GlobalStyles,lightTheme } from '../config/theme';
+import { darkTheme,lightTheme } from '../config/theme';
 
 
 const NavWrapper = styled.div`
@@ -32,6 +31,12 @@ const Layout = ({children}:{children:JSX.Element}) => {
     window.localStorage.setItem('theme', mode)
     setTheme(mode)
 };
+const [token,setToken] = useState<string | null>("")
+useEffect(()=>{
+  const tokens = window.localStorage.getItem("token")
+  setToken(tokens)
+},[token])
+
 
 const themeToggler = (e:any) => {
   // et.stopPropagation()
@@ -55,6 +60,8 @@ if(!mountedComponent) return <div/>
   return (
     
     <ThemeProvider theme={theme == 'light' ? lightTheme : darkTheme} >
+      {token ? 
+      <>
       <NavWrapper>
            <SideNav />
             <div>
@@ -63,8 +70,14 @@ if(!mountedComponent) return <div/>
             
       
        
-      </NavWrapper>
-    <Toggle toggleTheme={themeToggler}  theme={theme} />
+      </NavWrapper> 
+      <Toggle toggleTheme={themeToggler}  theme={theme} />
+      </>
+      :
+      <h1 style={{color:"white"}}>no auth</h1>
+      }
+      
+   
     </ThemeProvider>
 
   )

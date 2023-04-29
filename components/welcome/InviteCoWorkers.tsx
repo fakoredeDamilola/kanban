@@ -76,6 +76,7 @@ font-size:13px;
     padding:10px;
     border:1px solid rgb(57, 58, 75);
     border-radius:4px;
+    color:white;
     resize: none; 
     box-sizing:border-box;
 }
@@ -96,7 +97,7 @@ const InviteBtn = styled.div`
     cursor:pointer;
   }
 `
-const InviteCoWorkers = ({setOnboardingScreen}:{setOnboardingScreen:any}) => {
+const InviteCoWorkers = ({setOnboardingScreen,submitCoworkers,coWorkerValue,setCoWorkerValue}:{setOnboardingScreen:any,coWorkerValue:string;submitCoworkers:any;setCoWorkerValue:any}) => {
   return (
      <Container>
           <Wrapper >
@@ -110,10 +111,12 @@ const InviteCoWorkers = ({setOnboardingScreen}:{setOnboardingScreen:any}) => {
     Email
     <textarea
     placeholder='email@example.com, email2@example.com...'
+    value={coWorkerValue}
+    onChange={(e)=>setCoWorkerValue(e.target.value)}
     />
   </TextArea>
  <InviteBtn>
- <button onClick ={()=>{}}>
+ <button onClick ={submitCoworkers}>
 Send Invite
 </button>
  </InviteBtn>

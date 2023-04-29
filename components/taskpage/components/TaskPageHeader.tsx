@@ -76,7 +76,7 @@ const TaskPageHeaders = styled.div`
    `
 
 
-const TaskPageHeader = ({taskList,showTaskSideNav,setShowTaskSideNav}:{taskList:number,showTaskSideNav:boolean,setShowTaskSideNav:any}) => {
+const TaskPageHeader = ({taskList,showTaskSideNav,setShowTaskSideNav,workspaceURL}:{workspaceURL:string,taskList:number,showTaskSideNav:boolean,setShowTaskSideNav:any}) => {
     const dispatch = useDispatch()
     const {taskView,showSideNav} = useSelector((state: any) => state.display)
     const router = useRouter()
@@ -88,7 +88,7 @@ const TaskPageHeader = ({taskList,showTaskSideNav,setShowTaskSideNav}:{taskList:
         <div>
             
         <CloseBtn>
-            <AiOutlineClose fontSize="12px" onClick={()=>router.push("/")}/>
+            <AiOutlineClose fontSize="12px" onClick={()=>router.push(`/${workspaceURL}`)}/>
         </CloseBtn>
         <HamBurgerBtn>
             <Harmburger ToggleNav={toggleNav}/>

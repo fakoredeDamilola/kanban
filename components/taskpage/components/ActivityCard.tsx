@@ -55,13 +55,13 @@ const ActivityWrapper = styled.div`
       text-decoration:underline
     }
   `
-  const Name = ({name,workspaceID,username}:{name:string,workspaceID:string,username?:string})=>{
+  const Name = ({name,workspaceURL,username}:{name:string,workspaceURL:string,username?:string})=>{
     const router = useRouter()
     return (
-      <NameDiv onClick={()=>router.push(`/${workspaceID}/profiles/${username}`)}>{name}</NameDiv>
+      <NameDiv onClick={()=>router.push(`/${workspaceURL}/profiles/${name}`)}>{name}</NameDiv>
     )
   }
-const ActivityCard = ({activity,workspaceID}:{activity:IActivity,workspaceID:string}) => {
+const ActivityCard = ({activity,workspaceURL}:{activity:IActivity,workspaceURL:string}) => {
   console.log({activity})
   return (
     <ActivityWrapper>
@@ -69,7 +69,7 @@ const ActivityCard = ({activity,workspaceID}:{activity:IActivity,workspaceID:str
         <>
          <ProfilePicture assigned={activity.createdby} size="25px" tooltip={true} /> 
        
-       <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID} /> {activity.description}</div>
+       <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL} /> {activity.description}</div>
         </> :
         activity.nameOfActivity==="comment" ?
         <>
@@ -83,13 +83,13 @@ const ActivityCard = ({activity,workspaceID}:{activity:IActivity,workspaceID:str
         activity.nameOfActivity==="Changed Status" ?
           <>
           {<CustomIcon img={activity?.icon} />}
-          <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID}/> {activity.description}</div>
+          <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL}/> {activity.description}</div>
           </> :
         activity.nameOfActivity==="Changed Label" ?
           <>
           {<CustomIcon img={activity?.icon} />}
           <div>
-            <Name name={activity.createdby.name} username={activity.createdby.username} workspaceID={workspaceID}/> {activity.description} 
+            <Name name={activity.createdby.name} username={activity.createdby.username} workspaceURL={workspaceURL}/> {activity.description} 
             <Color>
            <CustomIcon type="color" img={activity.color} /> {activity.name} 
            </Color>
@@ -98,7 +98,7 @@ const ActivityCard = ({activity,workspaceID}:{activity:IActivity,workspaceID:str
            activity.nameOfActivity==="Changed Due Date" || "Added Due Date" ?
         <>
         <AiOutlineCalendar />
-        <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceID={workspaceID} /> {activity.description}</div>
+        <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL} /> {activity.description}</div>
         </>
         :
         

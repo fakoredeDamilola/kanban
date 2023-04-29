@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import AddNewBoard from "../AddNewBoard";
 import usePortal from "../../hooks/usePortal";
 import ErrorModal from "../modal/ErrorModal";
@@ -16,6 +16,8 @@ import { DndProvider } from "react-dnd";
 import { IBarContent } from "./IViewrea";
 import { setNewBoardModal } from "../../state/display";
 import TaskPageView from "./TaskPageView";
+import { useMutation } from "@apollo/client";
+import { CREATE_NEW_TASK } from "../../graphql/mutation";
 
 
 export default function ViewAreaIndex({margin,tasks,user,type}:{margin?:string,tasks:ITaskCards[],user?:IMembers,type?:string}) {
@@ -26,12 +28,21 @@ const [issueDescription,setIssueDescription] = useState("")
 const [imgURLArray, setImgURLArray] = useState<string[]>([]);
 const dispatch= useDispatch()
 
+const {currentWorkspace} = useSelector((state:RootState)=>state.board)
+const {openNewBoardModal} = useSelector((state:RootState)=>state.display)
+
+const [createNewTask,{loading,data,error}] = useMutation(CREATE_NEW_TASK)
+
 
 
 const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
-
-const {currentWorkspace} = useSelector((state:RootState)=>state.board)
-const {openNewBoardModal} = useSelector((state:RootState)=>state.display)
+console.log({loading,data,error})
+useMemo(()=>{
+  if(data?.createNewTask?.status){
+    dispatch(setNewBoardModal({open:false})) 
+    notifyMess("Issue created",data.createNewTask.task.issueTitle)
+  }
+},[data])
 
 const closeNewBoardModal = () => {
   if(issueDescription || issueTitle){
@@ -44,7 +55,7 @@ const closeNewBoardModal = () => {
 const created = useSelector((state:RootState)=>state.board.user)
 const createdby = {
   name:created.name,
-  id:created.id,
+  id:created._id,
   email:created.email,
   username:created.username
 }
@@ -79,34 +90,47 @@ const id = currentWorkspace.totalTasks+1
 const time = Date.now()
 const createdActivity = {
   nameOfActivity:"created",
-  id:uuidv4(),
-  createdby,
-  time,
+  // id:uuidv4(),
+  // createdby,
+  // time,
   description:`created this issue`
 }
 
-const newTask ={
-  workspaceID:currentWorkspace.id,
-  // id:uuidv4(),
-  id:`${currentWorkspace.id}-${id}`,
-  issueTitle,
-  issueDescription,
- ...workspaceDetails,
-    createdby,
-   time,
-  imgURLArray,
-  activites:[createdActivity],
-}
+// const newTask ={
+//   workspaceID:currentWorkspace.id,
+//   id:`${currentWorkspace.id}-${id}`,
+//   issueTitle,
+//   issueDescription,
+//  ...workspaceDetails,
+//     createdby,
+//    time,
+//   imgURLArray,
+//   activites:[createdActivity],
+// }
 
-dispatch(addNewTask({newTask}))
-dispatch(increaseNumberOfTasks({id}))
- dispatch(setNewBoardModal({open:!openNewBoardModal})) 
-notifyMess("Issue created",issueTitle)
+// dispatch(addNewTask({newTask}))
+// dispatch(increaseNumberOfTasks({id}))
+
+createNewTask({
+  variables: {
+    input: {
+      workspaceURL: currentWorkspace.URL,
+      workspaceID:currentWorkspace._id,
+      dueDate:"",
+      issueTitle:issueTitle,
+      issueDescription,
+      ...workspaceDetails,
+      imgURLArray:[],
+      activites:[createdActivity]
+    }
+  }
+})
  }else{
   notifyMess("Title Required","please enter a title before submitting")
  }
   
 }
+
 
 const closeErrorModal = (text:string) => {
   setOpenErrorModal(false)

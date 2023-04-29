@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
@@ -89,10 +90,15 @@ const ButtonWrapper = styled.div`
     button {
         border-radius:20px;
         height:30px;
+        border:none;
         width:80px;
         background-color:#4658B4;
         color:white;
         cursor:pointer;
+        transition:0.3s all;
+        &:hover{
+            text-shadow: 4px 3px 5px rgba(0,0,0,0.49);
+        }
     }
 `
 
@@ -120,8 +126,8 @@ const Header = () => {
        
         
         <ButtonWrapper>
-            <div>Log in</div>
-            <button>Sign up</button>
+            <Link href="/signin"><div>Log in</div></Link>
+            <Link href="/signup"><button>Sign up</button></Link>
             <Harmburger ToggleNav={()=>setToggleNav((nav)=>!nav)}/>
         </ButtonWrapper>
 

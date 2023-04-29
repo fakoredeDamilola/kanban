@@ -1,15 +1,16 @@
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useState, useMemo} from 'react'
 import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../state/store'
 import styled from 'styled-components'
 import ProfilePageMain from '../../../components/profile/components/ProfilePageMain'
 import ProfilePageAside from '../../../components/profile/components/ProfilePageAside'
 import ProfilePageHeader from '../../../components/profile/components/ProfilePageHeader'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { IMembers, ITaskCards } from '../../../state/board'
-import { Item } from '../../../components/viewarea/IViewrea'
+import { IBoard, ITaskCards, setCurrentWorkspace } from '../../../state/board'
 import Head from 'next/head'
+import { FETCH_MEMBER, FETCH_WORKSPACE } from '../../../graphql/queries'
+import { useLazyQuery } from '@apollo/client'
 
 
 const ProfilePageWrapper = styled.div`
@@ -106,45 +107,102 @@ enum SELECT {
 }
 
     const router = useRouter()
+    const dispatch = useDispatch()
     const [workspaceID,setWorkspaceID] = useState("")
-    const [profile,setProfile] = useState<IMembers | null>()
+    const [profile,setProfile] = useState<any | null>()
     const [selected,setSelected] = useState(SELECT.ASSIGNED)
     const [profileSideNav,setProfileSideNav] = useState(false)
     const {user,boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
     const [tasks,setTasks] = useState<any>([])
     const [current,setCurrent] = useState<any[]>([])
+
+    const [fetchMember,{data,error,loading}] = useLazyQuery(FETCH_MEMBER,{
+      variables:{
+          input: {
+              name:router?.query.username
+          }
+      }
+    })
+
+    console.log({data,error,loading})
+    useMemo(()=>{
+      if(data?.FetchMember?.__typename==="CreateMemberFailResponse"){
+        setProfile(null)
+      }else if(data?.FetchMember?.__typename==="CreateMemberSuccessResponse"){
+        console.log(data?.FetchMember?.member)
+        setProfile(data?.FetchMember?.member)
+      }
+    },[data])
     useEffect(()=>{
       console.log(router.query.username)
         if(router?.query.username && router?.query.id){
           // @ts-ignore
-          const info = currentWorkspace.members.find((item:Item)=>item.username===router.query?.username)
+          // const info = currentWorkspace.members.find((item:Item)=>item.username===router.query?.username)
           
-          // @ts-ignore
-           setProfile(info)
+          // // @ts-ignore
+          //  setProfile(info)
+          if(!profile){
+              fetchMember()
+          }
+         
            // @ts-ignore
            setWorkspaceID(router.query?.id)
-           console.log(boardsDetails.tasks)
+           console.log(boardsDetails.tasks)  
+           // @ts-ignore
+           const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
+           if(workspace){
+             setWorkspace(workspace)
+           }else {
+             fetchWorkspace()
+           }
            
-          
-          
-          
-          
         }
         console.log(router.query)
       },[router.query])
+
+
+      const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
+        variables: {
+          input: {
+           workspaceURL: router?.query.id
+          }
+        }
+      })
+      const [workspace,setWorkspace] = useState<any>()
+  
+      useMemo(()=>{
+        if(workspaceData?.fetchWorkspace.status){
+          const workspace = workspaceData?.fetchWorkspace.workspace
+          console.log({workspace})
+          const boardDetails:IBoard = {
+            workspaceID:workspace._id ?? "29",
+            workspace:workspace.name,
+            workspaceURL:workspace.URL,
+            tasks:[]
+          }
+          dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
+          setWorkspace(workspace)
+        }
+       
+      },[workspaceData])
+  
+  
+
       useEffect(()=>{
-        if(profile){
-          console.log(boardsDetails.tasks)
-          const currentTask = boardsDetails.tasks.filter((task:ITaskCards)=> task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress")
-        const taskArray = selected === SELECT.ASSIGNED ? boardsDetails.tasks.filter((task:ITaskCards)=>task.assigned.username ===profile?.username) :
-       boardsDetails.tasks.filter((task:ITaskCards)=>task.createdby.name ===profile.name)
+        if(currentWorkspace.URL === router?.query?.id && profile){
+          console.log(boardsDetails.tasks,{boardsDetails,workspace,profile})
+          const currentTask = workspace.taskID.filter((task:ITaskCards)=> task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress")
+        const taskArray = selected === SELECT.ASSIGNED ? workspace.taskID.filter((task:ITaskCards)=>task.assigned.name ===profile?.name) :
+       workspace.taskID.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
+
+       console.log({currentTask,taskArray})
        if(taskArray){
           setCurrent(currentTask)
          setTasks(taskArray)
        }  
         }
         
-      },[selected,router.query])
+      },[router.query,workspace,selected])
   return (
     <>
     <Head>
@@ -170,7 +228,7 @@ enum SELECT {
  <ProfilePageAside currentTask={current.length} user={profile} profileSideNav={profileSideNav}  />
             </ProfilePageContainer>
             </ProfilePageDesign> : 
-            null
+            <h1>Not found</h1>
             }
               
         </ProfilePageWrapper>

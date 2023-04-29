@@ -76,7 +76,7 @@ const CustomHeader = styled.div`
     box-sizing:border-box;
     
 `
-const InvitePeopleModal = ({openInvitePeople,closeInvitePeople,saveInvitePeople}:{openInvitePeople:boolean,closeInvitePeople:() => void,saveInvitePeople:(e:any,date:any) => void}) => {
+const InvitePeopleModal = ({openInvitePeople,closeInvitePeople,saveInvitePeople,setInviteMembers,inviteMembers}:{openInvitePeople:boolean,closeInvitePeople:() => void,saveInvitePeople:() => void,setInviteMembers:any;inviteMembers:string}) => {
    
   return (
        <CustomModal  closeNewBoardModal={closeInvitePeople} openNewBoardModal={openInvitePeople}>
@@ -90,10 +90,12 @@ const InvitePeopleModal = ({openInvitePeople,closeInvitePeople,saveInvitePeople}
     Email
     <textarea
     placeholder='email@example.com, email2@example.com...'
+    value={inviteMembers}
+    onChange={(e)=>setInviteMembers(e.target.value)}
     />
   </TextArea>
  <InviteBtn>
- <button onClick ={()=>{}}>
+ <button onClick ={saveInvitePeople}>
 Send Invite
 </button>
  </InviteBtn>

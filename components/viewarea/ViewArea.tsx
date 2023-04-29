@@ -1,7 +1,10 @@
+import { useMutation } from '@apollo/client';
 import React, {useEffect,useState} from 'react'
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { CHANGE_TASK_DETAIL } from '../../graphql/mutation';
+import { FETCH_TASK } from '../../graphql/queries';
 import { changeTaskPriority } from '../../state/board';
 import { setNewBoardModal } from '../../state/display';
 import { RootState } from '../../state/store';
@@ -51,10 +54,13 @@ h4 {
 }
 `
 const ViewArea = ({col,task}:IView) => {
+
+const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
+
     const {currentWorkspace} = useSelector((state: RootState) => state.board)
     const {taskView,openNewBoardModal} = useSelector((state: RootState) => state.display)
     const dispatch = useDispatch()
-
+    console.log({data,error,loading})
     const [columns,setColumns] = useState<{
         name:string;
         email?:string
@@ -68,9 +74,26 @@ const ViewArea = ({col,task}:IView) => {
    
    
     const changeStatusOfTask = (card:any) => {
-        dispatch(changeTaskPriority({id:card.id,type:col,name:"status"}))
+        // dispatch(changeTaskPriority({id:card.id,type:col,name:"status"}))
+        console.log({card})
+        const selectedItem = {
+            name:col.name,
+            email:col.email ?? "",
+            img:col.img ?? "",
+            _id:col?._id ??""
+          }
+        changeTaskDetail({
+            variables:{
+                input: {
+                    _id:card._id,
+                    type:selectedItem,
+                    name:"status"
+                }
+            },
+        })
     }
     
+    console.log({task})
 const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
     accept: "card",
     drop: (item) => changeStatusOfTask(item),

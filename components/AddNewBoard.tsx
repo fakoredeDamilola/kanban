@@ -265,7 +265,8 @@ console.log({workspaces})
         </Container>
         <IssueTitle>
         <CustomInput
-        type="textarea"
+        changeInput={(v,n)=>null}
+        input="textarea"
         placeholder="Issue Title"
         fontSize="22px"
         textvalue={issueTitle}
@@ -273,7 +274,7 @@ console.log({workspaces})
         color="white"
         fontWeight={700}
         maxLength={256}
-        height={false}
+        name="title"
         
       />
       </IssueTitle>
@@ -292,32 +293,31 @@ console.log({workspaces})
       
       <IssueDescription>
         <CustomInput
-        type="textarea"
+        changeInput={(v,n)=>null}
+        input="textarea"
         placeholder="Issue description"
         fontSize="18px"
          textvalue={issueDescription}
          setTextValue={(val:any)=> setIssueDescription(val)}
         fontWeight={300}
         color="white"
-        height
+        name="description"
       />
       </IssueDescription>
       
       </ModalBody>
     <ModalFooter>
       <FooterLinks >
-        {workspaces.subItems.map((item,index)=>(
+        {workspaces.subItems && workspaces.subItems.map((item,index)=>{
+          
+          console.log(workspaces.subItems)
+          return (
           <FooterMenu key={index} item={item.name==="Assigned"  ? 
-          user ?  {...item,selected:{
-            name:user?.name,
-            email:user?.email,
-            username:user?.username,
-            img:user?.img
-          },items:[...item.items,...workspaces.members]} :
           {...item,items:[...item.items,...workspaces.members]}
             : item}
             />
-          ))}
+          )
+          })}
       </FooterLinks>
         
           <Footer>

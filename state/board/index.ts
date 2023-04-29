@@ -6,7 +6,8 @@ import { subItems } from "../../utils/utilData";
 
 export interface IBoard {
   workspace:string;
-  workspaceID:string;    
+  workspaceID:string;  
+  workspaceURL:string;  
     tasks: ITaskCards[]
  
 }
@@ -25,21 +26,23 @@ export interface IActivity {
 // export interface IAssigned 
 export interface ITaskCards {
   
-      id:string;
+      _id:string;
       assignee:string;
       assigned:Item;
-      workspaceID:string,
-  issueTitle:string,
-  issueDescription?:string,
-  dueDate?:string,
+      workspaceID:string;
+      workspaceURL:string;
+  issueTitle:string;
+  issueDescription?:string;
+  dueDate?:string;
     status:Item;
     label:Item;
     others:Item;
     priority:Item;
-    createdby:Item,
-   time:string,
-  imgURLArray:string[],
-  activites?: IActivity[]
+    createdby:Item;
+    createdBy?:Item;
+   time:string;
+  imgURLArray:string[];
+  activities?: IActivity[]
 }
 
 export interface subItem {
@@ -64,22 +67,30 @@ export interface IMembers {
 export interface IWorkspace {
   name:string;
   id:string;
+  _id?:string;
   URL:string;
-  taskID:string[];
+  taskID:ITaskCards[];
   totalTasks:number;
   subItems: subItem[];
   totalMembers:number;
   owner:Item;
   members:IMembers[]
 }
+export interface IMinWorkspace{
+  name:string;
+  id:string;
+  _id:string;
+  URL:string;
+}
 
 export interface IUser {
   name:string;
   email:string;
-  id:string;
+  _id:string;
   username:string;
   image:string;
-  workspaces: IWorkspace[]
+  workspaces: IMinWorkspace[]
+  created_workspaces?: IMinWorkspace[]
 }
 // export interface IWorkspaces  { 
 //   name:string;
@@ -100,6 +111,7 @@ const initialState: boardIntialState = {
     currentWorkspace: {
       name:"Product Launch",
       URL:"product-yes",
+      _id:"ueu",
       id:"PRO-L",
       totalTasks:10,
       totalMembers:0,
@@ -147,33 +159,34 @@ const initialState: boardIntialState = {
     user: {
       name:"Fakorede Damilola",
       email:"dfakorede29@gmail.com",
-      id:"87733",
+      _id:"87733",
       username:"dfakorede29",
       image:"",
       workspaces: [
         {
+          _id:"eje",
           name:"Product Launch",
           id:"PRO-L",
           URL:"euuue",
-          taskID:[],
-  totalTasks:0,
-  subItems: subItems,
-  totalMembers:0,
-  owner:{
-    name:"Fakorede Damilola",
-    email:"dfakorede29@gmail.com"
-  },
-  members:[
-    {
-      name:"Fakorede Damilola",
-      email:"dfakorede29@gmail.com",
-      id:"8883",
-      joined:"8377384849939",
-      username:"ieoe",
-      taskIDs:[],
-      img:"",
-    }
-  ]
+  //         taskID:[],
+  // totalTasks:0,
+  // subItems: subItems,
+  // totalMembers:0,
+  // owner:{
+  //   name:"Fakorede Damilola",
+  //   email:"dfakorede29@gmail.com"
+  // },
+  // members:[
+  //   {
+  //     name:"Fakorede Damilola",
+  //     email:"dfakorede29@gmail.com",
+  //     id:"8883",
+  //     joined:"8377384849939",
+  //     username:"ieoe",
+  //     taskIDs:[],
+  //     img:"",
+  //   }
+  // ]
 
         }
       ]
@@ -181,13 +194,15 @@ const initialState: boardIntialState = {
     boardsDetails: {
         workspace:"Product Launch",
         workspaceID:"PRO-L",
+        workspaceURL:"ueuue",
         
                   tasks:[
                       {
                           issueTitle:"task1",
                           issueDescription:"jejejhje jejjje",
                           workspaceID:"PRO-L",
-                          id:"ueum",
+                          workspaceURL:"PRO-L",
+                          _id:"ueum",
                           status:{
                             name:"todo",
                             img:"",
@@ -226,7 +241,8 @@ const initialState: boardIntialState = {
                         issueTitle:"task1 behhhe hehhhe",
                         issueDescription:"jejejhje jejjje",
                         workspaceID:"PRO-L",
-                        id:"w89398",
+                        workspaceURL:"PRO-L",
+                        _id:"w89398",
                         status:{
                           name:"done",
                           img:"",
@@ -264,6 +280,7 @@ const initialState: boardIntialState = {
                         issueTitle:"task1",
                         issueDescription:"jejejhje jejjje",
                         workspaceID:"PRO-L",
+                        workspaceURL:"PRO-L",
                         status:{
                           name:"cancelled",
                           img:"",
@@ -283,7 +300,7 @@ const initialState: boardIntialState = {
                           img:"",
                             email:""
                         },
-                        id:"w8000j8",
+                        _id:"w8000j8",
                         assignee:"uuue",
                         assigned:{
                           name:"",
@@ -329,7 +346,7 @@ const boardSlice = createSlice({
     },
     changeTaskPriority:(state,{payload:{id,type,name}}) => {
       console.log({id,type,name})
-      const task = state.boardsDetails.tasks.find((item)=>item.id===id)
+      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
       console.log({task})
       if(task){
         // task.priority = item
@@ -339,16 +356,16 @@ const boardSlice = createSlice({
     },
     changeTaskDueDate:(state,{payload:{id,duedate}}) => {
       console.log({id,duedate},"kejjejje")
-      const task = state.boardsDetails.tasks.find((item)=>item.id===id)
+      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
       if(task){
         task.dueDate = duedate
       }
     },
     addNewActivity:(state,{payload:{id,activity}}) => {
       console.log({id,activity})
-      const task = state.boardsDetails.tasks.find((item)=>item.id===id)
+      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
       if(task){
-        task.activites?.push(activity)
+        task.activities?.push(activity)
       }
     },
     setCurrentWorkspaceStatus:(state,{payload:{selected,type}}) => {
@@ -402,6 +419,10 @@ const boardSlice = createSlice({
     },
     AddNewWorkspace:(state,{payload:{newWorkspace}}) =>{
       state.user.workspaces = [...state.user.workspaces, newWorkspace]
+    },
+    setCurrentUser:(state,{payload:{user}})=> {
+      console.log(user,"kekk")
+      state.user = user
     }
 
   },
@@ -417,7 +438,8 @@ export const {
   setCurrentWorkspaceStatus,
   clearCurrentWorkspaceStatus,
   setCurrentWorkspace,
-  AddNewWorkspace
+  AddNewWorkspace,
+  setCurrentUser
 } = boardSlice.actions;
 
 export default boardSlice.reducer;

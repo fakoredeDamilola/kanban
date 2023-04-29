@@ -100,7 +100,7 @@ const ProfilePageAside = ({user,profileSideNav,currentTask}:{user:IMembers,profi
           },
           {
             name:"Joined",
-            value:user.joined,
+            value:`${new Date(user.joined)}`.split(" ").slice(1,5).join(" "),
           },
           {
             name:"Working on",
