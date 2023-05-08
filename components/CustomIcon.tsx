@@ -10,7 +10,6 @@ import { AiFillCheckCircle } from 'react-icons/ai'
 import { IconContext } from 'react-icons'
 
 const CustomIcon = ({img,fontSize,type,color}:{img?:string,fontSize?:string,type?:string,color?:string}) => {
-  console.log({img,type})
   return (
     <IconContext.Provider
       value={{ color: color ?? '#D2D3E0', size: fontSize ?? "16px" }}

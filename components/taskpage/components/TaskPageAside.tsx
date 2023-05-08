@@ -292,6 +292,7 @@ const selectedItem = {
         items:[...workspace.filter(item=>item.name.toLowerCase()==="assigned")[0].items ,...members],
         // items:workspace.filter(item=>item.name.toLowerCase()==="assigned")[0].items,
         selected:task.assigned,
+        type:"member",
         top:"50%",
       },
       {
@@ -305,7 +306,7 @@ const selectedItem = {
     ].map((item,index)=>{
       return (
         <AsideItems
-        workspaceID={task.workspaceID}
+        workspaceURL={task.workspaceURL}
         selected={item.selected}
       key={index}
       type={item?.type}
@@ -313,6 +314,7 @@ const selectedItem = {
       value={item?.value}
       workspace={item.items}
       changeTaskTodo={changeTaskTodo}
+      member={item?.type}
     />
       )
     }) 

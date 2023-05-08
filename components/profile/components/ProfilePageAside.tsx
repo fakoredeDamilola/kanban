@@ -1,7 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { IMembers } from '../../../state/board'
+import { IBoard, IMembers, IWorkspace, setCurrentWorkspace } from '../../../state/board'
 import ProfilePicture from '../../ProfilePicture'
+import Link from 'next/link'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
 
 const ProfilePageAsideContainer = styled.div<{profileSideNav:boolean}>`
     /* width: 50%;
@@ -22,7 +25,7 @@ const ProfilePageAsideContainer = styled.div<{profileSideNav:boolean}>`
     const TaskPageItem = styled.div`
     display:grid;
     grid-template-columns:repeat(2,120px);
-    width:80%;
+    width:100%;
     color:white;    
     font-size:14px;
     margin:15px auto;
@@ -72,14 +75,69 @@ const ProfilePageAsideContainer = styled.div<{profileSideNav:boolean}>`
     display:flex;
     gap:10px;
   `
-const ProfilePageAside = ({user,profileSideNav,currentTask}:{user:IMembers,profileSideNav:boolean;currentTask:number}) => {
+  const AsideList = styled.ul`
+    list-style-type:none;
+    color:#c4c0c0;
+    border-top:1px solid white;
+    padding:20px 15px;
+    & li {
+      font-size:14px;
+      margin:7px 0;
+      padding:4px 13px;
+      box-sizing:border-box;
+      transition:all 0.3s;
+      cursor:pointer;
+  &:hover {
+    background:#1D1E2B;
+    box-sizing:border-box;
+  }
+    }
+  `
+  interface IProfileWorkspace {
+    workspaceID:IWorkspace;
+    status:string
+  }
+const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:{user:IMembers,profileSideNav:boolean;currentTask:number;assigned:number;workspaces:IWorkspace[]}) => {
+  const router = useRouter()
+  const dispatch = useDispatch()
+
+  const selectItem = (event:any,element:any) => {
+  
+    const currentWorkspace:Partial<IWorkspace> = {
+      id:element.id ? element?.id :"29",
+      name:element.name,
+      totalTasks:0,
+      totalMembers:0,
+      owner:{
+        name:"",
+        email:""
+      },
+      taskID:[],
+      members:[],
+      // subItems:[]
+    }
+    // recieve data from backend
+
+    const boardDetails:IBoard = {
+      workspaceID:element.id ? element?.id :"29",
+      workspace:element.name,
+      workspaceURL:"u8838",
+      tasks:[]
+    }
+    dispatch(setCurrentWorkspace({workspace:currentWorkspace,boardsDetails:boardDetails})) 
+   
+      router.push(`/${element?.URL}`)
+    
+    
+   
+  }
   return (
     <ProfilePageAsideContainer profileSideNav={profileSideNav}>
     <ProfilePageAsideHeader>
       <ProfilePicture assigned={{
         name:user.name,
         img:user.img,
-      }} size="80px" tooltip={false} />
+      }} size="80px" tooltip={false} edit={true} />
      <div>
       <h4>{user.name}</h4>
       <Muted>{user.email}</Muted>
@@ -104,6 +162,10 @@ const ProfilePageAside = ({user,profileSideNav,currentTask}:{user:IMembers,profi
           },
           {
             name:"Working on",
+            value:`${assigned} issue`,
+          },
+          {
+            name:"Assigned to",
             value:`${currentTask} issue`,
           },
 
@@ -120,6 +182,17 @@ const ProfilePageAside = ({user,profileSideNav,currentTask}:{user:IMembers,profi
         })
       }
     </AsideMain>
+    <AsideList>
+      {
+      workspaces.map((workspace:any  ,index)=>{
+        return (
+
+          <li key={index}  onClick={(e:any)=>selectItem(e,workspace.workspaceID)}> <ProfilePicture assigned={{name:workspace.workspaceID.name}} tooltip={false} /> {workspace.workspaceID.URL}</li>
+        )
+      })
+    }
+    </AsideList>
+    
     </ProfilePageAsideContainer>
 
   )

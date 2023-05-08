@@ -18,9 +18,9 @@ const EmailBox = styled.div`
   }
   cursor:pointer;
     padding:15px 10px;
+    transition:all 0.3s;
   &:hover {
     background:#1D1E2B;
-    transition:all 0.3s;
     box-sizing:border-box;
   }
   color:white;

@@ -17,6 +17,7 @@ const NavWrapper = styled.div<{showSideNav:boolean}>`
   box-sizing:border-box;
   border: 1px solid ${({theme}) => theme.border};
   height: 70px;
+  z-index:999;
   display:flex;
   width:calc(100% - 250px);
   color: ${({theme}) => theme.primary};

@@ -104,7 +104,6 @@ const FooterMenu = ({item}:IFooter) => {
     item.type !== "color" && setIsOpen(false)
     dispatch(selectSubItems({name,item}))
    }
-   console.log({item},"new data info")
   return (
     <CustomDropdown 
     isOpen={isOpen}

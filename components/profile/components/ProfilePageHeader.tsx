@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { device } from '../../../config/theme'
 import { IMembers} from '../../../state/board'
-import { switchProfileView, toggleSideNav } from '../../../state/display'
+import { switchProfileView, switchTaskView, toggleSideNav } from '../../../state/display'
 import BoardSwitchbutton from '../../BoardSwitchbutton'
 import Harmburger from '../../Harmburger'
 import ProfilePicture from '../../ProfilePicture'
@@ -71,13 +71,13 @@ const TaskPageHeaders = styled.div`
 const ProfilePageHeader = ({profileSideNav,user,setProfileSideNav}:{profileSideNav:boolean,setProfileSideNav:any,user:IMembers}) => {
 
     const dispatch = useDispatch()
-    const {profileView,showSideNav} = useSelector((state: any) => state.display)
+    const {profileView,showSideNav,taskView} = useSelector((state: any) => state.display)
     const router = useRouter()
     const toggleNav = () => {
         dispatch(toggleSideNav(!showSideNav))
     }
     const changeBoardView = (view:string) => {
-        dispatch(switchProfileView(view))
+        dispatch(switchTaskView(view))
       
       }
 
@@ -100,7 +100,7 @@ const ProfilePageHeader = ({profileSideNav,user,setProfileSideNav}:{profileSideN
         
     </div>
     <div>
-       <BoardSwitchbutton taskView={profileView}changeBoardView={changeBoardView}  />
+       <BoardSwitchbutton taskView={taskView} changeBoardView={changeBoardView}  />
 
     <SideBar onClick={()=>setProfileSideNav(!profileSideNav)}>
         <FiSidebar />

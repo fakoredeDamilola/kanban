@@ -244,7 +244,8 @@ mutation createNewTask($input:createTaskInput){
          name 
         }
         assigned {
-         name 
+         name
+         img 
         }
         assignee {
           name
@@ -464,6 +465,74 @@ mutation AddNewMember($input: NewMemberInput) {
       status
       message
       field
+    }
+  }
+}
+`
+export const ADD_IMAGE_TO_MEMBER = gql`
+mutation AddImageToMember($input: addMemberImageInput) {
+  AddImageToMember(input: $input) {
+    ... on CreateMemberSuccessResponse {
+      status
+      __typename
+      member {
+        _id
+        name
+        email
+        img
+        color
+        joined
+        username
+        taskIDs {
+          _id
+          issueTitle
+          issueDescription
+          createdBy {
+            _id
+            name
+            img
+          }
+          imgURLArray
+          dueDate
+          assignee {
+            email
+            _id
+            name
+          }
+          status {
+            name
+            id
+          }
+          assigned {
+            name
+            id
+            img
+          }
+          label {
+            email
+            _id
+            name
+          }
+          others {
+            email
+            _id
+            name
+          }
+          workspaceID
+          workspaceURL
+        }
+        workspaceIDs {
+          # workspaceURL
+          workspaceID {
+            name
+            URL
+          }
+          status
+        }
+      }
+    }
+    ... on CreateMemberFailResponse {
+      status
     }
   }
 }

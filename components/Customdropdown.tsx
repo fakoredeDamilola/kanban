@@ -194,7 +194,7 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
              <>
               <div />
               <li onClick={(e:any)=>selectItem(e,{name:"create workspace"})} style={{marginTop:"10px"}}>Create or Join a workspace   </li>
-              <li onClick={(e:any)=>selectItem(e,{name:"Add new"})}>Log out</li>
+              <li onClick={(e:any)=>selectItem(e,{name:"log out"})}>Log out</li>
               </>
          </List>
               :

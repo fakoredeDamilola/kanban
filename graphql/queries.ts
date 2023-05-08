@@ -47,13 +47,14 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
             name
             nameOfActivity
             createdby {
-              _id
+              # _id
+              # name
+              # email
+              # img
+              # type
+              # id
               name
-              email
               img
-              type
-              id
-              username
             }
           }
           status {
@@ -77,6 +78,7 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
         }
         assigned {
          name 
+         img
         }
         assignee {
           name
@@ -172,6 +174,7 @@ query FetchTask($input: FetchTaskInput) {
         }
         assigned {
          name 
+         img
         }
         assignee {
           name
@@ -195,20 +198,58 @@ query FetchMember($input: FetchMemberInput) {
       __typename
       member {
         _id
-      name
-      email
-      img
-      color
-      joined
-      username
-      taskIDs {
-        _id
-        issueTitle
-        issueDescription
-        workspaceURL
-        workspaceID
-        dueDate
-      }
+        name
+        email
+        img
+        color
+        joined
+        username
+        taskIDs {
+          _id
+          issueTitle
+          issueDescription
+          createdBy {
+            _id
+            name
+            img
+          }
+          imgURLArray
+          dueDate
+          assignee {
+            email
+            _id
+            name
+          }
+          status {
+            name
+            id
+          }
+          assigned {
+            name
+            id
+            img
+          }
+          label {
+            email
+            _id
+            name
+          }
+          others {
+            email
+            _id
+            name
+          }
+          workspaceID
+          workspaceURL
+        }
+        workspaceIDs {
+          # workspaceURL
+          workspaceID {
+            name
+            URL
+          }
+          status
+        }
       }
     }
     ... on CreateMemberFailResponse {

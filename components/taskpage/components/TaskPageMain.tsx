@@ -213,7 +213,6 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
   task:ITaskCards,setOpenCalenderModal:React.Dispatch<boolean>
 }
 ) => {
-
   const dispatch = useDispatch()
   const [taskTitle,setTaskTitle] = React.useState(task.issueTitle)
   const [taskDescription,setTaskDescription] = React.useState(task.issueDescription ?? "")
@@ -246,7 +245,6 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
       // time: Date.now(),
 
     }
-    console.log(router.query,"kekikeokoe")
     // dispatch(addNewActivity({id:task._id,activity:commentActivity}))
     addNewActivity({
       variables:{
@@ -347,6 +345,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
           </SubscribeTask>
           {task.activities ? task.activities?.map((activity:any,index:number)=>
             <ActivityCard key={index} activity={activity} workspaceURL={task.workspaceURL} />
+          
           ) : null
           }
           <CommentInput>

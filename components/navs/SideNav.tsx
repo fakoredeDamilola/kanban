@@ -20,6 +20,8 @@ import { ADD_NEW_MEMBERS_TO_WORKSPACE } from "../../graphql/mutation"
 import { useMutation } from "@apollo/client"
 import { NotifyComponent } from "../Notify/Notify"
 import { toast } from "react-toastify"
+import { storeDataInLocalStorage } from "../../utils/localStorage"
+import { setCurrentUser } from "../../state/user"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -208,6 +210,15 @@ const SideNav = () => {
   const selectItem = (event:any,element:any) => {
     if(element.name==="create workspace"){
         router.push("/join")
+    }else if(element.name ==="log out"){
+      storeDataInLocalStorage("token","")
+      // dispatch(setCurrentUser({user:{
+      //   _id: "",
+      //   username : "",
+      //   email:"",
+      //   workspaces : ""
+      // }}))
+      router.push("/signin")
     }else{
     const currentWorkspace:Partial<IWorkspace> = {
       id:element.id ? element?.id :"29",

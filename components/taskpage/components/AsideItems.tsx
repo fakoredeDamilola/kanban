@@ -70,29 +70,29 @@ const Icon = styled.div`
 `
 
 const AsideItems = ({
-  workspaceID,
+  workspaceURL,
     changeTaskTodo,
     workspace,
     type,
     name,
     value,
-    selected
+    selected,
+    member
 }:{
-    workspaceID:string;
+    workspaceURL:string;
     changeTaskTodo:(name:string,item:Item)=>void,
     workspace:Item[],
     name:string,
     type?:string,
     value:string,
-    selected:Item
+    selected:Item;
+    member?:string;
 
 }) => {
-  console.log({workspace,type})
   const [isOpen,setIsOpen] = useState(false)
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   };
-  console.log({workspace},"jjejjiei")
   const router = useRouter()
   return (
     <CustomDropdown
@@ -115,12 +115,14 @@ const AsideItems = ({
   
     <ProfilePicture assigned={selected} tooltip={true} />
    : <CustomIcon img={selected.img} type={selected.type} />}
-   <div>{name.toLowerCase() === "assigned" ? value : "Unassigned"}</div>
+   <div>{(name.toLowerCase() === "assigned"  && member==="member") || !member ? 
+   value : name.toLowerCase() !== "assigned"  &&
+    member==="member" ? "unassigned" : value} </div>
    </Icon>
 </TaskPageItem>
 {name.toLowerCase() === "assigned" &&
 
-   <ProfileIcon onClick={()=>router.push(`/${workspaceID}/profiles/${selected.username}`)}>
+   <ProfileIcon onClick={()=>router.push(`/${workspaceURL}/profiles/${selected.name}`)}>
      <AiOutlineArrowRight fontSize="15px" />
   </ProfileIcon>
  

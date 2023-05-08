@@ -262,7 +262,6 @@ const AddNewBoard = ({
     }
   }
 
-console.log({workspaces})
 
   return (
     <>
@@ -343,7 +342,6 @@ console.log({workspaces})
       <FooterLinks >
         {workspaces.subItems && workspaces.subItems.map((item,index)=>{
           
-          console.log(workspaces.subItems)
           return (
           <FooterMenu key={index} item={item.name==="Assigned"  ? 
           {...item,items:[...item.items,...workspaces.members]}

@@ -59,7 +59,6 @@ const signinWithOAuth =async  (data:any) =>{
 
 
 useMemo(()=>{
-  console.log(data?.login)
   if(data?.login?.status){
     storeDataInLocalStorage("token",data?.login?.token)
     dispatch(setCurrentUser({user:data?.login?.user})) 

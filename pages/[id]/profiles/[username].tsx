@@ -17,8 +17,6 @@ const ProfilePageWrapper = styled.div`
     width:100%;
     height:100%;
     overflow-y:hidden;
-    background-color: ${({theme}) => theme.sidenav};
-    /* background:red; */
     border:1px solid ${({theme}) => theme.border};
     color: ${({theme}) => theme.text};
     display:flex;
@@ -35,6 +33,7 @@ const ProfilePageWrapper = styled.div`
 `
 const ProfilePageDesign = styled.div`
  width:100%;
+ /* min-width:100%; */
     height:100%;
     /* background-color: ${({theme}) => theme.background}; */
     border:1px solid ${({theme}) => theme.border};
@@ -46,15 +45,20 @@ const ProfilePageDesign = styled.div`
 const ProfilePageContainer = styled.div`
    width:100%;
     flex: 1; 
-  padding: 0 25px;
-    min-height: 0; 
+  padding: 0px;
+  padding-bottom:40px;
+  box-sizing:border-box;
+    min-height: 100%; 
+    height:100%;
     color: ${({theme}) => theme.text};
     display:flex;
+    background:red;
+    overflow-x:scroll;
 `
 const ProfilPageSubHead = styled.div`
   height:45px;
   border:1px solid ${({theme}) => theme.border};
-  padding: 0 25px;
+  padding: 20px 25px;
   display:flex;
   align-items:center;
   box-sizing:border-box;
@@ -111,8 +115,9 @@ enum SELECT {
     const [workspaceID,setWorkspaceID] = useState("")
     const [profile,setProfile] = useState<any | null>()
     const [selected,setSelected] = useState(SELECT.ASSIGNED)
+    const [workspace,setWorkspace] = useState<any>([])
     const [profileSideNav,setProfileSideNav] = useState(false)
-    const {boardsDetails,currentWorkspace} = useSelector((state:RootState)=>state.board)
+    const {currentWorkspace} = useSelector((state:RootState)=>state.board)
     const {user} = useSelector((state:RootState)=>state)
     const [tasks,setTasks] = useState<any>([])
     const [current,setCurrent] = useState<any[]>([])
@@ -134,11 +139,7 @@ enum SELECT {
     },[data])
     useEffect(()=>{
         if(router?.query.username && router?.query.id){
-          // @ts-ignore
-          // const info = currentWorkspace.members.find((item:Item)=>item.username===router.query?.username)
-          
-          // // @ts-ignore
-          //  setProfile(info)
+         
           if(!profile){
               fetchMember()
           }
@@ -146,56 +147,53 @@ enum SELECT {
            // @ts-ignore
            setWorkspaceID(router.query?.id)
            // @ts-ignore
-           const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
-           if(workspace){
-             setWorkspace(workspace)
-           }else {
-             fetchWorkspace()
-           }
+         
            
         }
       },[router.query])
 
 
-      const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
-        variables: {
-          input: {
-           workspaceURL: router?.query.id
-          }
-        }
-      })
-      const [workspace,setWorkspace] = useState<any>()
+      // const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
+      //   variables: {
+      //     input: {
+      //      workspaceURL: router?.query.id
+      //     }
+      //   }
+      // })
+      // 
   
-      useMemo(()=>{
-        if(workspaceData?.fetchWorkspace.status){
-          const workspace = workspaceData?.fetchWorkspace.workspace
-          const boardDetails:IBoard = {
-            workspaceID:workspace._id ?? "29",
-            workspace:workspace.name,
-            workspaceURL:workspace.URL,
-            tasks:[]
-          }
-          dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
-          setWorkspace(workspace)
-        }
+      // useMemo(()=>{
+      //   if(workspaceData?.fetchWorkspace.status){
+      //     const workspace = workspaceData?.fetchWorkspace.workspace
+      //     const boardDetails:IBoard = {
+      //       workspaceID:workspace._id ?? "29",
+      //       workspace:workspace.name,
+      //       workspaceURL:workspace.URL,
+      //       tasks:[]
+      //     }
+      //     dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
+      //     setWorkspace(workspace)
+      //   }
        
-      },[workspaceData])
+      // },[workspaceData])
   
   
 
       useEffect(()=>{
-        if(currentWorkspace.URL === router?.query?.id && profile){
-          const currentTask = workspace.taskID.filter((task:ITaskCards)=> task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress")
-        const taskArray = selected === SELECT.ASSIGNED ? workspace.taskID.filter((task:ITaskCards)=>task.assigned.name ===profile?.name) :
-       workspace.taskID.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
-
+        
+        if(profile){
+          const currentTask = profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name && (task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress"))
+        const taskArray = selected === SELECT.ASSIGNED ? profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name) :
+       profile.taskIDs.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
+      
+          setWorkspace(profile.workspaceIDs)
        if(taskArray){
           setCurrent(currentTask)
          setTasks(taskArray)
        }  
         }
         
-      },[router.query,workspace,selected])
+      },[profile,selected])
   return (
     <>
     <Head>
@@ -218,7 +216,7 @@ enum SELECT {
                 <ProfilePageMain user={profile} tasks={tasks} 
                />
 
- <ProfilePageAside currentTask={current.length} user={profile} profileSideNav={profileSideNav}  />
+ <ProfilePageAside workspaces={workspace} currentTask={current.length} user={profile} profileSideNav={profileSideNav} assigned ={profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name && (task.status.name.toLowerCase()==="in progress")).length} />
             </ProfilePageContainer>
             </ProfilePageDesign> : 
             <h1>Not found</h1>
