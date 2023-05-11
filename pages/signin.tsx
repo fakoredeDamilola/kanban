@@ -12,6 +12,7 @@ import { storeDataInLocalStorage } from '../utils/localStorage'
 import {  confirmPassword } from '../utils/utilFunction'
 import LoadingPage from '../components/LoadingPage'
 import { setModalData } from '../state/display'
+import Link from 'next/link'
 
 const NavWrapper = styled.div`
     display: flex;
@@ -25,6 +26,15 @@ const NavWrapper = styled.div`
   min-width:100%;
   padding-top:10px;
   padding-bottom:20px;
+ 
+`
+const SignupText = styled.div`
+  color:white;
+  margin:15px 0;
+  font-size:14px;
+  & Link {
+     color:  ${({ theme }) => theme.button}; 
+  }
  
 `
 const signin = () => {
@@ -112,6 +122,9 @@ const loginUser = async () => {
         disabled={disableButton}
         indicator={false}
         />
+        <SignupText>
+          Already have an account <Link href="/signup" >Sign up</Link>
+        </SignupText>
 
      </>
     </NavWrapper>

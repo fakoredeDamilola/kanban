@@ -11,8 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import ApiErrorModal from '../components/modal/ApiErrorModal';
-import LoadingPage from '../components/LoadingPage';
+
 import SecondaryLayout from '../components/layout/SecondaryLayout';
 
 
@@ -33,7 +32,8 @@ const authLink = setContext((_,{headers})=> {
 })
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/api"
+  // uri: "http://localhost:4000/api"
+  uri:"https://kanban-backend-p7m2.onrender.com/api"
 })
 
 
