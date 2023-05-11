@@ -53,7 +53,6 @@ const [createWorkspace,{loading}] = useMutation(
       router.push(`/${workspace.URL}`)
     },
     onError:(err)=>{
-      console.log({err})
       dispatch(setModalData({modalType:"error",modalMessage:"no auth found,sign up again",modal:true}))
     }
   }

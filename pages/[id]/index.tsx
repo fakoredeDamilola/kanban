@@ -19,6 +19,7 @@ import { CREATE_NEW_TASK } from "../../graphql/mutation";
 import { NotifyComponent } from "../../components/Notify/Notify";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Item } from "../../components/viewarea/IViewrea";
 
 const Container = styled.div`
   min-height:100%;  
@@ -40,7 +41,7 @@ const [issueTitle,setIssueTitle] = useState("")
 const [issueDescription,setIssueDescription] = useState("")
 const [imgURLArray, setImgURLArray] = useState<string[]>([]);
 const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
-    const [errorModal,setErrorModal] = useState(false)
+    const {user} = useSelector((state:RootState)=>state)
     const [fetchWorkspace,{data,refetch:refetchWork,loading,error}] = useLazyQuery(FETCH_WORKSPACE,{
       variables: {
         input: {
@@ -86,60 +87,46 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       }
       
     }
-    
+    const addNewData =(obj:any,name:string,item:Item | string) =>{
+      return obj[name.toLowerCase()] = item
+    }
     
     const createNewIssue = () => {
-      // dispatch(addNewBoard({newBoard}))
+     
      if(issueTitle) {
       const workspaceDetails = currentWorkspace.subItems.reduce((acc,cur)=> {
         
-      //      if(cur.name.toLowerCase() ==="assigned" && type==="profile"){
-      //       return Object.assign(acc, {
-      //       [cur.name.toLowerCase()]:{
-      //         name: user?.name,
-      //         img:user?.img,
-      //         email:user?.email,
-      //         username:user?.username
-      //       }
-      //   })
-      // } else {
+           if(cur.name.toLowerCase() ==="assigned"){
+            console.log({cur})
+            return Object.assign(acc, {
+            [cur.name.toLowerCase()]:cur?.selected._id
+        })
+      } else {
         return Object.assign(acc, {
           [cur.name.toLowerCase()]:{
             name: cur.selected?.name,
             img:cur.selected?.img,
-            email:cur.selected?.email,
-            username:cur.selected?.username
+            email:"cur.selected?.email",
+            username:"cur.selected?.username"
           }
       })
-      // } 
+      } 
         
     },{})
-    const id = currentWorkspace.totalTasks+1
-    const time = Date.now()
+    if(workspaceDetails["assigned"  as keyof typeof workspaceDetails]){
+   addNewData(workspaceDetails,"assignee",user._id)
+    } 
     const createdActivity = {
       nameOfActivity:"created",
+      
       // id:uuidv4(),
       // createdby,
       // time,
       description:`created this issue`
     }
-    
-    // const newTask ={
-    //   workspaceID:currentWorkspace.id,
-    //   id:`${currentWorkspace.id}-${id}`,
-    //   issueTitle,
-    //   issueDescription,
-    //  ...workspaceDetails,
-    //     createdby,
-    //    time,
-    //   imgURLArray,
-    //   activites:[createdActivity],
-    // }
-    
-    // dispatch(addNewTask({newTask}))
-    // dispatch(increaseNumberOfTasks({id}))
     setIssueDescription("")
     setIssueTitle("")
+
     createNewTask({
       variables: {
         input: {
@@ -149,6 +136,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
           issueTitle:issueTitle,
           issueDescription,
           ...workspaceDetails,
+          createdBy:user._id,
           imgURLArray:[],
           activites:[createdActivity]
         }
@@ -159,20 +147,17 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
      }
       
     }
-    if(refetch){
-      console.log("ue")
-      fetchWorkspace()
-      console.log({data})
-      dispatch(refetchWorkspace({refetchWorkspace:false}))
-    }
+    // if(refetch){
+      // fetchWorkspace()
+    //   dispatch(refetchWorkspace({refetchWorkspace:false}))
+    // }
 
     const Portal = usePortal(document.querySelector("#portal"));
     const Portal2 = usePortal(document.querySelector("#portal2"));
-
+   
     const [workspace,setWorkspace] = useState<any>()
     useMemo(()=>{
       if(data?.fetchWorkspace.status){
-        console.log("fetched")
         const workspace = data?.fetchWorkspace.workspace
         const boardDetails:IBoard = {
           workspaceID:workspace._id ?? "29",
@@ -189,21 +174,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
     },[data])
   const {boardsDetails,currentWorkspace} = useSelector((state: RootState) => state.board)
 
-  // useEffect(()=>{
-  //   // if(!)
-  //   console.log(router.query)
-  //     if(router?.query.username && router?.query.id){
-  //       // @ts-ignore
-  //       const info = currentWorkspace.members.find((item:Item)=>item.username===router.query?.username)
-        
-  //       // @ts-ignore
-  //        setProfile(info)
-  //        // @ts-ignore
-  //        setWorkspaceID(router.query?.id)
-  //        console.log(boardsDetails.tasks)
-        
-  //     }
-  //   },[router.query])
+
 
   useEffect(()=>{
       if(router?.query?.id){
@@ -245,7 +216,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
         <Container>
         <Navbar /> 
         <ViewAreaIndex 
-          tasks={workspace.taskID}
+          tasks={workspace.task}
           />
           </Container>
        }

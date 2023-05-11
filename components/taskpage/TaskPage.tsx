@@ -104,7 +104,7 @@ const Portal = usePortal(document.querySelector("#portal"));
                 <TaskPageMain task={taskInfo} 
                 setOpenCalenderModal={setOpenCalenderModal}/>
 
- <TaskPageAside task={taskInfo} workspace={workspace.subItems} members={workspace.members} showTaskSideNav={showTaskSideNav} />
+ <TaskPageAside task={taskInfo} workspacesubitems={workspace.subItems} workspace={workspace} members={workspace.members} showTaskSideNav={showTaskSideNav} />
             </TaskPageContainer>
             </TaskpageDesign> : 
             null

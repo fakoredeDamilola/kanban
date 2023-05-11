@@ -202,7 +202,7 @@ mutation createNewTask($input:createTaskInput){
   createNewTask(input:$input){
     ... on CreateTaskSuccessResponse {
       status
-      task {
+      task{
         _id
         issueTitle
         issueDescription
@@ -212,20 +212,20 @@ mutation createNewTask($input:createTaskInput){
         activities {
             description
             icon
-            nameOfActivity
             color
             name
+            nameOfActivity
             createdby {
               _id
               name
               email
               img
-              type
-              id
+              # type
+              # id
               username
             }
           }
-        status {
+          status {
           _id
           name
           email
@@ -236,6 +236,7 @@ mutation createNewTask($input:createTaskInput){
         }
         priority {
           name
+          img
         }
         others {
           name
@@ -245,6 +246,7 @@ mutation createNewTask($input:createTaskInput){
         }
         assigned {
          name 
+         img
         }
         assignee {
           name
@@ -260,7 +262,7 @@ mutation createNewTask($input:createTaskInput){
 `
 
 export const CHANGE_TASK_DETAIL = gql`
-mutation changeTaskDetails($input: changeTaskInput) {
+mutation changeTaskDetails($input: ChangeTaskDetailsInput) {
   changeTaskDetails(input: $input) {
     ... on CreateTaskSuccessResponse {
       status
@@ -464,6 +466,74 @@ mutation AddNewMember($input: NewMemberInput) {
       status
       message
       field
+    }
+  }
+}
+`
+export const ADD_IMAGE_TO_MEMBER = gql`
+mutation AddImageToMember($input: addMemberImageInput) {
+  AddImageToMember(input: $input) {
+    ... on CreateMemberSuccessResponse {
+      status
+      __typename
+      member {
+        _id
+        name
+        email
+        img
+        color
+        joined
+        username
+        taskIDs {
+          _id
+          issueTitle
+          issueDescription
+          createdBy {
+            _id
+            name
+            img
+          }
+          imgURLArray
+          dueDate
+          assignee {
+            email
+            _id
+            name
+          }
+          status {
+            name
+            id
+          }
+          assigned {
+            name
+            id
+            img
+          }
+          label {
+            email
+            _id
+            name
+          }
+          others {
+            email
+            _id
+            name
+          }
+          workspaceID
+          workspaceURL
+        }
+        workspaceIDs {
+          # workspaceURL
+          workspaceID {
+            name
+            URL
+          }
+          status
+        }
+      }
+    }
+    ... on CreateMemberFailResponse {
+      status
     }
   }
 }

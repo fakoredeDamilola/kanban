@@ -24,15 +24,16 @@ import { FETCH_TASK } from "../../graphql/queries"
 const TaskCardStyle = styled.div<{isDrag:boolean;view:string}>`
     padding:12px 14px;
     box-sizing:border-box;
-    /* position:relative; */
     z-index:9;
     border:0px;
     overflow-x:hidden;
 overflow-y:hidden;
-    background: ${({theme})=>theme.cardBackground};
+    /* background: ${({theme})=>theme.cardBackground}; */
+    background: #1C1D2A;
     min-height:${({view}) => view==="list" ? "40px" : "110px"};
     border-radius:${({view}) => view==="list" ? "0%" : "6px"};
-    border:${({view,theme}) => view==="list" ? `1px solid ${theme.border}` : "none"};
+    /* border:${({view,theme}) => view==="list" ? `1px solid ${theme.border}` : "none"}; */
+    border:${({view,theme}) => view==="list" ? `1px solid #212234` : "none"};
     border-left:0;
     border-right:0;
     cursor:pointer;
@@ -48,6 +49,8 @@ const TaskStyleList = styled.div`
 `
 const TaskId = styled.div<{view:string}>`
 display:${({view})=>view==="list"?"flex":"block"};
+
+// position:${({view}) => view==="list" ? "absolute" : "static"};
 gap:10px;
 p:first-child{
 font-weight:200;
@@ -80,9 +83,12 @@ border:1px solid ${({theme})=>"#777474"};
 }
 
 `
-const TaskStyleContainer = styled.div`
+const TaskStyleContainer = styled.div<{list:string}>`
 display:flex;
+position:${({list})=>list==="view"?"absolute":"static"};
+width:${({list})=>list==="view"?"97%":"auto"};
 justify-content:space-between;
+align-items:center;
 word-wrap:break-word;
 overflow-x:hidden;
 overflow-y:hidden;
@@ -90,7 +96,7 @@ overflow-y:hidden;
 `
 const FooterWrapper = styled.div<{view:string}>`
   position:absolute;
-  /* display:flex; */
+  display:flex; 
   gap:10px;
   display:${({view}) => view==="list" ? "none" : "flex"};
   /* top:10px; */
@@ -108,8 +114,10 @@ const Label = styled.div`
 
 `
 const TaskTitle = styled.p`
-  /* width:50%; */
   word-wrap:break-word;
+`
+const ProfilePictureWrapper = styled.div`
+  margin-top:-10px;
 `
 
 const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
@@ -172,6 +180,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     changeTaskDetail({
       variables:{
           input: {
+            // taskInput:{}
               _id:id,
               type:selectedItem,
               name
@@ -235,8 +244,6 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     
   }));
 
-  console.log(card.priority,"jjijieieieiiieiieiieiieiieii")
-
   return (
 
         <TaskCardStyle
@@ -245,26 +252,28 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
         onClick={()=>router.push(`/${card?.workspaceURL}/${card?._id}`)}
         ref={drag}
         >
-      <TaskStyleContainer>
+      <TaskStyleContainer list={view}>
         <TaskId view={view}>
    {view!=="list" && <p>{card._id.slice(0,5)}</p>}
    {view==="list" &&   <CustomDropdown 
       isOpen={isPriorityOpen} 
       setIsOpen={setIsPriorityOpen} 
       left="10%" 
+      type="icon"
       items={currentWorkspace.subItems.find((item)=>item.name.toLowerCase()==="priority")?.items} selected={card.priority ?? {name:"no priority"}} 
       selectItem={(e,element:Item) =>selectTaskPriority(e,card._id,element,"priority")}>
-       <div onClick={(e)=>handleButtonClick(e,"priority")}>
-         <CustomIcon img={card.priority?.img ?? "BiDotsHorizontalRounded"} fontSize="12px" />
-       </div>
-          
-        
+        <Icon onClick={(e)=>handleButtonClick(e,"priority")}>
+           <CustomIcon img={card.priority?.img ?? "BiDotsHorizontalRounded"} fontSize="12px" />
+         </Icon> 
     </CustomDropdown>
         }
        
-    <TaskTitle>{card.issueTitle.slice(0,82)} </TaskTitle>
+    <TaskTitle>{view ==="list" ? card.issueTitle.slice(0,40) : card.issueTitle.slice(0,82)} </TaskTitle>
       </TaskId>
-      <ProfilePicture assigned={card.assigned} tooltip size={view==="list" ? "15px" : "20px"} />
+      <ProfilePictureWrapper>
+        <ProfilePicture assigned={card.assigned} tooltip size={view==="list" ? "15px" : "20px"} />
+      </ProfilePictureWrapper>
+      
       </TaskStyleContainer>
       <TaskStyleList>
     

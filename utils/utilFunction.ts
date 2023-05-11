@@ -25,7 +25,6 @@ export const handleFile = async (event:any,input:string) => {
        return data
 
       } catch (error) {
-        console.log(error)
       }
 
   }

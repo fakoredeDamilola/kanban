@@ -56,6 +56,7 @@ const Container = styled.div`
 background:red;
   height:100%;
   max-height:100%;
+  width:100%;
 `
 const created = useSelector((state:RootState)=>state.user)
 const createdby = {
@@ -64,89 +65,6 @@ const createdby = {
   email:created.email,
   username:created.username
 }
-const createNewIssue = () => {
-  // dispatch(addNewBoard({newBoard}))
- if(issueTitle) {
-  const workspaceDetails = currentWorkspace.subItems.reduce((acc,cur)=> {
-    
-       if(cur.name.toLowerCase() ==="assigned" && type==="profile"){
-        return Object.assign(acc, {
-        [cur.name.toLowerCase()]:{
-          name: user?.name,
-          img:user?.img,
-          email:user?.email,
-          username:user?.username
-        }
-    })
-  } else {
-    return Object.assign(acc, {
-      [cur.name.toLowerCase()]:{
-        name: cur.selected?.name,
-        img:cur.selected?.img,
-        email:cur.selected?.email,
-        username:cur.selected?.username
-      }
-  })
-  } 
-    
-},{})
-const id = currentWorkspace.totalTasks+1
-const time = Date.now()
-const createdActivity = {
-  nameOfActivity:"created",
-  // id:uuidv4(),
-  // createdby,
-  // time,
-  description:`created this issue`
-}
-
-// const newTask ={
-//   workspaceID:currentWorkspace.id,
-//   id:`${currentWorkspace.id}-${id}`,
-//   issueTitle,
-//   issueDescription,
-//  ...workspaceDetails,
-//     createdby,
-//    time,
-//   imgURLArray,
-//   activites:[createdActivity],
-// }
-
-// dispatch(addNewTask({newTask}))
-// dispatch(increaseNumberOfTasks({id}))
-
-createNewTask({
-  variables: {
-    input: {
-      workspaceURL: currentWorkspace.URL,
-      workspaceID:currentWorkspace._id,
-      dueDate:"",
-      issueTitle:issueTitle,
-      issueDescription,
-      ...workspaceDetails,
-      imgURLArray:[],
-      activites:[createdActivity]
-    }
-  }
-})
-dispatch(refetchWorkspace({refetchWorkspace:true}))
- }else{
-  notifyMess("Title Required","please enter a title before submitting")
- }
-  
-}
-
-
-const closeErrorModal = (text:string) => {
-  setOpenErrorModal(false)
-  if(text!=="cancel"){
- dispatch(setNewBoardModal({open:!openNewBoardModal})) 
-  }
-  
-}
-
-const Portal = usePortal(document.querySelector("#portal"));
-const Portal2 = usePortal(document.querySelector("#portal2"));
 
 
 const [columns,setColumns] = useState<{
@@ -180,6 +98,7 @@ const newTask = (currentBar:IBarContent) =>{
  openNewBoardModal={openNewBoardModal}
  taskView={taskView}
   margin={margin}
+  type={type}
   />
   
       <ToastContainer

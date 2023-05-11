@@ -23,20 +23,24 @@ const ColumnTask = styled.div<{view:string;isOver:boolean}>`
    margin:0 auto;
     flex:1;
     overflow-y: auto;
-    overflow-x:hidden;    
-    height:100%;
-    min-height:100%; 
-    margin-bottom:390px;
+    overflow-x:hidden;  
+    /* background:red;   */
+    
+    opacity:${({isOver}) => isOver ? "0.2" : "1"};
+    height:${({view}) => view==="list" ? "auto" : "100%"};
+    min-height:${({view}) => view==="list" ? "auto" : "100%"};
+    /* margin-bottom:390px; */
     width:${({view}) => view==="list" ? "100%" : "330px"};
     box-sizing:border-box;
     padding:${({view}) => view==="list" ? "0" : "0 10px"};
-    padding-bottom:40px;
-    position:relative;
+    padding-bottom:${({view}) => view==="list" ? "1px" : "40px"};
+    position:${({view}) => view==="list" ? "static" : "relative"};
+    
+    /* position:relative; */
 `
 const LayerTask = styled.div`
  background-color: ${({theme}) => theme.nav};
  width:85%;
- height:30px;
  box-sizing:border-box;
     padding: 10px;
     color:${({theme}) => theme.white};
@@ -46,7 +50,7 @@ const LayerTask = styled.div`
     flex-direction:column;
     gap:10px;
     font-size:14px;
-  border: 4px solid blue;
+  border: 2px solid ${({theme}) => theme.border};
   border-radius: 6px;
     position:absolute;
     top:50%;
@@ -54,10 +58,11 @@ const LayerTask = styled.div`
     transform:translate(-50%,-50%);
 h4 {
     color:#c4c0c0;
+    margin-top:30px;
 }
 `
-const TaskCardWrapper = styled.div`
-    position:relative;
+const TaskCardWrapper = styled.div<{view:string}>`
+position:${({view}) => view==="list" ? "static" : "relative"};
 `
 const ViewArea = ({col,task}:IView) => {
 
@@ -109,9 +114,8 @@ const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
     return (
                <ColumnTask view={taskView} isOver={isOver}  ref={drop} >
                 {task.map((card:any,index:any)=> {
-                    console.log({card})
                     return(
-                    <TaskCardWrapper>
+                    <TaskCardWrapper view={taskView}>
                          <TaskCard card={card} key={index} view={taskView} />
                     </TaskCardWrapper>
               

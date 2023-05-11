@@ -62,7 +62,7 @@ const ActivityWrapper = styled.div`
     )
   }
 const ActivityCard = ({activity,workspaceURL}:{activity:IActivity,workspaceURL:string}) => {
-  console.log({activity})
+
   return (
     <ActivityWrapper>
         {activity.nameOfActivity==="created" ?

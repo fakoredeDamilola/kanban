@@ -83,9 +83,6 @@ const CustomInput = ({
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
-
-    // setValue(val);
-    // setTextValue(val)
   };
   // const [value, setValue] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);

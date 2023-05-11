@@ -262,7 +262,6 @@ const AddNewBoard = ({
     }
   }
 
-console.log({workspaces})
 
   return (
     <>
@@ -301,8 +300,6 @@ console.log({workspaces})
         changeInput={(value,name)=>setIssueTitle(value)}
         name="issueTitle"
         textvalue={issueTitle}
-        
-        // setTextValue={(val:any)=> setIssueTitle(val)}
         color="white"
         fontWeight={700}
         maxLength={256}
@@ -343,7 +340,6 @@ console.log({workspaces})
       <FooterLinks >
         {workspaces.subItems && workspaces.subItems.map((item,index)=>{
           
-          console.log(workspaces.subItems)
           return (
           <FooterMenu key={index} item={item.name==="Assigned"  ? 
           {...item,items:[...item.items,...workspaces.members]}

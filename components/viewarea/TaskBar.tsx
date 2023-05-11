@@ -18,7 +18,7 @@ const TaskBarStyle = styled.div<{view:string}>`
    display:flex;  
    justify-content:space-between; 
    align-items:center;
-   padding:0px;
+   padding:${({view}) => view==="list" ? "20px 10px" : "30px 10px"};
    & > div {
         display:flex;
         & > div:last-child{

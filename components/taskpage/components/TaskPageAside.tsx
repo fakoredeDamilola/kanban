@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react'
 import { BiLinkAlt } from 'react-icons/bi'
 import styled from 'styled-components'
-import { changeTaskDueDate, changeTaskPriority, IActivity, IMembers, ITaskCards, selectSubItems, subItem } from '../../../state/board'
+import { changeTaskDueDate, changeTaskPriority, IActivity, IMembers, ITaskCards, IWorkspace, selectSubItems, subItem } from '../../../state/board'
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2'
 import IconsWrapper from '../../IconsWrapper'
 import { ToastContainer, toast } from 'react-toastify';
@@ -115,7 +115,7 @@ const ExampleCustomInput = forwardRef(({ value, onClick }:{value:any,onClick:any
 const copyLink = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
 
 
-const TaskPageAside = ({task,workspace,showTaskSideNav,members}:{task:ITaskCards,workspace:subItem[],showTaskSideNav:boolean,members:IMembers[]}) => {
+const TaskPageAside = ({task,workspace,workspacesubitems,showTaskSideNav,members}:{task:ITaskCards,workspacesubitems:subItem[],showTaskSideNav:boolean,members:IMembers[],workspace:IWorkspace}) => {
   
 const copyText = (text:string) => {
   navigator.clipboard.writeText(text)
@@ -131,16 +131,9 @@ const [addNewActivity] = useMutation(ADD_NEW_ACTIVITY)
     let newActivity
     if(name ==="Label") {
       newActivity = {
-        // id: uuidv4(),
         nameOfActivity:"Changed Label",
         // @ts-ignore
         description: `added label`,
-        // createdby: {
-        //   name:user.name,
-        //   id:user._id,
-        //   email:user.email
-        // },
-        // time:Date.now(),
         icon:"MdLabel",
         color:item.img,
         name:item.name
@@ -152,13 +145,6 @@ const [addNewActivity] = useMutation(ADD_NEW_ACTIVITY)
       nameOfActivity:"Changed Status",
       // @ts-ignore
      description: `changed ${name} from ${task[name?.toLowerCase() as keyof typeof task].name} to ${item.name}`,
-    //  createdby: {
-    //   name:user.name,
-    //   id:user._id,
-    //   email:user.email
-    // },
-    // id: uuidv4(),
-      // time:Date.now(),
       icon:item.img
   }
     }
@@ -166,20 +152,45 @@ const [addNewActivity] = useMutation(ADD_NEW_ACTIVITY)
   
     // dispatch(changeTaskPriority({id:task._id,type:item,name}))
 const selectedItem = {
-  name:item.name,
+  name:item.name.toLowerCase() === "unassign" ? "Unassign" : item.name,
   email:item.email ?? "",
-  img:item.img ?? "",
+  img: item.name.toLowerCase() === "unassign" ? "FaRegUserCircle" : item.img ?? "",
   _id:item?._id ??""
 }
-    changeTaskDetail({
+// {
+//   name:"Unassign",
+//   email:"",
+//   img:"FaRegUserCircle"
+// }
+if(name.toLowerCase()==="assigned" && item.name.toLowerCase()!== "unassign"){
+console.log(workspace.members,item)
+changeTaskDetail({
+  variables:{
+      input: {
+        assignedInput:{
+          _id:task._id,
+          type:item.name.toLowerCase() ==="unassign" ? null : item._id,
+          name
+        }
+          
+      }
+  },
+})
+} else {
+   changeTaskDetail({
       variables:{
           input: {
-              _id:task._id,
+            taskInput:{
+               _id:task._id,
               type:selectedItem,
               name
+            }
+             
           }
       },
   })
+}
+   
 
   addNewActivity({
     variables:{
@@ -190,23 +201,14 @@ const selectedItem = {
       
     }
   })
-
-  // dispatch(addNewActivity({id:task._id,activity:newActivity}))
-
-
   }
   const setStartDate = (date:Date | null) => {
   if(date){
   //   dispatch(changeTaskDueDate({id:task._id,duedate:date}))
     const CalenderActivity = {
-      // id: uuidv4(),
       nameOfActivity:task?.dueDate? "Changed Due Date" : "Added Due Date",
      description:task?.dueDate && date ? `Changed Due Date from ${getTextDate(task?.dueDate)} to ${getTextDate(new Date(date).getTime()/1000)}` :date ? `Set Due Date ${getTextDate(date)}` : "Removed Due Date",
-    //  createdby: {
-    //   name:user.name,
-    //   id:user._id,
-    //   email:user.email
-    // },
+   
       icon:"hh"
   }
      changeTaskDate({
@@ -273,7 +275,7 @@ const selectedItem = {
       {
         name:"Status",
         value:task.status.name,
-        items:workspace.filter(item=>item.name.toLowerCase()==="status")[0].items,
+        items:workspacesubitems.filter(item=>item.name.toLowerCase()==="status")[0].items,
         type:"icon",
         selected:task.status,
         top:"50%",
@@ -281,23 +283,24 @@ const selectedItem = {
       {
         name:"Priority",
         value:task.priority.name,
-        items:workspace.filter(item=>item.name.toLowerCase()==="priority")[0].items,
+        items:workspacesubitems.filter(item=>item.name.toLowerCase()==="priority")[0].items,
         type:"icon",
         selected:task.priority,
         top:"50%",
       },
       {
         name:"Assigned",
-        value:task.assigned.name,
-        items:[...workspace.filter(item=>item.name.toLowerCase()==="assigned")[0].items ,...members],
-        // items:workspace.filter(item=>item.name.toLowerCase()==="assigned")[0].items,
+        value:task?.assigned?.name ?? "Assign",
+        items:[...workspacesubitems.filter(item=>item.name.toLowerCase()==="assigned")[0].items ,...members],
+        // items:workspacesubitems.filter(item=>item.name.toLowerCase()==="assigned")[0].items,
         selected:task.assigned,
+        type:"member",
         top:"50%",
       },
       {
         name:"Label",
         value:task.label.name,
-        items:workspace.filter(item=>item.name.toLowerCase()==="label")[0].items,
+        items:workspacesubitems.filter(item=>item.name.toLowerCase()==="label")[0].items,
         selected:task.label,
         top:"50%",
         type:"icon",
@@ -305,14 +308,15 @@ const selectedItem = {
     ].map((item,index)=>{
       return (
         <AsideItems
-        workspaceID={task.workspaceID}
+        workspaceURL={task.workspaceURL}
         selected={item.selected}
       key={index}
       type={item?.type}
       name={item?.name}
       value={item?.value}
-      workspace={item.items}
+      workspacesubitems={item.items}
       changeTaskTodo={changeTaskTodo}
+      member={item?.type}
     />
       )
     }) 
