@@ -17,6 +17,7 @@ import { RootState } from '../state/store'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import { subItems } from '../utils/utilData'
 import { checkForError, confirmPassword } from '../utils/utilFunction'
+import Link from 'next/link'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -36,6 +37,15 @@ const Terms = styled.div`
     margin-top:15px;
     font-size:14px;
     color: #c4c4c4;
+`
+const SignupText = styled.div`
+  color:white;
+  margin:15px 0;
+  font-size:14px;
+  & Link {
+     color:  ${({ theme }) => theme.button}; 
+  }
+ 
 `
 const signup = () => {
   
@@ -266,6 +276,9 @@ const createNewWorkspace =async () => {
         <Terms>
             By signing up, you agree to our signs and conditions
         </Terms>
+        <SignupText>
+          Already have an account <Link href="/signin" >Sign in</Link>
+        </SignupText>
      </> : signupPageState === SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL ?
      <VerifySignupEmail submitCode={submitCode} email={signupObject.email} codeInput={codeInput} setCodeInput={setCodeInput} /> : 
      signupPageState === SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE ?
