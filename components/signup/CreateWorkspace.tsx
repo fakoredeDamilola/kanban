@@ -201,6 +201,7 @@ const [controlInput,setControlInput] = useState(true)
 
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
+
   return (
     <Container>
       <EmailInfo>
@@ -274,7 +275,7 @@ const [disableButton,setDisableButton] = useState(false)
         errors={["required"]}
         />
 <InputText>
-https://linear.app/
+{process.env.NEXT_PUBLIC_URL}
 </InputText>
         </div>
      

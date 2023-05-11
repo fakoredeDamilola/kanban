@@ -104,7 +104,7 @@ interface IDropdown {
 
 const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selected,selectItem,checkBox,type,user}:IDropdown) => {
 
-  console.log({selected},"1111111")
+  // console.log({selected},"1111111")
   const [searchValue, setSearchValue] = useState('');
   const dropdownRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
