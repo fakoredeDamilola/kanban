@@ -303,7 +303,6 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         placeholder="Issue Title"
         fontSize="22px"
         textvalue={taskTitle}
-        // setTextValue={(val:any)=> setTaskTitle(val)}
         color="white"
         outline={true}
         fontWeight={700}
@@ -319,7 +318,6 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         placeholder="Issue description..."
         fontSize="18px"
          textvalue={taskDescription}
-        //  setTextValue={(val:any)=> setTaskDescription(val)}
         fontWeight={300}
         color="white"
         input="text"

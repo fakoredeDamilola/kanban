@@ -300,8 +300,6 @@ const AddNewBoard = ({
         changeInput={(value,name)=>setIssueTitle(value)}
         name="issueTitle"
         textvalue={issueTitle}
-        
-        // setTextValue={(val:any)=> setIssueTitle(val)}
         color="white"
         fontWeight={700}
         maxLength={256}

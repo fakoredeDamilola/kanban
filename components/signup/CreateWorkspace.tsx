@@ -227,7 +227,6 @@ const [disableButton,setDisableButton] = useState(false)
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='Enter your workspaceName'
         type="string"
         input="text"
@@ -260,7 +259,6 @@ const [disableButton,setDisableButton] = useState(false)
         fontSize='14px'
         color="white"
         fontWeight={700}
-        setTextValue={()=>null}
         placeholder='Enter your workspaceURL'
         type="string"
         input="text"
