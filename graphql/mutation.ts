@@ -202,7 +202,7 @@ mutation createNewTask($input:createTaskInput){
   createNewTask(input:$input){
     ... on CreateTaskSuccessResponse {
       status
-      task {
+      task{
         _id
         issueTitle
         issueDescription
@@ -212,20 +212,20 @@ mutation createNewTask($input:createTaskInput){
         activities {
             description
             icon
-            nameOfActivity
             color
             name
+            nameOfActivity
             createdby {
               _id
               name
               email
               img
-              type
-              id
+              # type
+              # id
               username
             }
           }
-        status {
+          status {
           _id
           name
           email
@@ -236,6 +236,7 @@ mutation createNewTask($input:createTaskInput){
         }
         priority {
           name
+          img
         }
         others {
           name
@@ -244,8 +245,8 @@ mutation createNewTask($input:createTaskInput){
          name 
         }
         assigned {
-         name
-         img 
+         name 
+         img
         }
         assignee {
           name
@@ -261,7 +262,7 @@ mutation createNewTask($input:createTaskInput){
 `
 
 export const CHANGE_TASK_DETAIL = gql`
-mutation changeTaskDetails($input: changeTaskInput) {
+mutation changeTaskDetails($input: ChangeTaskDetailsInput) {
   changeTaskDetails(input: $input) {
     ... on CreateTaskSuccessResponse {
       status

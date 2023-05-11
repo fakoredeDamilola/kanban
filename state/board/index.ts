@@ -69,7 +69,7 @@ export interface IWorkspace {
   id:string;
   _id?:string;
   URL:string;
-  taskID:ITaskCards[];
+  task:ITaskCards[];
   totalTasks:number;
   subItems: subItem[];
   totalMembers:number;
@@ -161,7 +161,7 @@ const initialState: boardIntialState = {
         email:""
       },
       subItems: subItems,
-      taskID:[
+      task:[
 
       ],
       members: []

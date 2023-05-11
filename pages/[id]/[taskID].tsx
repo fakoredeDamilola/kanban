@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState,useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,7 +26,7 @@ const SingleTask = () => {
     setTaskID(router.query.taskID)
     }
   },[router.query])
-  const [fetchTask,{data,error,loading}] = useLazyQuery(FETCH_TASK,{
+  const {data,error,loading} = useQuery(FETCH_TASK,{
     variables:{
         input: {
             id:router?.query.taskID,
@@ -40,18 +40,18 @@ const SingleTask = () => {
     // }else{
     // }
   },[data])
-  useEffect(()=>{
-      if(router?.query?.taskID && router?.query.id){
-         // @ts-ignore
-          const taskInfo = currentWorkspace.taskID.find((task)=>task._id === router.query.taskID)
-          if(taskInfo){
-            setTask(taskInfo)
-          }else {
-            fetchTask()
-          }
+  // useEffect(()=>{
+  //     if(router?.query?.taskID && router?.query.id){
+  //        // @ts-ignore
+  //         const taskInfo = currentWorkspace.task.find((task)=>task._id === router.query.taskID)
+  //         if(taskInfo){
+  //           setTask(data?.fetchTask?.task)
+  //         }else {
+  //           fetchTask()
+  //         }
           
-      }
-  },[currentWorkspace,workspace,taskID])
+  //     }
+  // },[currentWorkspace,workspace,taskID])
 
 
   const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
@@ -80,6 +80,7 @@ const SingleTask = () => {
     if(router?.query?.id){
        // @ts-ignore
         const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
+        console.log({workspace},"kjeeeeeeeeeeee",router?.query?.id)
         if(workspace){
           setWorkspace(workspace)
         }else {
@@ -91,7 +92,7 @@ const SingleTask = () => {
 },[currentWorkspace,router.query])
 
   const taskList = task?.status?.name
-  const taskListLength = currentWorkspace.taskID.filter((task:ITaskCards)=>task.status.name === taskList)
+  const taskListLength = currentWorkspace.task.filter((task:ITaskCards)=>task.status.name === taskList)
   if(loading || workspaceLoading){
     return <LoadingPage />
   }else if(task && workspace) {

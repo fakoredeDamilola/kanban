@@ -72,7 +72,7 @@ const Icon = styled.div`
 const AsideItems = ({
   workspaceURL,
     changeTaskTodo,
-    workspace,
+    workspacesubitems,
     type,
     name,
     value,
@@ -81,7 +81,7 @@ const AsideItems = ({
 }:{
     workspaceURL:string;
     changeTaskTodo:(name:string,item:Item)=>void,
-    workspace:Item[],
+    workspacesubitems:Item[],
     name:string,
     type?:string,
     value:string,
@@ -94,6 +94,7 @@ const AsideItems = ({
     setIsOpen(!isOpen);
   };
   const router = useRouter()
+  console.log({workspacesubitems},"jjejjejjej11111111")
   return (
     <CustomDropdown
     isOpen={isOpen}
@@ -106,7 +107,7 @@ const AsideItems = ({
     type={type}
     top="30%"
     left="-70%"
-    items={workspace} >
+    items={workspacesubitems} >
       <Container hover={name.toLowerCase() === "assigned" ? true : false}>
            <TaskPageItem onClick={handleButtonClick}>
 <div>{name}</div>

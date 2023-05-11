@@ -23,7 +23,7 @@ const SingleTask = () => {
     if(currentWorkspace){
       if(router?.query?.taskpage && router?.query.taskpage[1]){
          // @ts-ignore
-          const taskInfo = currentWorkspace.taskID.find((task)=>task.id === router.query.taskpage[1])
+          const taskInfo = currentWorkspace.task.find((task)=>task.id === router.query.taskpage[1])
       
           setTask(taskInfo)
       }

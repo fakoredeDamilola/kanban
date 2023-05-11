@@ -180,6 +180,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     changeTaskDetail({
       variables:{
           input: {
+            // taskInput:{}
               _id:id,
               type:selectedItem,
               name

@@ -147,9 +147,9 @@ const handleChange = (event:any,input:string) => {
         </Edit>
         </ImgImage>
         :
-        assigned.name!=="Assigned"  ?
+        assigned?.name!=="Assigned"  ?
         <WordImage size={size} color="#4c33bd">
-           <div>{assigned?.name?.split("")[0]}{assigned.name.split("")[assigned.name.length-1]}</div>
+           <div>{assigned?.name?.split("")[0]}{assigned?.name.split("")[assigned?.name.length-1]}</div>
            <Edit>
            {edit && 
            <>
@@ -165,10 +165,10 @@ const handleChange = (event:any,input:string) => {
            </Edit>
           
         </WordImage>
-        :
+        : 
         <FaRegUserCircle size="18px"/>
     } 
-   <span>Assigned to {assigned.name ? `${assigned?.name.split("")[0]}${assigned?.name.split("")[assigned.name.length-1]}` : <div>A</div>}</span>
+   <span>Assigned to {assigned?.name ? `${assigned?.name.split("")[0]}${assigned?.name.split("")[assigned?.name.length-1]}` : <div>A</div>}</span>
     
   </ProfilePictureStyle>
   )

@@ -112,7 +112,7 @@ const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:
         name:"",
         email:""
       },
-      taskID:[],
+      task:[],
       members:[],
       // subItems:[]
     }

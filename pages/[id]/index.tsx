@@ -19,6 +19,7 @@ import { CREATE_NEW_TASK } from "../../graphql/mutation";
 import { NotifyComponent } from "../../components/Notify/Notify";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Item } from "../../components/viewarea/IViewrea";
 
 const Container = styled.div`
   min-height:100%;  
@@ -86,7 +87,9 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       }
       
     }
-    
+    const addNewData =(obj:any,name:string,item:Item | string) =>{
+      return obj[name.toLowerCase()] = item
+    }
     
     const createNewIssue = () => {
      
@@ -94,45 +97,36 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       const workspaceDetails = currentWorkspace.subItems.reduce((acc,cur)=> {
         
            if(cur.name.toLowerCase() ==="assigned"){
+            console.log({cur})
             return Object.assign(acc, {
-            [cur.name.toLowerCase()]:user._id
+            [cur.name.toLowerCase()]:cur?.selected._id
         })
       } else {
         return Object.assign(acc, {
           [cur.name.toLowerCase()]:{
             name: cur.selected?.name,
             img:cur.selected?.img,
-            email:cur.selected?.email,
-            username:cur.selected?.username
+            email:"cur.selected?.email",
+            username:"cur.selected?.username"
           }
       })
       } 
         
     },{})
+    if(workspaceDetails["assigned"  as keyof typeof workspaceDetails]){
+   addNewData(workspaceDetails,"assignee",user._id)
+    } 
     const createdActivity = {
       nameOfActivity:"created",
+      
       // id:uuidv4(),
       // createdby,
       // time,
       description:`created this issue`
     }
-    
-    // const newTask ={
-    //   workspaceID:currentWorkspace.id,
-    //   id:`${currentWorkspace.id}-${id}`,
-    //   issueTitle,
-    //   issueDescription,
-    //  ...workspaceDetails,
-    //     createdby,
-    //    time,
-    //   imgURLArray,
-    //   activites:[createdActivity],
-    // }
-    
-    // dispatch(addNewTask({newTask}))
-    // dispatch(increaseNumberOfTasks({id}))
     setIssueDescription("")
     setIssueTitle("")
+
     createNewTask({
       variables: {
         input: {
@@ -142,6 +136,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
           issueTitle:issueTitle,
           issueDescription,
           ...workspaceDetails,
+          createdBy:user._id,
           imgURLArray:[],
           activites:[createdActivity]
         }
@@ -152,10 +147,10 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
      }
       
     }
-    if(refetch){
-      fetchWorkspace()
-      dispatch(refetchWorkspace({refetchWorkspace:false}))
-    }
+    // if(refetch){
+      // fetchWorkspace()
+    //   dispatch(refetchWorkspace({refetchWorkspace:false}))
+    // }
 
     const Portal = usePortal(document.querySelector("#portal"));
     const Portal2 = usePortal(document.querySelector("#portal2"));
@@ -221,7 +216,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
         <Container>
         <Navbar /> 
         <ViewAreaIndex 
-          tasks={workspace.taskID}
+          tasks={workspace.task}
           />
           </Container>
        }

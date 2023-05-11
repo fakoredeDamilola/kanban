@@ -33,13 +33,13 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
           joined
           username
         }
-        taskID{
+        task{
         _id
         issueTitle
-        dueDate
         issueDescription
         workspaceURL
         workspaceID
+        dueDate
         activities {
             description
             icon
@@ -47,14 +47,13 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
             name
             nameOfActivity
             createdby {
-              # _id
-              # name
-              # email
-              # img
+              _id
+              name
+              email
+              img
               # type
               # id
-              name
-              img
+              username
             }
           }
           status {
@@ -148,8 +147,8 @@ query FetchTask($input: FetchTaskInput) {
               name
               email
               img
-              type
-              id
+              # type
+              # id
               username
             }
           }
