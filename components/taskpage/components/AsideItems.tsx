@@ -39,7 +39,7 @@ const TaskPageItem = styled.div`
     }
   }
 `
-const Container = styled.div<{hover:boolean}>`
+const Container = styled.div<{hover:boolean;access:boolean;}>`
   display:flex;
   align-items:center;
   gap:5px;
@@ -53,6 +53,7 @@ const Container = styled.div<{hover:boolean}>`
     border: 1px solid ${({theme,hover})=>hover ?theme.secondaryColor:"none"};
     }
   }
+  opacity:${({access}) => access ? 1:0.5};
 `
 const ProfileIcon = styled.div`
   font-size:17px;
@@ -77,7 +78,8 @@ const AsideItems = ({
     name,
     value,
     selected,
-    member
+    member,
+    preventChange
 }:{
     workspaceURL:string;
     changeTaskTodo:(name:string,item:Item)=>void,
@@ -87,6 +89,7 @@ const AsideItems = ({
     value:string,
     selected:Item;
     member?:string;
+    preventChange:boolean;
 
 }) => {
   const [isOpen,setIsOpen] = useState(false)
@@ -94,10 +97,9 @@ const AsideItems = ({
     setIsOpen(!isOpen);
   };
   const router = useRouter()
-  console.log({workspacesubitems},"jjejjejjej11111111")
   return (
     <CustomDropdown
-    isOpen={isOpen}
+    isOpen={preventChange ? isOpen : false}
     setIsOpen={setIsOpen}
     selected={selected}
     selectItem={(e:any,item:Item)=>{
@@ -108,25 +110,25 @@ const AsideItems = ({
     top="30%"
     left="-70%"
     items={workspacesubitems} >
-      <Container hover={name.toLowerCase() === "assigned" ? true : false}>
+      <Container access={preventChange} hover={name.toLowerCase() === "assigned" ? true : false}>
            <TaskPageItem onClick={handleButtonClick}>
 <div>{name}</div>
 <Icon>
-  {name.toLowerCase() === "assigned" ?
+  {name.toLowerCase() === "assigned" && selected?.name ?
   
     <ProfilePicture assigned={selected} tooltip={true} />
-   : <CustomIcon img={selected.img} type={selected.type} />}
+   : <CustomIcon img={selected?.img ?? 'FaRegUserCircle'} type={type ?? undefined} />}
    <div>{(name.toLowerCase() === "assigned"  && member==="member") || !member ? 
    value : name.toLowerCase() !== "assigned"  &&
     member==="member" ? "unassigned" : value} </div>
    </Icon>
 </TaskPageItem>
-{name.toLowerCase() === "assigned" &&
+{name.toLowerCase() === "assigned" && selected?.name &&
 
    <ProfileIcon onClick={()=>router.push(`/${workspaceURL}/profiles/${selected.name}`)}>
      <AiOutlineArrowRight fontSize="15px" />
   </ProfileIcon>
- 
+  
   }
       </Container>
    

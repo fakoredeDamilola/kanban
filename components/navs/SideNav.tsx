@@ -211,7 +211,7 @@ const SideNav = () => {
     if(element.name==="create workspace"){
         router.push("/join")
     }else if(element.name ==="log out"){
-      storeDataInLocalStorage("token","")
+      storeDataInLocalStorage("kanbanToken","")
       // dispatch(setCurrentUser({user:{
       //   _id: "",
       //   username : "",
@@ -307,10 +307,10 @@ const SideNav = () => {
       <div>{currentWorkspace.name}</div>
     </Workspaces>
     </CustomDropdown>
-      <ProfilePicture assigned={{
+      {/* <ProfilePicture assigned={{
         name: user.name ?? "name",
       
-      }} tooltip={false} />
+      }} tooltip={false} /> */}
         </WorkspaceInfo>
       
         <NewIssueButton>

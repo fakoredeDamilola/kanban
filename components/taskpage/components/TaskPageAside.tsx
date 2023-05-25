@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react'
 import { BiLinkAlt } from 'react-icons/bi'
 import styled from 'styled-components'
-import { changeTaskDueDate, changeTaskPriority, IActivity, IMembers, ITaskCards, IWorkspace, selectSubItems, subItem } from '../../../state/board'
+import { IMembers, ITaskCards, IWorkspace, subItem } from '../../../state/board'
 import { HiOutlineClipboardDocumentList } from 'react-icons/hi2'
 import IconsWrapper from '../../IconsWrapper'
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,12 +13,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import { getTextDate } from '../../../utils/utilFunction'
-import {v4 as uuidv4} from "uuid"
 import { Item } from '../../viewarea/IViewrea'
-import { RootState } from '../../../state/store'
 import { device } from '../../../config/theme'
 import { useMutation } from '@apollo/client'
 import { ADD_NEW_ACTIVITY, CHANGE_TASK_DETAIL,CHANGE_TASK_DUE_DATE } from '../../../graphql/mutation'
+import { IUser } from '../../../state/user'
 
 const TaskPageAsideContainer = styled.div<{showTaskSideNav:boolean}>`
     /* width: 50%;
@@ -115,7 +114,7 @@ const ExampleCustomInput = forwardRef(({ value, onClick }:{value:any,onClick:any
 const copyLink = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
 
 
-const TaskPageAside = ({task,workspace,workspacesubitems,showTaskSideNav,members}:{task:ITaskCards,workspacesubitems:subItem[],showTaskSideNav:boolean,members:IMembers[],workspace:IWorkspace}) => {
+const TaskPageAside = ({user,task,workspace,workspacesubitems,showTaskSideNav,members}:{task:ITaskCards,workspacesubitems:subItem[],showTaskSideNav:boolean,members:IMembers[],workspace:IWorkspace,user:IUser}) => {
   
 const copyText = (text:string) => {
   navigator.clipboard.writeText(text)
@@ -140,12 +139,15 @@ const [addNewActivity] = useMutation(ADD_NEW_ACTIVITY)
       }
      
     }else{
+          // @ts-ignore
+      console.log({item})
       newActivity = {
       
       nameOfActivity:"Changed Status",
       // @ts-ignore
-     description: `changed ${name} from ${task[name?.toLowerCase() as keyof typeof task].name} to ${item.name}`,
-      icon:item.img
+     description: `changed ${name} from ${task[name?.toLowerCase()]['name']} to ${item.name}`,
+      // icon:item.img
+      icon:"FaRegUserCircle"
   }
     }
     
@@ -163,7 +165,6 @@ const selectedItem = {
 //   img:"FaRegUserCircle"
 // }
 if(name.toLowerCase()==="assigned" && item.name.toLowerCase()!== "unassign"){
-console.log(workspace.members,item)
 changeTaskDetail({
   variables:{
       input: {
@@ -205,38 +206,37 @@ changeTaskDetail({
   const setStartDate = (date:Date | null) => {
   if(date){
   //   dispatch(changeTaskDueDate({id:task._id,duedate:date}))
+  // @ts-ignore
+  console.log(task?.dueDate,getTextDate(parseInt(task?.dueDate/1000)),"eeueuueuueuue")
     const CalenderActivity = {
       nameOfActivity:task?.dueDate? "Changed Due Date" : "Added Due Date",
-     description:task?.dueDate && date ? `Changed Due Date from ${getTextDate(task?.dueDate)} to ${getTextDate(new Date(date).getTime()/1000)}` :date ? `Set Due Date ${getTextDate(date)}` : "Removed Due Date",
+     description:task?.dueDate && date ? `changed due Date from ${getTextDate(task?.dueDate)} to ${getTextDate(new Date(date).getTime()/1000)}` :date ? `Set Due Date ${getTextDate(date)}` : "Removed Due Date",
    
       icon:"hh"
   }
-     changeTaskDate({
-    variables:{
-        input:{
-             taskID:task?._id,
-        date:`${new Date(date).getTime()/1000}`
-        }
+//      changeTaskDate({
+//     variables:{
+//         input:{
+//              taskID:task?._id,
+//         date:`${new Date(date).getTime()/1000}`
+//         }
        
-    }
-})
-  
-  // dispatch(addNewActivity({id:task._id,activity:CalenderActivity}))
-  addNewActivity({
-    variables:{
-      input:{
-        taskID:task._id,
-      activity:CalenderActivity
-      }
+//     }
+// })
+  // addNewActivity({
+  //   variables:{
+  //     input:{
+  //       taskID:task._id,
+  //     activity:CalenderActivity
+  //     }
       
-    }
-  })
+  //   }
+  // })
   }
 
  
 
   }
-  console.log({task})
   return (
     <TaskPageAsideContainer showTaskSideNav={showTaskSideNav}>
         <TaskPageAsideHeader>
@@ -279,6 +279,7 @@ changeTaskDetail({
         type:"icon",
         selected:task.status,
         top:"50%",
+        preventChange:user._id === task?.createdBy?._id || user._id === task?.assigned?._id ?true :false
       },
       {
         name:"Priority",
@@ -287,15 +288,17 @@ changeTaskDetail({
         type:"icon",
         selected:task.priority,
         top:"50%",
+        preventChange:user._id === task?.createdBy?._id ?true :false
       },
       {
         name:"Assigned",
-        value:task?.assigned?.name ?? "Assign",
+        value:task?.assigned?.name ?? "unassigned",
         items:[...workspacesubitems.filter(item=>item.name.toLowerCase()==="assigned")[0].items ,...members],
         // items:workspacesubitems.filter(item=>item.name.toLowerCase()==="assigned")[0].items,
         selected:task.assigned,
         type:"member",
         top:"50%",
+        preventChange:user._id === task?.createdBy?._id ?true :false
       },
       {
         name:"Label",
@@ -303,7 +306,8 @@ changeTaskDetail({
         items:workspacesubitems.filter(item=>item.name.toLowerCase()==="label")[0].items,
         selected:task.label,
         top:"50%",
-        type:"icon",
+        type:"color",
+        preventChange:user._id === task?.createdBy?._id ?true :false
       },
     ].map((item,index)=>{
       return (
@@ -311,6 +315,7 @@ changeTaskDetail({
         workspaceURL={task.workspaceURL}
         selected={item.selected}
       key={index}
+      preventChange={item.preventChange}
       type={item?.type}
       name={item?.name}
       value={item?.value}
@@ -329,10 +334,10 @@ changeTaskDetail({
    <DatePicker
    
       // @ts-ignore
-      selected={Date.now(new Date(task.dueDate *1000))}
-      customInput={<ExampleCustomInput value={Date} onClick={()=>{}}/>}
-      isClearable
-      onChange={(date) => setStartDate(date)}
+      selected={new Date(parseInt(task.dueDate) *1000)}
+      customInput={<ExampleCustomInput value={new Date(parseInt(task.dueDate) *1000)} onClick={()=>{}}/>}
+      isClearable ={user._id === task?.createdBy?._id ?true :false}
+      onChange={(date) => user._id === task?.createdBy?._id ?setStartDate(date):null}
       placeholderText="This is readOnly"
     />
       </TaskAsideCalender>

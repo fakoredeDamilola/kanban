@@ -68,8 +68,7 @@ const TaskPageHeaders = styled.div`
     font-size:14px;
    `
 
-const ProfilePageHeader = ({profileSideNav,user,setProfileSideNav}:{profileSideNav:boolean,setProfileSideNav:any,user:IMembers}) => {
-
+const ProfilePageHeader = ({workspaceID,profileSideNav,user,setProfileSideNav}:{profileSideNav:boolean,setProfileSideNav:any,user:IMembers;workspaceID:any}) => {
     const dispatch = useDispatch()
     const {profileView,showSideNav,taskView} = useSelector((state: any) => state.display)
     const router = useRouter()
@@ -86,7 +85,7 @@ const ProfilePageHeader = ({profileSideNav,user,setProfileSideNav}:{profileSideN
     <div>
         
     <CloseBtn>
-        <AiOutlineClose fontSize="12px" onClick={()=>router.push("/")}/>
+        <AiOutlineClose fontSize="12px" onClick={()=>router.push(`/${workspaceID}`)}/>
     </CloseBtn>
     <HamBurgerBtn>
         <Harmburger ToggleNav={toggleNav}/>

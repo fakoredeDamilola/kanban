@@ -220,7 +220,7 @@ const CustomDropdown = ({children,isOpen,top,left,noInput, setIsOpen,items,selec
             : <CustomIcon img={item.img} />}  <div>{item.name}</div> {/* {item.email && <div>{item.email}</div>} */}
              </Icon>
              
-               {selected.name &&( selected.name?.toLowerCase() === item?.name?.toLowerCase() || selected.name?.toLowerCase() === item?.email?.toLowerCase()) && !item.type ? <AiOutlineCheck color="white" /> : null}
+               {selected?.name &&( selected.name?.toLowerCase() === item?.name?.toLowerCase() || selected.name?.toLowerCase() === item?.email?.toLowerCase()) && !item.type ? <AiOutlineCheck color="white" /> : null}
               </li>
             )
             } )}

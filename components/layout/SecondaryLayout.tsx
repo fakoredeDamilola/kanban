@@ -13,7 +13,6 @@ const Container = styled.div`
 const SecondaryLayout = ({children}:{children:JSX.Element}) => {
   
 const {modal} = useSelector((state:RootState)=>state.display)
-  const [mountedComponent, setMountedComponent] = useState(false)
   // useEffect(() => {
   //     const localTheme = window.localStorage.getItem('theme');
   //     localTheme && setTheme(localTheme)

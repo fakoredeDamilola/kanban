@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { IActivity } from '../../../state/board'
 import CustomIcon from '../../CustomIcon'
 import ProfilePicture from '../../ProfilePicture'
+import { BsPencil } from 'react-icons/bs'
 
 const ActivityWrapper = styled.div`
     width: 100%;
@@ -62,7 +63,9 @@ const ActivityWrapper = styled.div`
     )
   }
 const ActivityCard = ({activity,workspaceURL}:{activity:IActivity,workspaceURL:string}) => {
-
+ if(activity.nameOfActivity==="Changed Status"){
+  console.log({activity})
+ }
   return (
     <ActivityWrapper>
         {activity.nameOfActivity==="created" ?
@@ -82,7 +85,7 @@ const ActivityCard = ({activity,workspaceURL}:{activity:IActivity,workspaceURL:s
         </> :
         activity.nameOfActivity==="Changed Status" ?
           <>
-          {<CustomIcon img={activity?.icon} />}
+          {<CustomIcon img={activity?.icon ?? 'FaDotCircle'} />}
           <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL}/> {activity.description}</div>
           </> :
         activity.nameOfActivity==="Changed Label" ?
@@ -98,6 +101,12 @@ const ActivityCard = ({activity,workspaceURL}:{activity:IActivity,workspaceURL:s
            activity.nameOfActivity==="Changed Due Date" || "Added Due Date" ?
         <>
         <AiOutlineCalendar />
+        <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL} /> {activity.description}</div>
+        </>
+        :
+        activity.nameOfActivity==="Edit Task" ?
+        <>
+        {/* <BsPencil /> */}
         <div><Name name={activity.createdby.name}  username={activity.createdby.username} workspaceURL={workspaceURL} /> {activity.description}</div>
         </>
         :

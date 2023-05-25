@@ -81,7 +81,7 @@ export interface IMinWorkspace{
   id:string;
   _id:string;
   URL:string;
-  owner?:Item;
+  owner?:Item; 
 }
 
 

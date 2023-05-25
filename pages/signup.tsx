@@ -110,6 +110,7 @@ const [createWorkspace] = useMutation(
       router.push(`/${workspace.URL}/welcome`)
     },
     onError:(err)=>{
+      
       dispatch(setModalData({modalType:"error",modalMessage:"no auth found,sign up again",modal:true}))
       dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
       setCurrentSignupPage(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
@@ -124,14 +125,13 @@ useMemo(()=>{
       if(type==="oauth"){
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
-        storeDataInLocalStorage("token",data?.verifyUserRecord?.token)
+        storeDataInLocalStorage("kanbanToken",data?.verifyUserRecord?.token)
         dispatch(setCurrentUser({user:data?.verifyUserRecord?.user}))
       }else{
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL})) 
         setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL)
       } 
 }else if(data?.verifyUserRecord?.status ===false) {
-  // alert("user exist")
   dispatch(setModalData({modalType:"error",modalMessage:data?.verifyUserRecord?.message,modal:true}))
 }
   }catch(e:any){
@@ -142,7 +142,7 @@ useMemo(()=>{
 useMemo(()=>{
   try{
     if(registerData?.register?.status ===true){
-        storeDataInLocalStorage("token",registerData?.register?.token)
+        storeDataInLocalStorage("kanbanToken",registerData?.register?.token)
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         dispatch(setCurrentUser({user:registerData?.register?.user}))
   setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)

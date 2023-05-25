@@ -167,6 +167,7 @@ const logOut = () => {
         <CustomInput
         fontSize='14px'
         color="white"
+        
         fontWeight={700}
         placeholder='****'
         type="password"

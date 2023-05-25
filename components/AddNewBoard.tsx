@@ -313,7 +313,7 @@ const AddNewBoard = ({
       <ModalBody>
         <ImageContainer>
            {imgURLArray.length > 0 && imgURLArray.map((url,index)=>(
-          <Image>
+          <Image key={index}>
              <img src={url}  width="100px"/>
              <span onClick={() =>removeImage(index)}><AiOutlineClose fontSize="13px" /></span>
           </Image>

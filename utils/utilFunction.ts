@@ -55,7 +55,8 @@ export const getTextDate = (date:Date | any,type?:string) => {
 if(!date){
   return
 }else {
-  const dateInfo = new Date(parseInt(date) *1000)
+  const dateInfo = new Date(date)
+  console.log({dateInfo})
   let month = months[dateInfo.getMonth()];
   let day = dateInfo.getDate();
   let year = `${dateInfo.getFullYear()}`;
@@ -97,4 +98,39 @@ export const confirmPassword = (value:string) => {
     }
       setErrorTable([...arr])
       return arr
+  }
+
+
+  export function formatDate(value:number, type:string,val?:string) {
+    const date = new Date();
+    let newDate;
+  
+    if (type === 'day') {
+      newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()+value);
+    } else if (type === 'month') {
+      newDate = new Date(date.getFullYear(),date.getMonth() + value, date.getDate());
+    } else {
+      return 'Invalid type';
+    }
+    const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(newDate);
+    const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(newDate);
+    const day = new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(newDate);
+  
+    if(val){
+return newDate
+    }else {
+      return `${dayOfWeek}, ${day} ${month}`
+    };
+
+  }
+
+  export function shortenInfo(text?: string, chars = 14): string | null {
+    if(text){
+     return `${text.substring(0, chars + 2)}...${text.substring(
+      text.length - chars
+    )}`;  
+    }else{
+      return null
+    }
+   
   }

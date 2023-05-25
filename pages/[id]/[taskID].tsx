@@ -12,6 +12,7 @@ import NoTaskFound from '../../components/NoTaskFound'
 
 const SingleTask = () => {
   const [workspace,setWorkspace] = useState<any>()
+  const [workspaceURL,setWorkspaceURL] = useState<any>("")
   const [taskID,setTaskID] = useState<any>("")
   const [task,setTask] = useState<ITaskCards>()
   const router = useRouter()
@@ -22,11 +23,11 @@ const SingleTask = () => {
 
   useEffect(()=>{
     if(router?.query.taskID){
-       setWorkspace(router.query.taskID)
+       setWorkspaceURL(router.query.id)
     setTaskID(router.query.taskID)
     }
   },[router.query])
-  const {data,error,loading} = useQuery(FETCH_TASK,{
+  const [fetchTask,{data,error,loading}] = useLazyQuery(FETCH_TASK,{
     variables:{
         input: {
             id:router?.query.taskID,
@@ -34,24 +35,17 @@ const SingleTask = () => {
         }
     }
   })
+  useEffect(()=>{
+    if(!task?._id){
+      fetchTask()
+    }
+  },[task])
   useMemo(()=>{
     // if(data?.fetchTask?.status){
         setTask(data?.fetchTask?.task)
     // }else{
     // }
   },[data])
-  // useEffect(()=>{
-  //     if(router?.query?.taskID && router?.query.id){
-  //        // @ts-ignore
-  //         const taskInfo = currentWorkspace.task.find((task)=>task._id === router.query.taskID)
-  //         if(taskInfo){
-  //           setTask(data?.fetchTask?.task)
-  //         }else {
-  //           fetchTask()
-  //         }
-          
-  //     }
-  // },[currentWorkspace,workspace,taskID])
 
 
   const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
@@ -80,7 +74,7 @@ const SingleTask = () => {
     if(router?.query?.id){
        // @ts-ignore
         const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
-        console.log({workspace},"kjeeeeeeeeeeee",router?.query?.id)
+        console.log({workspace})
         if(workspace){
           setWorkspace(workspace)
         }else {
@@ -91,12 +85,13 @@ const SingleTask = () => {
     }
 },[currentWorkspace,router.query])
 
+
   const taskList = task?.status?.name
   const taskListLength = currentWorkspace.task.filter((task:ITaskCards)=>task.status.name === taskList)
   if(loading || workspaceLoading){
     return <LoadingPage />
   }else if(task && workspace) {
-    return <TaskPage taskInfo={task} workspace={workspace} taskListLength={taskListLength} />
+    return <TaskPage setTask={setTask} position={workspace?.task?.findIndex((item:any)=>item._id ===task?._id)} taskInfo={task} workspace={workspace} workspaceURL={workspaceURL} taskListLength={taskListLength} />
   }else if(!task) {
     return (<NoTaskFound title="No Task Found" text="Please go back to home page" email={user.email} link={()=>router.push(`/${router?.query.id}`)}/>)
   }

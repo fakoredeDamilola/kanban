@@ -12,6 +12,9 @@ import { getTextDate } from "../../utils/utilFunction"
 import { RootState } from "../../state/store"
 import { CHANGE_TASK_DUE_DATE } from "../../graphql/mutation"
 import { useMutation } from "@apollo/client"
+import { useRouter } from "next/router"
+import { ADD_NEW_ACTIVITY } from "../../graphql/mutation"
+
 
 const TaskPageWrapper = styled.div`
     width:100%;
@@ -53,21 +56,21 @@ const TaskPageContainer = styled.div`
     display:flex;
     `
 
-const TaskPage = ({taskInfo,workspace,taskListLength}:{taskInfo?:ITaskCards,workspace:IWorkspace,taskListLength:ITaskCards[]}) => {
-
+const TaskPage = ({setTask,position,taskInfo,workspace,workspaceURL,taskListLength}:{taskInfo?:ITaskCards,position:number,workspace:IWorkspace,taskListLength:ITaskCards[],workspaceURL:string;setTask: React.Dispatch<React.SetStateAction<ITaskCards | undefined>>}) => {
+    console.log({taskInfo})
+    const router = useRouter()
     const [changeTaskDate,{data,loading,error}] = useMutation(CHANGE_TASK_DUE_DATE)
+    const [addNewActivity] = useMutation(ADD_NEW_ACTIVITY)
+    const {user} = useSelector((state:RootState)=>state)
     
     const dispatch = useDispatch()
-    const user = useSelector((state:RootState)=>state.user)
-    const {taskView} = useSelector((state:RootState)=>state.display)
     const [showTaskSideNav,setTaskShowSideNav] = useState(false)
     
 const [openCalenderModal, setOpenCalenderModal] = useState(false)
     
 const Portal = usePortal(document.querySelector("#portal"));
    const saveCalenderDate = (e:any,startDate:any) => {
-    
-    // dispatch(changeTaskDueDate({id:taskInfo?._id,duedate:startDate}))
+    dispatch(changeTaskDueDate({id:taskInfo?._id,duedate:startDate}))
     changeTaskDate({
         variables:{
             input:{
@@ -77,40 +80,53 @@ const Portal = usePortal(document.querySelector("#portal"));
            
         }
     })
+    console.log({data,error,loading})
 
-        const CalenderActivity:IActivity = {
-            id: uuidv4(),
-            nameOfActivity:taskInfo?.dueDate? "changed due date" : "added due date",
-           description:taskInfo?.dueDate ? `changed due date from ${getTextDate(taskInfo?.dueDate)} to ${getTextDate(startDate)}` :startDate ? `set due date ${getTextDate(startDate)}` : "removed due date",
-            createdby: {
-              name:user.name ?? "da",
-              id:user._id,
-              email:user.email
-            },
-            time:Date.now()
+       const newActivity = {
+      
+        nameOfActivity:taskInfo?.dueDate? "changed due date" : "added due date",
+            // @ts-ignore
+            description:taskInfo?.dueDate ? `changed due date from ${getTextDate(new Date(parseInt(taskInfo?.dueDate)*1000))} to ${getTextDate(startDate)}` :startDate ? `set due date ${getTextDate(startDate)}` : "removed due date",
+            icon:"BsCalendar4"
         }
-        dispatch(addNewActivity({id:taskInfo?._id,activity:CalenderActivity}))
+        addNewActivity({
+variables:{
+              input:{
+                taskID:taskInfo?._id,
+              activity:newActivity
+              }
+              
+            }
+          
+        })
+            
+        // dispatch(addNewActivity({id:taskInfo?._id,activity:CalenderActivity}))
          setOpenCalenderModal(false)
     }
     const closeCalenderModal = () => {
         setOpenCalenderModal(false)
     }
+    const changeTask = (num:number) => {
+        const newTask = workspace.task[position===0 ? 1 + num : position + num]
+        router.push(`/${workspaceURL}/${newTask._id}`)
+        setTask(newTask)
+    }
     return (
         <TaskPageWrapper>
            {taskInfo ? 
            <TaskpageDesign>
-                <TaskPageHeader workspaceURL={taskInfo.workspaceURL} showTaskSideNav={showTaskSideNav} setShowTaskSideNav={setTaskShowSideNav} taskList={taskListLength.length}/>
+                <TaskPageHeader changeTask={changeTask} position={position} workspaceURL={taskInfo.workspaceURL} showTaskSideNav={showTaskSideNav} setShowTaskSideNav={setTaskShowSideNav} taskList={taskListLength.length}/>
             <TaskPageContainer>
                 <TaskPageMain task={taskInfo} 
                 setOpenCalenderModal={setOpenCalenderModal}/>
 
- <TaskPageAside task={taskInfo} workspacesubitems={workspace.subItems} workspace={workspace} members={workspace.members} showTaskSideNav={showTaskSideNav} />
+ <TaskPageAside user={user} task={taskInfo} workspacesubitems={workspace.subItems} workspace={workspace} members={workspace.members} showTaskSideNav={showTaskSideNav} />
             </TaskPageContainer>
             </TaskpageDesign> : 
             null
             }
             <Portal>
-                 {openCalenderModal ? <CalenderModal date={taskInfo?.dueDate} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} saveCalenderModal={saveCalenderDate} /> : null}
+                 {openCalenderModal ? <CalenderModal workspaceID={workspace.id} date={taskInfo?.dueDate} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} saveCalenderModal={saveCalenderDate}  /> : null}
             </Portal>
               
         </TaskPageWrapper>

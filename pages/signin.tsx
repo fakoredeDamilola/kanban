@@ -70,8 +70,9 @@ const signinWithOAuth =async  (data:any) =>{
 
 useMemo(()=>{
   if(data?.login?.status){
-    storeDataInLocalStorage("token",data?.login?.token)
+    storeDataInLocalStorage("kanbanToken",data?.login?.token)
     dispatch(setCurrentUser({user:data?.login?.user})) 
+    alert(123)
   router.push(`/${data?.login?.user?.workspaces[0].URL}`)
   }else if(!data?.login?.status && data?.login?.message){
     dispatch(setModalData({modalType:"error",modalMessage:data?.login?.message,modal:true}))

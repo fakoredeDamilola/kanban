@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { AiOutlinePlus, AiOutlineStar } from 'react-icons/ai'
 import { BiChevronRight, BiDotsHorizontalRounded } from 'react-icons/bi'
 import { HiOutlineDotsHorizontal } from 'react-icons/hi'
@@ -13,9 +13,11 @@ import {v4 as uuidv4} from "uuid"
 import { useDispatch, useSelector } from 'react-redux'
 import { device } from '../../../config/theme'
 import { useMutation } from '@apollo/client'
-import { ADD_NEW_ACTIVITY } from '../../../graphql/mutation'
+import { ADD_NEW_ACTIVITY, EDIT_TASK } from '../../../graphql/mutation'
 import { FETCH_TASK } from '../../../graphql/queries'
 import { useRouter } from 'next/router'
+import useDebounce from '../../../hooks/useDebounce'
+import { RootState } from '../../../state/store'
 
 const TaskPageMainContainer = styled.div`
 
@@ -214,8 +216,11 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
 }
 ) => {
   const dispatch = useDispatch()
+  const {user} = useSelector((state:RootState)=>state)
   const [taskTitle,setTaskTitle] = React.useState(task.issueTitle)
+  const debounceTitleValue = useDebounce(taskTitle,2500)
   const [taskDescription,setTaskDescription] = React.useState(task.issueDescription ?? "")
+  const debounceDescriptionValue = useDebounce(taskDescription,2500)
   const [comment,setComment] = React.useState("")
   const [addNewActivity,{loading,error,data}] = useMutation(ADD_NEW_ACTIVITY)
   const router = useRouter()
@@ -232,20 +237,78 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
     }
   }
 
+const [editTask,{data:editTaskData,error:editTaskError,loading:editTaskLoading}] = useMutation(EDIT_TASK)
+
+
+  useEffect(()=>{
+    if(debounceTitleValue !== task.issueTitle){
+        editTask({
+      variables: {
+        input: {
+          value:debounceTitleValue,
+          taskID: task._id,
+          key:"issueTitle"
+        }
+      }
+    })
+    const newActivity = {
+      
+      nameOfActivity:"Edit Task",
+          // @ts-ignore
+          description:"editted the task title",
+          icon:"BsPencil"
+      }
+      addNewActivity({
+variables:{
+            input:{
+              taskID:task?._id,
+            activity:newActivity
+            }
+            
+          }
+        
+      })
+    }
+  
+  },[debounceTitleValue])
+  useEffect(()=>{
+    if(debounceDescriptionValue !== task.issueDescription){
+        editTask({
+      variables: {
+        input: {
+          value:debounceDescriptionValue,
+          taskID: task._id,
+          key:"issueDescription"
+        }
+      }
+    })
+    const newActivity = {
+      
+      nameOfActivity:"Edit Task",
+          // @ts-ignore
+          description:"editted the task description",
+          icon:"BsPencil"
+      }
+      addNewActivity({
+variables:{
+            input:{
+              taskID:task?._id,
+            activity:newActivity
+            }
+            
+          }
+        
+      })
+    }
+  
+  },[debounceDescriptionValue])
+
   const submitComment = () => {
     const commentActivity = {
-      // id: uuidv4(),
       nameOfActivity:"comment",
      description: comment,
-    //  createdby: {
-    //   name:user.name,
-    //   id:user._id,
-    //   email:user.email
-    // },
-      // time: Date.now(),
 
     }
-    // dispatch(addNewActivity({id:task._id,activity:commentActivity}))
     addNewActivity({
       variables:{
         input:{
@@ -286,7 +349,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
            <AiOutlineStar />
         </div>
         </TaskPageHead>
-        
+        {user._id === task?.createdBy?._id &&    
        <CustomDropdown isOpen={isOpen} top="50%" left={device.mobileM ? "0%" :"145%" } noInput={true} setIsOpen={setIsOpen} items={list} selected={{name:""}} selectItem={(event,item:any)=>openPage(event,item)}>
     <FooterWrapper onClick={handleButtonClick}>
       <Icon>
@@ -295,10 +358,11 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
        
        
     </FooterWrapper>
-    </CustomDropdown>
+    </CustomDropdown>}
       </TaskPageMainHeader>
       <TaskPageMainSection>
       <CustomInput
+        disable={task?.createdBy?._id === user._id ? false :true}
         type="textarea"
         placeholder="Issue Title"
         fontSize="22px"
@@ -309,11 +373,15 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
         maxLength={256}
         input="text"
         name="issue title"
-        changeInput={(value,name)=>setTaskTitle(value)}
+        changeInput={(value,name)=>{
+          setTaskTitle(value)
+          
+        }}
         
       />
       
       <CustomInput
+        disable={task?.createdBy?._id === user._id ? false :true}
         type="textarea"
         placeholder="Issue description..."
         fontSize="18px"
@@ -347,7 +415,7 @@ const TaskPageMain = ({task,setOpenCalenderModal}:
           ) : null
           }
           <CommentInput>
-            <ProfilePicture tooltip size="35px" assigned={task.assigned} />
+            <ProfilePicture tooltip size="35px" assigned={{name:user?.username ?? "dd",id:user._id,img:user?.image}} />
             <div>
                  <CustomInputs
             type="textarea"

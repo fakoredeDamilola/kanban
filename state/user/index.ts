@@ -32,6 +32,7 @@ const userSlice = createSlice({
           },
           setCurrentUser:(state,{payload:{user}})=> {
             state._id = user._id
+            state.image=user.image
             state.username = user.username
             state.email=user.email
             state.workspaces = user.workspaces

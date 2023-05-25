@@ -77,7 +77,7 @@ const modalVariants = {
         opacity:0,
     },
     visible:{
-        y:"10px",
+        y:"500px",
         opacity:1,
         transition:{delay:0.5}
     }

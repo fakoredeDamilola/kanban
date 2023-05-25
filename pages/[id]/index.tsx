@@ -5,13 +5,12 @@ import { useEffect,useMemo,useState } from "react"
 import Navbar from "../../components/navs/Navbar";
 import ViewAreaIndex from "../../components/viewarea";
 import { RootState } from "../../state/store";
-import { FETCH_WORKSPACE } from "../../graphql/queries";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { FETCH_USER, FETCH_WORKSPACE } from "../../graphql/queries";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { IBoard, refetchWorkspace, setCurrentWorkspace } from "../../state/board";
 import LoadingPage from "../../components/LoadingPage";
 import styled from "styled-components";
 import AddNewBoard from "../../components/AddNewBoard";
-import { m } from "framer-motion";
 import usePortal from "../../hooks/usePortal";
 import ErrorModal from "../../components/modal/ErrorModal";
 import { setNewBoardModal } from "../../state/display";
@@ -20,6 +19,7 @@ import { NotifyComponent } from "../../components/Notify/Notify";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Item } from "../../components/viewarea/IViewrea";
+import { setCurrentUser } from "../../state/user";
 
 const Container = styled.div`
   min-height:100%;  
@@ -49,6 +49,14 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
         }
       }
     })
+    const {data:getUser,error:userError} = useQuery(FETCH_USER,{
+      variables:{
+        input: {
+          email:user?.email
+        }
+      }
+    })
+
     const [createNewTask,{loading:newTaskLoading,data:newTaskData,error:newTaskError}] = useMutation(CREATE_NEW_TASK,{
       refetchQueries:() => [{
         query: FETCH_WORKSPACE,
@@ -66,6 +74,19 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       notifyMess("Issue created",newTaskData.createNewTask.task.issueTitle)
     }
   },[newTaskData])
+  useMemo(()=>{
+      if(getUser?.userInfo?.status){
+        const user = getUser.userInfo.user
+        console.log({user})
+        // name:"",
+        // email:"",
+        // _id:"",
+        // username:"",
+        // image:"",
+        // workspaces: []
+        dispatch(setCurrentUser({user}))
+      }
+  },[getUser])
 
     const {openNewBoardModal} = useSelector((state:RootState)=>state.display)
     const closeNewBoardModal = () => {
@@ -97,7 +118,6 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       const workspaceDetails = currentWorkspace.subItems.reduce((acc,cur)=> {
         
            if(cur.name.toLowerCase() ==="assigned"){
-            console.log({cur})
             return Object.assign(acc, {
             [cur.name.toLowerCase()]:cur?.selected._id
         })
@@ -137,7 +157,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
           issueDescription,
           ...workspaceDetails,
           createdBy:user._id,
-          imgURLArray:[],
+          imgURLArray:imgURLArray ,
           activites:[createdActivity]
         }
       }
@@ -184,6 +204,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
             setWorkspace(workspace)
           }else {
             fetchWorkspace()
+            // console.log
           }
           
       }

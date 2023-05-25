@@ -122,6 +122,7 @@ enum SELECT {
     const [tasks,setTasks] = useState<any>([])
     const [current,setCurrent] = useState<any[]>([])
 
+
     const [fetchMember,{data,error,loading}] = useLazyQuery(FETCH_MEMBER,{
       variables:{
           input: {
@@ -136,55 +137,52 @@ enum SELECT {
       }else if(data?.FetchMember?.__typename==="CreateMemberSuccessResponse"){
         setProfile(data?.FetchMember?.member)
       }
-    },[data])
+    },[data]) 
+    const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
+        variables: {
+          input: {
+           workspaceURL: router?.query.id
+          }
+        }
+      })
+      useMemo(()=>{
+        if(workspaceData?.fetchWorkspace.status){
+          const workspace = workspaceData?.fetchWorkspace.workspace
+          const boardDetails:IBoard = {
+            workspaceID:workspace._id ?? "29",
+            workspace:workspace.name,
+            workspaceURL:workspace.URL,
+            tasks:[]
+          }
+          dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
+          setWorkspace(workspace)
+        }
+       
+      },[workspaceData])
+      
     useEffect(()=>{
         if(router?.query.username && router?.query.id){
          
           if(!profile){
               fetchMember()
           }
-         
            // @ts-ignore
-           setWorkspaceID(router.query?.id)
-           // @ts-ignore
-         
-           
-        }
+           setWorkspaceID(router.query?.id)  }
       },[router.query])
+    useEffect(()=>{
+      
+          if(currentWorkspace.URL ===""){
+              fetchWorkspace()
+          }
+           // @ts-ignore
+      },[currentWorkspace])
 
-
-      // const [fetchWorkspace,{data:workspaceData,loading:workspaceLoading}] = useLazyQuery(FETCH_WORKSPACE,{
-      //   variables: {
-      //     input: {
-      //      workspaceURL: router?.query.id
-      //     }
-      //   }
-      // })
-      // 
-  
-      // useMemo(()=>{
-      //   if(workspaceData?.fetchWorkspace.status){
-      //     const workspace = workspaceData?.fetchWorkspace.workspace
-      //     const boardDetails:IBoard = {
-      //       workspaceID:workspace._id ?? "29",
-      //       workspace:workspace.name,
-      //       workspaceURL:workspace.URL,
-      //       tasks:[]
-      //     }
-      //     dispatch(setCurrentWorkspace({workspace,boardsDetails:boardDetails})) 
-      //     setWorkspace(workspace)
-      //   }
-       
-      // },[workspaceData])
-  
-  
-
-      useEffect(()=>{
+ useEffect(()=>{
         
         if(profile){
-          const currentTask = profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name && (task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress"))
-        const taskArray = selected === SELECT.ASSIGNED ? profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name) :
-       profile.taskIDs.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
+          const currentTask = profile?.taskIDs?.filter((task:ITaskCards)=>task?.assigned?.name ===profile?.name && (task.status.name.toLowerCase()==="todo" || task.status.name.toLowerCase()==="in progress"))
+        const taskArray = selected === SELECT.ASSIGNED ? profile?.taskIDs?.filter((task:ITaskCards)=>task?.assigned?.name ===profile?.name) :
+       profile?.taskIDs?.filter((task:ITaskCards)=>task?.createdBy?.name ===profile.name)
       
           setWorkspace(profile.workspaceIDs)
        if(taskArray){
@@ -202,7 +200,7 @@ enum SELECT {
      <ProfilePageWrapper>
            {profile ? 
            <ProfilePageDesign>
-                <ProfilePageHeader user={profile} profileSideNav={profileSideNav} setProfileSideNav={setProfileSideNav}/>
+                <ProfilePageHeader workspaceID={router?.query.id} user={profile} profileSideNav={profileSideNav} setProfileSideNav={setProfileSideNav}/>
                 <ProfilPageSubHead>
                   <SwitchButton selected={selected}>
                     <div onClick={()=>setSelected(SELECT.ASSIGNED)}>Assigned</div>
@@ -216,7 +214,7 @@ enum SELECT {
                 <ProfilePageMain user={profile} tasks={tasks} 
                />
 
- <ProfilePageAside workspaces={workspace} currentTask={current.length} user={profile} profileSideNav={profileSideNav} assigned ={profile.taskIDs.filter((task:ITaskCards)=>task.assigned.name ===profile?.name && (task.status.name.toLowerCase()==="in progress")).length} />
+ {/* <ProfilePageAside workspaces={workspace} currentTask={current.length} member={profile} user={user} profileSideNav={profileSideNav} assigned ={profile?.taskIDs?.filter((task:ITaskCards)=>task?.assigned?.name ===profile?.name && (task.status.name.toLowerCase()==="in progress")).length} /> */}
             </ProfilePageContainer>
             </ProfilePageDesign> : 
             <h1>Not found</h1>

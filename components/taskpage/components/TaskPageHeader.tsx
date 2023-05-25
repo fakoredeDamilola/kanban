@@ -7,6 +7,8 @@ import { device } from '../../../config/theme'
 import Harmburger from '../../Harmburger'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleSideNav } from '../../../state/display'
+import { ITaskCards } from '../../../state/board'
+import { IUser } from '../../../state/user'
 
 const TaskPageHeaders = styled.div`
     background-color: #21232E;
@@ -26,12 +28,13 @@ const TaskPageHeaders = styled.div`
     }
       	/* flex: 0; */
     `
-    const SwitchPage = styled.div`
+    const SwitchPage = styled.div<{taskList:number;position:number;}>`
     background-color: #21232E;
     display:flex;
     margin:0 15px;
     gap:10px;
-    & div {
+
+    & button {
         width:18px;
         height:18px;
         background-color: ${({theme})=>theme.sideNav};
@@ -46,6 +49,12 @@ const TaskPageHeaders = styled.div`
             background-color: ${({theme})=>theme.cardHover};
             transition: 0.3s;
         }
+    }
+    & button:first-child {
+        cursor:${({position,taskList})=> `${position<=1 ? "not-allowed": "pointer"}`}
+    }
+    & button:last-child {
+        cursor:${({position,taskList})=> `${position < taskList ? "pointer": "not-allowed"}`}
     }
    `
    const CloseBtn = styled.div`
@@ -76,13 +85,15 @@ const TaskPageHeaders = styled.div`
    `
 
 
-const TaskPageHeader = ({taskList,showTaskSideNav,setShowTaskSideNav,workspaceURL}:{workspaceURL:string,taskList:number,showTaskSideNav:boolean,setShowTaskSideNav:any}) => {
+const TaskPageHeader = ({position,taskList,showTaskSideNav,setShowTaskSideNav,workspaceURL,changeTask}:{workspaceURL:string,taskList:number,showTaskSideNav:boolean,setShowTaskSideNav:any;position:number;changeTask:(val:number)=>void;}) => {
+   
     const dispatch = useDispatch()
     const {taskView,showSideNav} = useSelector((state: any) => state.display)
     const router = useRouter()
     const toggleNav = () => {
         dispatch(toggleSideNav(!showSideNav))
     }
+    
   return (
     <TaskPageHeaders>
         <div>
@@ -94,21 +105,21 @@ const TaskPageHeader = ({taskList,showTaskSideNav,setShowTaskSideNav,workspaceUR
             <Harmburger ToggleNav={toggleNav}/>
         </HamBurgerBtn>
         
-        <SwitchPage>
-            <div>
+        <SwitchPage position={position} taskList={taskList} >
+            <button onClick={()=>changeTask(-1)} disabled={position<=1 ? true:false}>
                 <AiOutlineArrowUp />
-            </div>
-            <div>
+            </button>
+            <button onClick={()=>changeTask(1)} disabled={position < taskList ? false: true}>
                 <AiOutlineArrowDown />
-            </div>
+            </button>
            
         </SwitchPage> <div>
-                {taskList}
+                {position< 0 ? 0 : position === 0 ? 1 : position} /  {taskList}
             </div>
             
         </div>
-        <SideBar onClick={()=>setShowTaskSideNav(!showTaskSideNav)}>
-            <FiSidebar />
+      <SideBar onClick={()=>setShowTaskSideNav(!showTaskSideNav)}>
+           <FiSidebar />
         </SideBar>
     </TaskPageHeaders>
   )

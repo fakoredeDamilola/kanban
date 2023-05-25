@@ -2,13 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import {useState,useRef} from 'react'
 import useAutosizeTextArea from '../hooks/useAutosizeTextarea';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
+import { IconContext } from 'react-icons';
 
 
-const CustomTextareaStyles = styled.div<{fontSize:string;color:string;fontWeight:number;outline?:boolean}>`
+const CustomTextareaStyles = styled.div<{disable?:boolean;fontSize:string;color:string;fontWeight:number;outline?:boolean}>`
  & >textarea {
   width:100%;
 border:none;
-background:transparent;
+background:${({disable})=>disable ? "red":"transparent"};
 line-height:1;
 width:100%;
 padding:6px;
@@ -32,6 +34,7 @@ opacity:0.7;
   }
 `
 const Input = styled.div<{isError?:boolean;fontSize:string;color:string;fontWeight:number;}>`
+    position:relative;
 & > input {
   margin-top:6px;
   border:${({isError})=>isError ? "1px solid red" : "1px solid #666BE1"};
@@ -55,7 +58,12 @@ line-height:1;
 }
   
 `
-
+const PasswordIcon = styled.div<{}>`
+cursor:pointer;
+  position:absolute;
+  right:10px;
+  top:18px;
+`
 interface IInput {
     type?: string;
     placeholder: string;
@@ -79,17 +87,13 @@ const CustomInput = ({
   type,
   placeholder,
   fontSize,color,maxLength,fontWeight,textvalue,outline,input,isError,name,error,errors,setErrorTable,disable,changeInput}:IInput) => {
-
+    console.log({disable})
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
   };
-  // const [value, setValue] = useState("");
+  const [showPassword,setShowPassword] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-//   const textAreaRef1 = useRef<HTMLTextAreaElement>(null);
-
-  // useAutosizeTextArea(textAreaRef.current, value);
-//   useAutosizeTextArea(null, value);
 
 
   return (
@@ -98,7 +102,7 @@ const CustomInput = ({
     input==="text" ?
     <Input isError={isError} fontSize={fontSize} color={color} fontWeight={fontWeight}>
               <input
-            type={type}
+            type={type==="password" && showPassword ? "text" : type}
             value={textvalue}
             
             name={name}
@@ -129,15 +133,20 @@ const CustomInput = ({
             {isError && <div style={{color:"red",fontSize:"12px"}}>
 {error ?? "This input is wrong"}
             </div> }
+            <IconContext.Provider
+      value={{ color: color ?? '#1922a4', size: fontSize ?? "16px" }}
+    >
+            {type=== "password" && <PasswordIcon onClick={()=>setShowPassword(!showPassword)}>{showPassword ? <BsEye size="20px" /> : <BsEyeSlash size="20px"/>}</PasswordIcon>}
+            </IconContext.Provider>
             </Input>
     : input==="textarea"?
-    <CustomTextareaStyles fontSize={fontSize} outline={outline} fontWeight={fontWeight} color={color}>
+    <CustomTextareaStyles disable={disable} fontSize={fontSize} outline={outline} fontWeight={fontWeight} color={color}>
 <textarea
 placeholder={placeholder}
         value={textvalue}
         onChange={(event)=>changeInput(event.target.value, event.target.name)}
         // height={height}
-        
+        disabled={disable}
         
         ref={textAreaRef}
         // onChange={handleChange}

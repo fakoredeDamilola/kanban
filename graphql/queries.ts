@@ -32,6 +32,12 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
           color
           joined
           username
+          workspaceIDs {
+            status
+            workspaceID {
+              URL
+            }
+          }
         }
         task{
         _id
@@ -123,6 +129,46 @@ query FetchWorkspace($input:fetchWorkspaceInput) {
   }
 }
 `
+export const FETCH_USER = gql`
+query UserInfo($input:userInput) {
+  userInfo(input:$input) {
+    ... on VerifyRecordSuccess {
+      status
+      message
+    }
+    ...on RegisterSuccessResponse{
+      status
+      user {
+        _id
+        username
+        image
+        name
+        email
+        workspaces {
+          _id
+          id
+          name
+          URL
+          owner {
+            name
+            email
+            username
+            _id
+            
+      }
+        }
+      }
+      token
+    }
+
+    ... on RegisterFailResponse {
+      status
+      message
+      field
+    }
+  }
+}
+`
 
 export const FETCH_TASK = gql`
 query FetchTask($input: FetchTaskInput) {
@@ -172,13 +218,17 @@ query FetchTask($input: FetchTaskInput) {
          name 
         }
         assigned {
+          _id
          name 
          img
         }
         assignee {
+          _id
           name
         }
         createdBy {
+          _id
+          img
           name
         }
         imgURLArray
@@ -193,8 +243,6 @@ export const FETCH_MEMBER = gql`
 query FetchMember($input: FetchMemberInput) {
   FetchMember(input: $input) {
     ... on CreateMemberSuccessResponse {
-      status
-      __typename
       member {
         _id
         name
@@ -207,24 +255,29 @@ query FetchMember($input: FetchMemberInput) {
           _id
           issueTitle
           issueDescription
+          imgURLArray
+          dueDate
+          workspaceID
+          workspaceURL
+          assigned {
+            color
+            email
+            img
+            joined
+            name
+          }
           createdBy {
             _id
             name
+            email
             img
+            color
+            joined
+            username
+           
           }
-          imgURLArray
-          dueDate
           assignee {
             email
-            _id
-            name
-          }
-          status {
-            name
-            id
-          }
-          assigned {
-            name
             id
             img
           }
@@ -238,11 +291,12 @@ query FetchMember($input: FetchMemberInput) {
             _id
             name
           }
-          workspaceID
-          workspaceURL
+          status {
+            name
+            id
+          }
         }
         workspaceIDs {
-          # workspaceURL
           workspaceID {
             name
             URL
@@ -251,6 +305,11 @@ query FetchMember($input: FetchMemberInput) {
         }
       }
     }
+    # ... on CreateMemberSuccessResponse {
+    #   status
+    #   __typename
+    #   member {
+      
     ... on CreateMemberFailResponse {
       status
     }

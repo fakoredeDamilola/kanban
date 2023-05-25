@@ -47,7 +47,7 @@ const [mountedComponent, setMountedComponent] = useState(false)
 
 const [token,setToken] = useState<string | null>("")
 useEffect(()=>{
-  const tokens = window.localStorage.getItem("token")
+  const tokens = window.localStorage.getItem("kanbanToken")
   setToken(tokens)
   if(!tokens){
     router.push("/signup")

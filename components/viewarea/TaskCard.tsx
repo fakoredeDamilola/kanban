@@ -243,7 +243,6 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
     }),
     
   }));
-
   return (
 
         <TaskCardStyle
@@ -299,7 +298,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
           e.stopPropagation()
           setOpenCalenderModal(true)
         }}  fontSize="12px">
-         <CustomIcon img="BsCalendar2" fontSize="13px" /> {getTextDate(card.dueDate,"MM, yy")}
+         <CustomIcon img="BsCalendar2" fontSize="13px" /> {getTextDate(new Date(parseInt(card?.dueDate)*1000))}
        </Icon>
     }
         {card.label && card.label.name !== "Label" &&
@@ -323,7 +322,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       </CustomDropdown>
     }
       <Portal>
-                 {openCalenderModal ? <CalenderModal date={card.dueDate ?new Date(parseInt(card?.dueDate)*1000): Date.now()} saveCalenderModal={saveCalenderModal} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} /> : null}
+                 {openCalenderModal ? <CalenderModal  date={card.dueDate ?new Date(parseInt(card?.dueDate)*1000): Date.now()} saveCalenderModal={saveCalenderModal} openCalenderModal={openCalenderModal} closeCalenderModal={closeCalenderModal} /> : null}
             </Portal>
        
     </FooterWrapper>

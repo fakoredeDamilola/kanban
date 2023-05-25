@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
 import CustomInput from '../CustomInput'
+import { shortenInfo } from '../../utils/utilFunction'
 
 const Container = styled.div`
   width:100%;
@@ -270,12 +271,12 @@ const [disableButton,setDisableButton] = useState(false)
         textvalue={workspaceURL}
         changeInput={(value,name)=>{
           setWorkspaceURL(value)
-          setControlInput(false)
+          setControlInput(false) 
         }}
         errors={["required"]}
         />
 <InputText>
-{process.env.NEXT_PUBLIC_URL}
+{shortenInfo(process.env.NEXT_PUBLIC_URL,8)}
 </InputText>
         </div>
      

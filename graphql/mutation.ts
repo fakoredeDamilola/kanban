@@ -474,8 +474,6 @@ export const ADD_IMAGE_TO_MEMBER = gql`
 mutation AddImageToMember($input: addMemberImageInput) {
   AddImageToMember(input: $input) {
     ... on CreateMemberSuccessResponse {
-      status
-      __typename
       member {
         _id
         name
@@ -488,24 +486,29 @@ mutation AddImageToMember($input: addMemberImageInput) {
           _id
           issueTitle
           issueDescription
+          imgURLArray
+          dueDate
+          workspaceID
+          workspaceURL
+          assigned {
+            color
+            email
+            img
+            joined
+            name
+          }
           createdBy {
             _id
             name
+            email
             img
+            color
+            joined
+            username
+           
           }
-          imgURLArray
-          dueDate
           assignee {
             email
-            _id
-            name
-          }
-          status {
-            name
-            id
-          }
-          assigned {
-            name
             id
             img
           }
@@ -519,11 +522,12 @@ mutation AddImageToMember($input: addMemberImageInput) {
             _id
             name
           }
-          workspaceID
-          workspaceURL
+          status {
+            name
+            id
+          }
         }
         workspaceIDs {
-          # workspaceURL
           workspaceID {
             name
             URL
@@ -534,6 +538,70 @@ mutation AddImageToMember($input: addMemberImageInput) {
     }
     ... on CreateMemberFailResponse {
       status
+    }
+  }
+}
+`
+
+export const EDIT_TASK = gql`
+mutation EditTask($input: editTaskInput) {
+  editTask(input: $input) {
+    ... on CreateTaskSuccessResponse {
+      status
+      task {
+        _id
+        issueTitle
+        issueDescription
+        workspaceURL
+        workspaceID
+        dueDate
+       activities {
+            description
+            icon
+            color
+            name
+            nameOfActivity
+            createdby {
+              _id
+              name
+              email
+              img
+              # type
+              # id
+              username
+            }
+          }
+        status {
+          _id
+          name
+          email
+          img
+          type
+          id
+          username
+        }
+        priority {
+          name
+          img
+        }
+        others {
+          name
+        }
+        label {
+         name 
+        }
+        assigned {
+         name 
+         img
+        }
+        assignee {
+          name
+        }
+        createdBy {
+          name
+        }
+        imgURLArray
+      }
     }
   }
 }

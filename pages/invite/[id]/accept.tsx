@@ -37,6 +37,7 @@ const accept = () => {
         }
     }
   })
+  console.log({data,error,loading})
   const [addMembers,{data:addMembersData,error:addMembersError,loading:addMembersLoading}] = useMutation(ADD_MEMBERS)
 
   useMemo(()=>{ 
@@ -45,7 +46,7 @@ if( data){
     if(data?.verifyMembersLink.status){
     setUserInvite(data?.verifyMembersLink?.invite?.email)
       setLinkDetails(data?.verifyMembersLink.workspace)
-      if(data?.verifyMembersLink?.invite?.email === data?.verifyMembersLink.user.email){
+      if(data?.verifyMembersLink?.invite?.email === data?.verifyMembersLink?.user?.email){
         setUserInviteIssue("accept")
       }else{
         setUserInviteIssue("login")
@@ -83,7 +84,7 @@ if( addMembersData?.AddNewMember?.status){
         inviteLink='73883-38838-3838'
         workerEmail={userInvite}
         workspaceName={linkDetails?.name}
-        acceptInvite={acceptInvite} email={data?.verifyMembersLink.user.email}
+        acceptInvite={acceptInvite} email={data?.verifyMembersLink?.user?.email }
         userInviteIssue={userInviteIssue}
         />
         

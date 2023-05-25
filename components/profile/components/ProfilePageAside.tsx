@@ -5,6 +5,7 @@ import ProfilePicture from '../../ProfilePicture'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
+import { IUser } from '../../../state/user'
 
 const ProfilePageAsideContainer = styled.div<{profileSideNav:boolean}>`
     /* width: 50%;
@@ -97,7 +98,7 @@ const ProfilePageAsideContainer = styled.div<{profileSideNav:boolean}>`
     workspaceID:IWorkspace;
     status:string
   }
-const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:{user:IMembers,profileSideNav:boolean;currentTask:number;assigned:number;workspaces:IWorkspace[]}) => {
+const ProfilePageAside = ({workspaces,member,user,profileSideNav,currentTask,assigned}:{member:IMembers,user:IUser,profileSideNav:boolean;currentTask:number;assigned:number;workspaces:IWorkspace[]}) => {
   const router = useRouter()
   const dispatch = useDispatch()
 
@@ -135,12 +136,12 @@ const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:
     <ProfilePageAsideContainer profileSideNav={profileSideNav}>
     <ProfilePageAsideHeader>
       <ProfilePicture assigned={{
-        name:user.name,
-        img:user.img,
-      }} size="80px" tooltip={false} edit={true} />
+        name:member.name,
+        img:member.img,
+      }} size="80px" tooltip={false} edit={member.email === user.email ? true : false} />
      <div>
-      <h4>{user.name}</h4>
-      <Muted>{user.email}</Muted>
+      <h4>{member.name}</h4>
+      <Muted>{member.email}</Muted>
       <p>Edit Profile</p>
      </div>
 
@@ -154,11 +155,11 @@ const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:
           },
           {
             name:"Username",
-            value:user.username,
+            value:member.username,
           },
           {
             name:"Joined",
-            value:`${new Date(user.joined)}`.split(" ").slice(1,5).join(" "),
+            value:`${new Date(member.joined)}`.split(" ").slice(1,5).join(" "),
           },
           {
             name:"Working on",
@@ -184,7 +185,7 @@ const ProfilePageAside = ({workspaces,user,profileSideNav,currentTask,assigned}:
     </AsideMain>
     <AsideList>
       {
-      workspaces.map((workspace:any  ,index)=>{
+      workspaces?.map((workspace:any  ,index)=>{
         return (
 
           <li key={index}  onClick={(e:any)=>selectItem(e,workspace.workspaceID)}> <ProfilePicture assigned={{name:workspace.workspaceID.name}} tooltip={false} /> {workspace.workspaceID.URL}</li>

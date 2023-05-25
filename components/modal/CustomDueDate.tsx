@@ -8,21 +8,19 @@ import { AiOutlineClose, AiOutlineLeft, AiOutlineRight } from 'react-icons/ai';
 import { device } from '../../config/theme';
 import { formatDate } from '../../utils/utilFunction';
 import { BsCalendar4 } from 'react-icons/bs';
-import CustomDueDate from './CustomDueDate';
 
 const CalenderWrapper = styled.div`
     display:flex;
     flex-direction:column;
     gap:20px;
-    width:90%;
+    width:95%;
   padding: 0;
-  min-height: 250px;
   position: fixed;
   top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-  height:65%;
-  max-height: 65%;
+  height:300px;
+  max-height: 300px;
   background-color: ${({theme}) => theme.nav};
   border: 1px solid ${({theme}) => theme.border};
   border-radius: 12px;
@@ -98,14 +96,20 @@ const CalenderButton = styled.button`
     `
     const CalenderSearch = styled.div`
     margin:20px 0;
+    padding:0 20px;
+    box-sizing:border-box;
+    h4 {
+        color:white;
+        margin-bottom:10px;
+    }
       & input {
         width:100%;
         height:40px;
         background:transparent;
         border:none;
         border-bottom:${({theme})=>`1px solid ${theme.border}`};
-        padding:0 10px;
-        font-size:25px;
+        /* padding:0 10px; */
+        font-size:20px;
         color:${({theme})=>` ${theme.otherColor}`};
         outline:none;
         ::placeholder {
@@ -132,101 +136,57 @@ color:white;
   }
 `
 
-const CalenderModal = ({
+const CustomDueDate = ({
   workspaceID,
   openCalenderModal,
   closeCalenderModal,
+  startDate,
+  setStartDate,
   saveCalenderModal,
   date}:{
   openCalenderModal:boolean;
   date:any;
+  setStartDate:any;
+  startDate:any;
   closeCalenderModal:() => void;
   saveCalenderModal:(e:any,date:any) => void;workspaceID?:string
 }) => {
-    const [openCustomDate,setOpenCustomDate] = useState(false)
-    const [startDate, setStartDate] = useState(date ? new Date(date) : new Date());
-    const [search,setSearch] = useState("")
-   const calenderDetails = [
-    {
-      text: "Tomorrow",
-      value:formatDate(1,"day"),
-      actual:formatDate(1,"day","kek")
-    },
-    {
-      text: "End of this week",
-      value:formatDate(7-new Date().getDay(),"day"),
-      actual:formatDate(7-new Date().getDay(),"day","kek")
-    },
-    {
-      text: "In one week",
-      value:formatDate(7,"day"),
-      actual:formatDate(7,"day","kek")
-    },
-    {
-      text: "Custom...",
-    },
-   ]
+   
   return (
        <CustomModal  closeNewBoardModal={closeCalenderModal} openNewBoardModal={openCalenderModal}>
         
             <CalenderWrapper  >
    <CalenderHead>
-  {workspaceID && <Workspace>{workspaceID}</Workspace>} <h4>Edit Due Date</h4>
-    <div onClick={(e:any)=>saveCalenderModal(e,startDate)}>
+   <Workspace>
+            {workspaceID}
+          </Workspace> <h4>Edit Due Date</h4>
+    <div onClick={closeCalenderModal}>
             <AiOutlineClose />
           </div>
    </CalenderHead>
 
             <CalenderSearch>
+                <h4><span>Due Date </span> - Issue needs to be completed by this date</h4>
               <input 
-              type="text" 
-              value={search}
-              onChange={(e)=>setSearch(e.target.value)} 
-              placeholder='Set due date...'
+              type="date" 
+              value={startDate}
+              onChange={(e)=>setStartDate(e.target.value)} 
+              placeholder='DD/MM/YYYY'
               />
             </CalenderSearch>
             <CalenderLib>
-         {calenderDetails.map((calenderItem,index)=>{
-          return (
-            <CalenderItem onClick={(e)=>{
-              if(calenderItem.value){
-                setStartDate(new Date(calenderItem.actual))
-                saveCalenderModal(e,new Date(calenderItem.actual))
-              }else {
-                setOpenCustomDate(!openCustomDate)
-              }
-            
-            }}>
-              <div>
-                <BsCalendar4 /> 
-              <div>
-                {calenderItem.text}
-              </div>
-              </div>
-              
-              <div>
-                {/* @ts-ignore */}
-                {calenderItem?.value}
-              </div>
-            </CalenderItem>
-          )
-         })
-
-         }
+        
             </CalenderLib>
+            <CalenderButton onClick={(e:any)=>{
+                closeCalenderModal()
+                saveCalenderModal(e,startDate)
+            }}>
+            Save Due Date
+           </CalenderButton>
          </CalenderWrapper> 
-       {openCustomDate && <CustomDueDate workspaceID={workspaceID} date={date} openCalenderModal={openCalenderModal} closeCalenderModal={()=>{
-        setOpenCustomDate(false)
-        closeCalenderModal()
-       }} saveCalenderModal={(e,value)=>{
-        setStartDate(new Date(value))
-        saveCalenderModal(e,new Date(value))
-       }}
-        startDate={startDate}
-        setStartDate={setStartDate}  />
-       }
+        
         </CustomModal>
   )
 }
 
-export default CalenderModal
+export default CustomDueDate

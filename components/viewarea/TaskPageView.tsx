@@ -52,7 +52,7 @@ const TaskPageView = ({tasks,taskView,type,columns,newTask,openNewBoardModal,mar
           
             return (
 
-              <Columns view={taskView}>
+              <Columns view={taskView} key={index}>
                   <TaskBar taskbar={{name:col.name,quantity:task.length,img:col?.img}} view={taskView} newTask={newTask} />
                 <ViewArea
       openNewBoardModal={openNewBoardModal}

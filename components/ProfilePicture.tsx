@@ -95,7 +95,6 @@ const ProfilePicture = ({assigned,tooltip,size,edit}:{assigned:Item,tooltip:bool
 
 const hiddenFileInput = useRef<any>();
 
-
 const handleClick = () => {
   hiddenFileInput.current.click();
 };
@@ -105,7 +104,8 @@ const handleFiles = async (event:any,input:string) => {
     const data = await handleFile(event,input)
     setImgArray(data.secure_url)
 
-    addImageToMember({
+    if(data.secure_url){
+       addImageToMember({
       variables:{
         input:{
            imageURL:data.secure_url
@@ -113,6 +113,8 @@ const handleFiles = async (event:any,input:string) => {
        
       }
     })
+    }
+   
   }catch(e){
 
   }
@@ -132,8 +134,8 @@ const handleChange = (event:any,input:string) => {
         ? 
         <ImgImage  size={size} color="#4c33bd">
          <img src={assigned.img} />
-        <Edit>
-        {edit && 
+             {edit &&    <Edit>
+
         <>
           <input
           type="file"
@@ -143,8 +145,8 @@ const handleChange = (event:any,input:string) => {
         />
         <BsPencil size="14px" onClick={handleClick} />
         </> 
-        }
-        </Edit>
+       
+        </Edit> }
         </ImgImage>
         :
         assigned?.name!=="Assigned"  ?
