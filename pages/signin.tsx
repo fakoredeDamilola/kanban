@@ -72,7 +72,7 @@ useMemo(()=>{
   if(data?.login?.status){
     storeDataInLocalStorage("kanbanToken",data?.login?.token)
     dispatch(setCurrentUser({user:data?.login?.user})) 
-    alert(123)
+  
   router.push(`/${data?.login?.user?.workspaces[0].URL}`)
   }else if(!data?.login?.status && data?.login?.message){
     dispatch(setModalData({modalType:"error",modalMessage:data?.login?.message,modal:true}))
@@ -110,7 +110,7 @@ const loginUser = async () => {
 
   return (
     <NavWrapper>
-     <>
+    {loading ? <LoadingPage /> : <>
       <CenteredLogo size={70} text="Signin to your kanban account" />
         <SignupButtons
         setAxiosLoading={setAxiosLoading}
@@ -127,7 +127,7 @@ const loginUser = async () => {
           Already have an account <Link href="/signup" >Sign up</Link>
         </SignupText>
 
-     </>
+     </>}
     </NavWrapper>
   )
 }
