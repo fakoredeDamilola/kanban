@@ -33,7 +33,7 @@ const authLink = setContext((_,{headers})=> {
 
 const httpLink = createHttpLink({
   // uri: "http://localhost:4000/api"
-  uri:"https://kanban-backend-p7m2.onrender.com"
+  uri:"https://kanban-backend-p7m2.onrender.com/api"
 })
 
 
