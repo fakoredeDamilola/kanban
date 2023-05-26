@@ -16,6 +16,7 @@ import { ADD_NEW_MEMBERS_TO_WORKSPACE } from '../../graphql/mutation'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotifyComponent } from '../../components/Notify/Notify'
+import LoadingPage from '../../components/LoadingPage'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -37,7 +38,7 @@ const welcome = () => {
         INVITE_COWORKERS = "INVITE_COWORKERS",
         GOOD_TO_GO = "GOOD_TO_GO" 
     }
-    const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
+    const notifyMess = (title:string,text:string,link?:string) => toast(<NotifyComponent title={title} link={link} text={text} />);
 
 const router = useRouter() 
     const [onboardingScreen,setOnboardingScreen] = useState(ONBOARDING_SCREEN.WELCOME_SCREEN)
@@ -67,9 +68,14 @@ const router = useRouter()
      
     },[data])
     useMemo(()=>{
+      console.log({newMembersData})
           if(newMembersData?.addNewMembersToWorkspace?.status){
+            const res =newMembersData?.addNewMembersToWorkspace?.result
+            res.map((data:any) => {
+              console.log({data})
+              notifyMess(`Invites sent to ${data.name}` ,"Your team members can check their emails for the invites, due to a glitch please use this link",data?.url)
+            })
             
-            notifyMess("Invites sent","Your team members can check their emails for the invites")
             setCoWorkerValue("")
             // setOnboardingScreen(ONBOARDING_SCREEN.GOOD_TO_GO)
           }
@@ -80,7 +86,8 @@ const router = useRouter()
 
 
     const inviteCoworkers =async () =>{
-     await addNewMembersToWorkspace({
+      if(coWorkerValue.length > 0){
+         await addNewMembersToWorkspace({
         variables:{
         input:{
           members:coWorkerValue,
@@ -90,6 +97,8 @@ const router = useRouter()
         }
       }
     })
+      }
+    
     }
 
     useEffect(()=>{
@@ -104,8 +113,9 @@ const router = useRouter()
   
   return (
     <NavWrapper>
-      
-        {onboardingScreen === ONBOARDING_SCREEN.WELCOME_SCREEN ?
+        {newMembersLoading ? <LoadingPage />
+        
+        : onboardingScreen === ONBOARDING_SCREEN.WELCOME_SCREEN ?
     <WelcomeScreen onboardingScreen={onboardingScreen} setOnboardingScreen={setOnboardingScreen}  /> :
     onboardingScreen === ONBOARDING_SCREEN.CONNECT_WITH_GITHUB ?
     <ConnectWIthGithub setOnboardingScreen={setOnboardingScreen} /> :

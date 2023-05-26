@@ -14,6 +14,8 @@ openNewBoardModal:boolean;
 modal:boolean;
 modalMessage:string;
 modalType:string;
+type:string;
+click:any;
 current_signup_page:SIGNUPPAGESTATE
 }
 
@@ -25,6 +27,8 @@ theme:"light",
 modal:false,
 modalMessage:"",
 modalType:"",
+type:"",
+click:null,
 current_signup_page:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX,
 openNewBoardModal:false,
 }
@@ -53,10 +57,12 @@ const displaySlice = createSlice({
         setCurrentSignupPage:(state,{payload:{current}}) =>{
             state.current_signup_page = current
         },
-        setModalData:(state,{payload:{modal,modalType,modalMessage}})=>{
+        setModalData:(state,{payload:{modal,modalType,modalMessage,type,click}})=>{
             state.modal = modal
             state.modalMessage = modalMessage
             state.modalType = modalType
+            state.type = type ?? ""
+            state.click = click ?? null
         }
     }
 })

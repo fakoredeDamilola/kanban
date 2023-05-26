@@ -117,9 +117,14 @@ const [createWorkspace] = useMutation(
     }
   }
 ) 
+const nextStep = ()=>{
+  dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL})) 
+        setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL)
 
+}
 useMemo(()=>{
   try{
+    console.log({data})
     if(data?.verifyUserRecord?.status ===true){
       setAxiosLoading(false)
       if(type==="oauth"){
@@ -128,8 +133,8 @@ useMemo(()=>{
         storeDataInLocalStorage("kanbanToken",data?.verifyUserRecord?.token)
         dispatch(setCurrentUser({user:data?.verifyUserRecord?.user}))
       }else{
-        dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL})) 
-        setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_VERIFY_EMAIL)
+        dispatch(setModalData({modalType:"success",modalMessage:`Due to technical issues, this is your OTP ${data?.verifyUserRecord?.OTP}`,modal:true, type:'confirm',click:nextStep}))
+      
       } 
 }else if(data?.verifyUserRecord?.status ===false) {
   dispatch(setModalData({modalType:"error",modalMessage:data?.verifyUserRecord?.message,modal:true}))
@@ -141,6 +146,7 @@ useMemo(()=>{
 },[data])
 useMemo(()=>{
   try{
+    console.log({registerData})
     if(registerData?.register?.status ===true){
         storeDataInLocalStorage("kanbanToken",registerData?.register?.token)
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))

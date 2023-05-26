@@ -100,9 +100,10 @@ mutation VerifyUserRecord($input: RegisterInput) {
       message
       status
     }
-    ... on VerifyRecordSuccess {
-      status
+    ... on VerifyDataOTP {
+      OTP
       message
+      status
     }
   }
 }
@@ -145,6 +146,10 @@ mutation AddNewMembersToWorkspace($input: newMembersInput) {
     ... on InviteMemberSuccess {
       status
       message
+      result {
+        name
+        url
+      }
     }
     ... on WorkspaceFail {
       status

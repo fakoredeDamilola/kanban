@@ -182,7 +182,7 @@ const GoodToGo = ({workspaceID}:{workspaceID:string}) => {
     }}>
     <Link href={`/${workspaceID}`}>
     <button >
-Open Linear
+Open Kanban
 </button>
     </Link>
 

@@ -83,19 +83,23 @@ font-size:13px;
 }
 
 `
-const InviteBtn = styled.div`
+const InviteBtn = styled.div<{disabled:boolean}>`
   text-align:right;
   padding:20px 0;
   width:90%;
   margin:0 auto;
   & button {
     width:120px;
-    border:0;
+    border:0.5px solid #666BE1;
     color:white;
     border-radius:4px;
-    background-color:#666BE1;
+    background-color:${({disabled})=>!disabled ? "transparent" : "#666BE1"};
     height:40px;
     cursor:pointer;
+    &:hover {
+      background-color:#454895;
+     }
+        
   }
 `
 
@@ -150,8 +154,8 @@ const InviteCoWorkers = ({setOnboardingScreen,submitCoworkers,coWorkerValue,setC
     onChange={(e)=>setCoWorkerValue(e.target.value)}
     />
   </TextArea>
- <InviteBtn>
- <button onClick ={submitCoworkers}>
+ <InviteBtn disabled={coWorkerValue ? true: false}>
+ <button onClick ={submitCoworkers} disabled={!coWorkerValue ? true: false} >
 Send Invite
 </button>
  </InviteBtn>

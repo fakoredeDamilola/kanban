@@ -22,28 +22,40 @@ const Backdrop = styled.div`
 
 `
 const Model = styled.div`
+position:relative;
   max-width:400px;
   margin:0 auto;
   background:${({theme})=>theme.modalBackground};
   border-radius: 5px;
   text-align: center;
-  padding:10px 20px;
-  display:flex;
+  padding:15px 25px;
+  /* display:flex; */
   z-index: 99;
   color:white;
-  justify-content:space-between;
+  /* justify-content:space-between; */
+  flex-direction:column;
   box-sizing:border-box;
   align-items:center;
 
-& button{
-        font-size:15px;
+& p {
+  font-weight:bold;
+  font-size:14px;
+  /* margin-bottom:30px */
+  margin:10px 0 14px 0;
+}
+`
+const Cancel = styled.button`
+   font-size:15px;
         border:none;
-        background-color:tra;
-        height:30px;
+        position:absolute;
+        right:10px;
+        top:10px;
+        /* background-color:transparent; */
+        height:20px;
         color:#666BE1;
         border-radius:6px;
         cursor:pointer;
-         width:30px;
+         width:20px;
          display:flex;
          justify-content:center;
          align-items:center;
@@ -52,19 +64,27 @@ const Model = styled.div`
          }
          
          transition:0.3s all;
-
-}
-& p {
-  font-weight:bold;
-  font-size:14px;
-  /* margin-bottom:30px */
-}
+`
+const Confirm  = styled.button`
+  color:white;
+        font-size:15px;
+        border:none;
+        height:40px;
+        background-color: #666BE1;
+        border-radius:6px;
+        cursor:pointer;
+         width:80%;
+         &:hover{
+          background-color:#2A2B38;
+         }
+         margin-bottom:7px;
+         transition:0.3s all;
 `
 
 const ApiErrorModal = () => {
     
 const dispatch = useDispatch()
-    const {modal,modalMessage,modalType} =  useSelector((state: RootState) => state.display)
+    const {modal,modalMessage,modalType,type,click} =  useSelector((state: RootState) => state.display)
 const backdrop = {
     visible:{opacity:1},
     hidden: {opacity:0}
@@ -77,14 +97,14 @@ const modalVariants = {
         opacity:0,
     },
     visible:{
-        y:"500px",
+        y:"300px",
         opacity:1,
         transition:{delay:0.5}
     }
 }
 
 const setErrorModal = ()=>{
-  dispatch(setModalData({modalType:"",modalMessage:"",modal:false}))
+  dispatch(setModalData({modalType:"",modalMessage:"",modal:false,type:"",click:null}))
 }
   return (
     
@@ -111,8 +131,11 @@ const setErrorModal = ()=>{
                  : null
               } */}
             <p>{modalMessage}</p>
-            
-            <button onClick={setErrorModal}><AiOutlineClose /></button>
+           {type==="confirm" && <Confirm onClick={()=>{
+            setErrorModal()
+            click()
+           }}> confirm</Confirm>}
+            <Cancel onClick={setErrorModal}><AiOutlineClose /></Cancel>
            
             </Model>
         </Backdrop>
