@@ -5,6 +5,8 @@ import { IconContext } from 'react-icons/lib'
 import styled from 'styled-components'
 import { device } from '../../config/theme'
 import {motion} from 'framer-motion'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../state/store'
 
 
 const MainBox = styled.div`
@@ -101,6 +103,7 @@ const mainVariants = {
 };
 
 const ConnectWIthGithub = ({setOnboardingScreen } : {setOnboardingScreen:any} ) => {
+  const {types} = useSelector((state:RootState)=> state.user)
   return (
      <Container>
           <Wrapper variants={mainVariants} as={motion.div} initial="hidden" animate="visible">
@@ -164,7 +167,13 @@ Authenticate with Github
       duration: 0.3,
       ease: "easeOut",
       delay:1.2
-    }} onClick={()=>{setOnboardingScreen("INVITE_COWORKERS")}}>
+    }} onClick={()=>{
+      if(types==="guest"){
+        setOnboardingScreen("GOOD_TO_GO")
+      }else{
+        setOnboardingScreen("INVITE_COWORKERS")
+      }
+    }}>
     I'll do this later
  </Aside>
  

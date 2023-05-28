@@ -183,7 +183,7 @@ const GoBack = () =>{
          {  userInviteIssue==="link" ?
         <>
         <h1>Invitation not found</h1>
-        <p>If you think this is a mistake or if you have trouble logging into the workspace, please contact the workspace admins or Linear support.</p>
+        <p>If you think this is a mistake or if you have trouble logging into the workspace, please contact the workspace admins or Kanban support.</p>
         <ButtonDiv>
           <button onClick ={GoBack}>
             Go back

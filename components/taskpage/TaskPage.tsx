@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import usePortal from "../../hooks/usePortal"
-import { addNewActivity, changeTaskDueDate, IActivity, ITaskCards, IWorkspace } from "../../state/board"
+import { addNewActivities, changeTaskDueDate, IActivity, ITaskCards, IWorkspace } from "../../state/board"
 import CalenderModal from "../modal/CalenderModal"
 import TaskPageAside from "./components/TaskPageAside"
 import TaskPageHeader from "./components/TaskPageHeader"
@@ -99,8 +99,6 @@ variables:{
             }
           
         })
-            
-        // dispatch(addNewActivity({id:taskInfo?._id,activity:CalenderActivity}))
          setOpenCalenderModal(false)
     }
     const closeCalenderModal = () => {

@@ -9,14 +9,15 @@ import InviteCoWorkers from '../../components/welcome/InviteCoWorkers'
 import GoodToGo from '../../components/welcome/GoodToGo'
 import { useRouter } from 'next/router'
 import { FETCH_WORKSPACE } from '../../graphql/queries'
-import { useMutation, useQuery } from '@apollo/client'
-import { useDispatch } from 'react-redux'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useDispatch, useSelector } from 'react-redux'
 import { IBoard, setCurrentWorkspace } from '../../state/board'
 import { ADD_NEW_MEMBERS_TO_WORKSPACE } from '../../graphql/mutation'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NotifyComponent } from '../../components/Notify/Notify'
 import LoadingPage from '../../components/LoadingPage'
+import { RootState } from '../../state/store'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -43,8 +44,9 @@ const welcome = () => {
 const router = useRouter() 
     const [onboardingScreen,setOnboardingScreen] = useState(ONBOARDING_SCREEN.WELCOME_SCREEN)
     const dispatch = useDispatch()
+    const {types} = useSelector((state:RootState)=>state.user)
     const [workspaceID,setWorkspaceID] = useState("")
-    const {data,loading,error} = useQuery(FETCH_WORKSPACE,{
+    const [fetchWorkspace,{data,loading,error}] = useLazyQuery(FETCH_WORKSPACE,{
       variables: {
         input: {
          workspaceURL: router?.query.id
@@ -67,6 +69,11 @@ const router = useRouter()
       }
      
     },[data])
+    useEffect(()=>{
+      if(types !=="guest"){
+        fetchWorkspace()
+      }
+    },[])
     useMemo(()=>{
       console.log({newMembersData})
           if(newMembersData?.addNewMembersToWorkspace?.status){

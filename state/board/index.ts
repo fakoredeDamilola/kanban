@@ -69,7 +69,7 @@ export interface IWorkspace {
   id:string;
   _id?:string;
   URL:string;
-  task:ITaskCards[];
+  task:ITaskCards[] ;
   totalTasks:number;
   subItems: subItem[];
   totalMembers:number;
@@ -182,9 +182,11 @@ const boardSlice = createSlice({
   initialState,
   reducers: {
     addNewTask: (state, {payload:{ newTask }}) =>{
-      if(state.boardsDetails.workspaceID === newTask.workspaceID){
-        state.boardsDetails.tasks.push(newTask)
-      }
+      console.log(state.currentWorkspace,newTask)
+      // if(state.currentWorkspace.URL === newTask.URL){
+        console.log({newTask})
+        state.currentWorkspace.task.push(newTask)
+      // }
     //  state.boardsDetails.push(NewTask)
      
     },
@@ -198,7 +200,15 @@ const boardSlice = createSlice({
         state.currentWorkspace.totalTasks = id
     },
     changeTaskPriority:(state,{payload:{id,type,name}}) => {
-      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
+      const task = state.currentWorkspace.task.find((item)=>item._id===id)
+      if(task){
+        // task.priority = item
+        // @ts-ignore
+        task[name.toLowerCase()] = type
+      }
+    },
+    changeTaskStatus:(state,{payload:{id,type,name}}) => {
+      const task = state.currentWorkspace.task.find((item)=>item._id===id)
       if(task){
         // task.priority = item
         // @ts-ignore
@@ -206,15 +216,17 @@ const boardSlice = createSlice({
       }
     },
     changeTaskDueDate:(state,{payload:{id,duedate}}) => {
-      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
+      const task = state.currentWorkspace.task.find((item)=>item._id===id)
       if(task){
         task.dueDate = duedate
       }
     },
-    addNewActivity:(state,{payload:{id,activity}}) => {
-      const task = state.boardsDetails.tasks.find((item)=>item._id===id)
+    addNewActivities:(state,{payload:{id,activity}}) => {
+      const task = state.currentWorkspace.task.find((item)=>item._id===id)
+     
       if(task){
-        task.activities?.push(activity)
+        // @ts-ignore
+        task.activities = [...task?.activities ,activity]
       }
     },
     setCurrentWorkspaceStatus:(state,{payload:{selected,type}}) => {
@@ -255,7 +267,7 @@ const boardSlice = createSlice({
       
     },
     setCurrentWorkspace:(state,{payload:{workspace,boardsDetails}}) => {
-
+      console.log({workspace})
       // state.currentWorkspace = workspace
       state.currentWorkspace = {
         ...state.currentWorkspace,
@@ -276,11 +288,12 @@ export const {
   increaseNumberOfTasks,
   changeTaskPriority,
   changeTaskDueDate,
-  addNewActivity,
+  addNewActivities,
   setCurrentWorkspaceStatus,
   clearCurrentWorkspaceStatus,
   setCurrentWorkspace,
-  refetchWorkspace
+  refetchWorkspace,
+  changeTaskStatus
 
 } = boardSlice.actions;
 

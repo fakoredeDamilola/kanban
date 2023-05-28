@@ -32,6 +32,26 @@ const Button = styled.button<{field?:string}>`
 }
 
 `
+const Guest = styled.button`
+        color:white;
+        font-size:15px;
+        border:none;
+        height:45px;
+        background-color:transparent;
+        border-radius:6px;
+        border:1px solid #666BE1;
+        cursor:pointer;
+         width:80%;
+         &:hover{
+          background-color:#2A2B38;
+         }
+         
+         transition:0.3s all;
+        @media ${device.mobileS} {
+     width:350px;
+}
+
+`
 const EmailInput = styled.div`
   padding:10px 0;
   
@@ -71,6 +91,7 @@ interface ISignup {
   indicator?:boolean
   signupWithOAuth:(data:any)=>void;
   setAxiosLoading:any;
+  setGuest:()=>void
 }
 
 
@@ -84,6 +105,7 @@ const SignupButtons = ({
   indicator,
   signupWithOAuth,
   setAxiosLoading,
+  setGuest,
   disabled}:ISignup) => {
   const [displayInput,setDisplayInput] = useState(false)
   const colorbackground = passwordIndicator ==="weak" ? "red": passwordIndicator==="medium" ? "orange" : "green"
@@ -195,6 +217,11 @@ const logOut = () => {
         }}>
             Continue with Email
         </Button>
+        <Guest onClick={()=>{
+          setGuest()
+        }}>
+            Continue as a guest
+        </Guest>
         {/* // </EmailContainer> */}
         
     </ButtonFlex>

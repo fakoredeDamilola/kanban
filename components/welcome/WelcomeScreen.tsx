@@ -44,8 +44,8 @@ const WelcomeScreen = ({
     <>
      <CenteredLogo />
       <Content>
-         <H1>Welcome to Linear</H1>
-         <p>Linear helps you to streamline software development, cycles and bug fixes</p> 
+         <H1>Welcome to Kanban</H1>
+         <p>Kanban helps you to streamline software development, cycles and bug fixes</p> 
           <CustomButton
           disabled={false}
           color="white"
