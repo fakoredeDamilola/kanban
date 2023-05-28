@@ -36,8 +36,7 @@ interface ICustomModal {
 
 const CustomModal = ({children,closeNewBoardModal,openNewBoardModal}:ICustomModal) => {
  
-  useEffect(() => {
-  }, [openNewBoardModal])
+
   return (
     <Wrapper>   
       {children}

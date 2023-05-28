@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { CHANGE_TASK_DETAIL } from '../../graphql/mutation';
 
-import { changeTaskPriority } from '../../state/board';
+import { changeTaskPriority, changeTaskStatus } from '../../state/board';
 import { setNewBoardModal } from '../../state/display';
 import { RootState } from '../../state/store';
 import TaskCard from './TaskCard';
@@ -67,6 +67,7 @@ position:${({view}) => view==="list" ? "static" : "relative"};
 const ViewArea = ({col,task}:IView) => {
 
 const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
+const {types} = useSelector((state:RootState) =>state.user)
 
     const {currentWorkspace} = useSelector((state: RootState) => state.board)
     const {taskView,openNewBoardModal} = useSelector((state: RootState) => state.display)
@@ -84,7 +85,8 @@ const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
    
    
     const changeStatusOfTask = (card:any) => {
-        const selectedItem = {
+        if(types!=="guest"){
+           const selectedItem = {
             name:col.name,
             email:col.email ?? "",
             img:col.img ?? "",
@@ -98,7 +100,19 @@ const [changeTaskDetail,{data,error,loading,}] = useMutation(CHANGE_TASK_DETAIL)
                     name:"status"
                 }
             },
-        })
+        })  
+        }else{
+            const selectedItem = {
+                name:col.name,
+                email:col.email ?? "",
+                img:col.img ?? "",
+                _id:col?._id ??""
+              }
+                console.log({col,card})
+                dispatch(changeTaskStatus({id:card._id,name:"status",type:selectedItem}))
+        }
+
+       
     }
 const [{ isOver,canDrop,getItem }, drop] = useDrop(() => ({
     accept: "card",

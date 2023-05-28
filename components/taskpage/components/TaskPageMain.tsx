@@ -3,13 +3,13 @@ import { AiOutlinePlus, AiOutlineStar } from 'react-icons/ai'
 import { BiChevronRight, BiDotsHorizontalRounded } from 'react-icons/bi'
 import { HiOutlineDotsHorizontal } from 'react-icons/hi'
 import styled from 'styled-components'
-import { addNewActivity, IActivity, ITaskCards } from '../../../state/board'
+import { addNewActivities, IActivity, ITaskCards } from '../../../state/board'
 import CustomDropdown from '../../Customdropdown'
 import CustomInput from '../../CustomInput'
 // import CustomInput from '../../CustomInput'
 import ProfilePicture from '../../ProfilePicture'
 import ActivityCard from './ActivityCard'
-import {v4 as uuidv4} from "uuid"
+import {v4} from "uuid"
 import { useDispatch, useSelector } from 'react-redux'
 import { device } from '../../../config/theme'
 import { useMutation } from '@apollo/client'
@@ -241,7 +241,7 @@ const [editTask,{data:editTaskData,error:editTaskError,loading:editTaskLoading}]
 
 
   useEffect(()=>{
-    if(debounceTitleValue !== task.issueTitle){
+    if(debounceTitleValue !== task.issueTitle && user.types!=="guest"){
         editTask({
       variables: {
         input: {
@@ -272,7 +272,7 @@ variables:{
   
   },[debounceTitleValue])
   useEffect(()=>{
-    if(debounceDescriptionValue !== task.issueDescription){
+    if(debounceDescriptionValue !== task.issueDescription && user.types!=="guest"){
         editTask({
       variables: {
         input: {
@@ -304,31 +304,44 @@ variables:{
   },[debounceDescriptionValue])
 
   const submitComment = () => {
-    const commentActivity = {
-      nameOfActivity:"comment",
-     description: comment,
-
-    }
-    addNewActivity({
-      variables:{
-        input:{
-          taskID:task._id,
-        activity:commentActivity
-        }
-        
-      },
-      refetchQueries:() => [{
-        query: FETCH_TASK,
-        variables: { 
-         
-           input: {
-            id:router?.query.taskID,
-            URL:router?.query.id
-        }
+    if(user.types !== "guest"){
+      const commentActivity = {
+        nameOfActivity:"comment",
+       description: comment,
+  
+      }
+      addNewActivity({
+        variables:{
+          input:{
+            taskID:task._id,
+          activity:commentActivity
+          }
+          
         },
-    }]
-    })
-
+        refetchQueries:() => [{
+          query: FETCH_TASK,
+          variables: { 
+           
+             input: {
+              id:router?.query.taskID,
+              URL:router?.query.id
+          }
+          },
+      }]
+      })
+  
+    }else if(user.types ==="guest"){
+      dispatch(addNewActivities({id:task._id,activity:{
+        _id:v4(),
+        nameOfActivity:"comment",
+       description: comment,
+       createdby:{
+        name:"guest",
+        gmail:"guest@gmail.com"
+      }
+      }}))
+    }
+   
     setComment("")
   }
 

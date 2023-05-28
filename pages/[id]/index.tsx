@@ -7,11 +7,12 @@ import ViewAreaIndex from "../../components/viewarea";
 import { RootState } from "../../state/store";
 import { FETCH_USER, FETCH_WORKSPACE } from "../../graphql/queries";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { IBoard, refetchWorkspace, setCurrentWorkspace } from "../../state/board";
+import { IBoard, addNewTask, refetchWorkspace, setCurrentWorkspace } from "../../state/board";
 import LoadingPage from "../../components/LoadingPage";
 import styled from "styled-components";
 import AddNewBoard from "../../components/AddNewBoard";
 import usePortal from "../../hooks/usePortal";
+import {v4 } from "uuid"
 import ErrorModal from "../../components/modal/ErrorModal";
 import { setNewBoardModal } from "../../state/display";
 import { CREATE_NEW_TASK } from "../../graphql/mutation";
@@ -146,8 +147,8 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
     }
     setIssueDescription("")
     setIssueTitle("")
-
-    createNewTask({
+    if(user.types !=="guest"){
+      createNewTask({
       variables: {
         input: {
           workspaceURL: currentWorkspace.URL,
@@ -162,6 +163,35 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
         }
       }
     })
+    }else{
+      const createdActivity = {
+        nameOfActivity:"created",
+        
+        // id:uuidv4(),
+        // createdby,
+        // time,
+        description:`created this issue`,
+        createdby:{
+          name:"guest",
+          gmail:"guest@gmail.com"
+        }
+      }
+      dispatch(addNewTask({newTask:{
+        workspaceURL: currentWorkspace.URL,
+          workspaceID:currentWorkspace._id,
+          _id:v4(),
+          dueDate:"",
+          issueTitle:issueTitle,
+          issueDescription,
+          ...workspaceDetails,
+          createdBy:user._id,
+          imgURLArray:imgURLArray ,
+          activities:[createdActivity]
+      }}))
+      dispatch(setNewBoardModal({open:false})) 
+      notifyMess("Issue created",issueTitle)
+    }
+    
      }else{
       notifyMess("Title Required","please enter a title before submitting")
      }
@@ -198,6 +228,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
 
   useEffect(()=>{
       if(router?.query?.id){
+        console.log({currentWorkspace},router?.query)
          // @ts-ignore
           const workspace = currentWorkspace.URL === router?.query?.id ? currentWorkspace : null 
           if(workspace){
@@ -232,7 +263,7 @@ const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={t
       </Portal2>
       {/* <LoadingPage /> */}
        
-       {loading || !workspace ? <LoadingPage /> :
+       {loading || !workspace || newTaskLoading ? <LoadingPage /> :
         workspace &&  
         <Container>
         <Navbar /> 

@@ -7,12 +7,16 @@ import DashboardLayout from '../components/Dashboardlayout'
 import CenteredLogo from '../components/Home/CenteredLogo'
 import SignupButtons from '../components/Home/SignupButtons'
 import { LOGIN} from '../graphql/mutation'
-import { setCurrentUser } from '../state/user'
+import {v4} from "uuid"
+import { setCurrentUser, setTypes } from '../state/user'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import {  confirmPassword } from '../utils/utilFunction'
 import LoadingPage from '../components/LoadingPage'
-import { setModalData } from '../state/display'
+import { setCurrentSignupPage, setModalData } from '../state/display'
 import Link from 'next/link'
+import { RootState } from '../state/store'
+import { IWorkspace, setCurrentWorkspace } from '../state/board'
+import { subItems } from '../utils/utilData'
 
 const NavWrapper = styled.div`
     display: flex;
@@ -48,6 +52,8 @@ const [signinObj,setSigninObject] = useState({
 const [errorTable,setErrorTable] = useState<Array<string>>([])
 const [disableButton,setDisableButton] = useState(false)
 const [axiosLoading,setAxiosLoading] = useState(false)
+const {types} = useSelector((state:RootState)=>state.user)
+const {currentWorkspace} = useSelector((state:RootState)=>state.board)
 
 
 const dispatch = useDispatch()
@@ -72,7 +78,7 @@ useMemo(()=>{
   if(data?.login?.status){
     storeDataInLocalStorage("kanbanToken",data?.login?.token)
     dispatch(setCurrentUser({user:data?.login?.user})) 
-  
+    dispatch(setTypes({type:"login"}))
   router.push(`/${data?.login?.user?.workspaces[0].URL}`)
   }else if(!data?.login?.status && data?.login?.message){
     dispatch(setModalData({modalType:"error",modalMessage:data?.login?.message,modal:true}))
@@ -107,7 +113,57 @@ const loginUser = async () => {
       }
     })
 }
+const OpenNext = () => {
+ dispatch(setCurrentUser({user:{
+   name:"guest",
+   email:"guest@gmail.com",
+   _id:v4(),
+   username:"guestusername",
+   image:"",
+   workspaces: []
+ }}))
+ router.push(`/${"signin-workspace"}`)
+}
+const setGuest = () =>{
+ dispatch(setTypes({type:"guest"}))
+ storeDataInLocalStorage("kanbanToken","guest")
+ dispatch(setModalData({modalType:"success",modalMessage:`Hello guest, your data will be stored on the browser, i.e localstorage, and you will have limited access. Comeback and signup Thanks :)`,modal:true, type:'confirm',click:OpenNext}))
+ const newWorkspace: IWorkspace = {
+  name:"signin test workspace",
+  URL:"signin-workspace",
+  _id:v4(),
+  id:"signin test workspace".slice(0,3),
+  subItems: subItems,
+  totalTasks:0,
+  totalMembers:1,
+  members:[
+    {
+      name:"guest",
+      email:"guest@gmail.com",
+      id:v4(),
+      img:"",
+      color:"red",
+      joined:`${Date.now()}`,
+      username:"guestusername",
+      taskIDs:[]
+    }
+  ],
+task:[],
+  owner: {
+    name:"guest",
+    email:"guest@gmail.com",
+    img:""
+  }
 
+}
+dispatch(setCurrentWorkspace({workspace:newWorkspace,boardDetails:{
+name:"signin test workspace",
+URL:"signin-workspace",
+workspace:"signin test workspace",
+tasks:[]
+}})) 
+}
+ 
   return (
     <NavWrapper>
     {loading ? <LoadingPage /> : <>
@@ -122,6 +178,7 @@ const loginUser = async () => {
         signupObj={signinObj}
         disabled={disableButton}
         indicator={false}
+        setGuest={setGuest}
         />
         <SignupText>
           Already have an account <Link href="/signup" >Sign up</Link>

@@ -8,7 +8,8 @@ export interface IUser {
     username?:string;
     image?:string;
     workspaces: IMinWorkspace[]
-    created_workspaces?: IMinWorkspace[]
+    created_workspaces?: IMinWorkspace[];
+    types:string
   }
 const initialState: IUser = {
 
@@ -17,8 +18,8 @@ const initialState: IUser = {
         _id:"",
         username:"",
         image:"",
-        workspaces: []
-    
+        workspaces: [],
+      types:""
 }
 
 
@@ -36,6 +37,9 @@ const userSlice = createSlice({
             state.username = user.username
             state.email=user.email
             state.workspaces = user.workspaces
+          },
+          setTypes:(state,{payload:{type}}) => {
+            state.types=type
           }
       
     }
@@ -43,7 +47,8 @@ const userSlice = createSlice({
 
 export const {
     AddNewWorkspace,
-    setCurrentUser
+    setCurrentUser,
+    setTypes
 } = userSlice.actions
 
 export default userSlice.reducer

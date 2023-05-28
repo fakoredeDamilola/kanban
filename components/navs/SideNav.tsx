@@ -21,7 +21,7 @@ import { useMutation } from "@apollo/client"
 import { NotifyComponent } from "../Notify/Notify"
 import { toast } from "react-toastify"
 import { storeDataInLocalStorage } from "../../utils/localStorage"
-import { setCurrentUser } from "../../state/user"
+import { setCurrentUser, setTypes } from "../../state/user"
 
 
 const NavWrapper = styled.div<{showSideNav:boolean}>`
@@ -204,6 +204,7 @@ const SideNav = () => {
   }
 
   const notifyMess = (title:string,text:string) => toast(<NotifyComponent title={title} text={text} />);
+  const {types} = useSelector((state:RootState)=>state.user)
 
   const [addNewMembersToWorkspace,{data:newMembersData,error:newMembersError,loading:newMembersLoading }] = useMutation(ADD_NEW_MEMBERS_TO_WORKSPACE)
 
@@ -211,7 +212,8 @@ const SideNav = () => {
     if(element.name==="create workspace"){
         router.push("/join")
     }else if(element.name ==="log out"){
-      storeDataInLocalStorage("kanbanToken","")
+      if(types!=="guest"){
+         storeDataInLocalStorage("kanbanToken","")
       // dispatch(setCurrentUser({user:{
       //   _id: "",
       //   username : "",
@@ -219,6 +221,13 @@ const SideNav = () => {
       //   workspaces : ""
       // }}))
       router.push("/signin")
+      }else {
+        dispatch(setTypes({type:""}))
+        storeDataInLocalStorage("kanbanToken","")
+        router.push("/signin")
+
+      }
+     
     }else{
     const currentWorkspace:Partial<IWorkspace> = {
       id:element.id ? element?.id :"29",
@@ -334,9 +343,9 @@ const SideNav = () => {
       </LI>
     ))}
     </SideDataStyle> */}
-        <InviteButton onClick={()=>setOpenInviteMembers(true)}>
+       {user.types !=="guest" && <InviteButton onClick={()=>setOpenInviteMembers(true)}>
          <AiOutlinePlus /> <div>invite people</div> 
-        </InviteButton>
+        </InviteButton>}
     {/* <HideSideNav /> */}
     <Portal>
        {openInviteMembers ? <InvitePeopleModal inviteMembers={inviteMembers} setInviteMembers={setInviteMembers} saveInvitePeople={saveInvitePeople} openInvitePeople={openInviteMembers} closeInvitePeople={closeInviteModal} /> : null}

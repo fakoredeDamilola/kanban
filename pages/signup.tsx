@@ -11,13 +11,16 @@ import ApiErrorModal from '../components/modal/ApiErrorModal'
 import CreateWorkspace from '../components/signup/CreateWorkspace'
 import VerifySignupEmail from '../components/signup/VerifySignupEmail'
 import { CREATE_NEW_WORKSPACE, REGISTER, VERIFY_USER_RECORD } from '../graphql/mutation'
-import { setCurrentUser } from '../state/user'
+import { AddNewWorkspace, setCurrentUser, setTypes } from '../state/user'
 import { setCurrentSignupPage, setModalData, SIGNUPPAGESTATE } from '../state/display'
 import { RootState } from '../state/store'
 import { storeDataInLocalStorage } from '../utils/localStorage'
 import { subItems } from '../utils/utilData'
+import { v4 } from 'uuid'
 import { checkForError, confirmPassword } from '../utils/utilFunction'
 import Link from 'next/link'
+import { IWorkspace } from '../state/board'
+import { setCurrentWorkspace } from '../state/board'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -58,6 +61,7 @@ const [signupObject,setSignupObject] = useState({
 
 
 const {current_signup_page,modal} = useSelector((state:RootState)=>state.display)
+const {types,name,email,_id,username} = useSelector((state:RootState)=>state.user)
 const [codeInput,setCodeInput] = useState("")
 const [workspaceName,setWorkspaceName] = useState("")
 const [workspaceURL,setWorkspaceURL] = useState("")
@@ -128,11 +132,13 @@ useMemo(()=>{
     if(data?.verifyUserRecord?.status ===true){
       setAxiosLoading(false)
       if(type==="oauth"){
+        dispatch(setTypes({type:"login"}))
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
         storeDataInLocalStorage("kanbanToken",data?.verifyUserRecord?.token)
         dispatch(setCurrentUser({user:data?.verifyUserRecord?.user}))
       }else{
+        dispatch(setTypes({type:"login"}))
         dispatch(setModalData({modalType:"success",modalMessage:`Due to technical issues, this is your OTP ${data?.verifyUserRecord?.OTP}`,modal:true, type:'confirm',click:nextStep}))
       
       } 
@@ -149,6 +155,7 @@ useMemo(()=>{
     console.log({registerData})
     if(registerData?.register?.status ===true){
         storeDataInLocalStorage("kanbanToken",registerData?.register?.token)
+       
         dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
         dispatch(setCurrentUser({user:registerData?.register?.user}))
   setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
@@ -219,47 +226,72 @@ const submitCode = () => {
   // setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
 }
 const createNewWorkspace =async () => {
-  // const newWorkspace: IWorkspace = {
-  //     name:workspaceName,
-  //     URL:workspaceURL,
-  //     id:workspaceName.slice(0,3),
-  //     subItems: subItems,
-  //     totalTasks:0,
-  //     totalMembers:1,
-  //     members:[
-  //       {
-  //         name:user.name,
-  //         email:user.email,
-  //         id:user._id,
-  //         img:user.image,
-  //         color:"red",
-  //         joined:`${Date.now()}`,
-  //         username:user.name,
-  //         taskIDs:[]
-  //       }
-  //     ],
-  //     taskID:[],
-  //     owner: {
-  //       name:user.name,
-  //       email:user.email,
-  //       img:user.image
-  //     }
-
-  // }
-  // dispatch(AddNewWorkspace({newWorkspace}))
-  // router.push(`/${workspaceName}/welcome`)
+  
 
   // create new workspace in the backend
   const arr= checkForError({
     workspaceURL,
     workspaceName
   },setErrorTable,[])
-  if(arr.length===0){
+  if(arr.length===0 && types!=="guest"){
   await createWorkspace()
 
+  }else if(types === "guest"){
+    const newWorkspace: IWorkspace = {
+      name:workspaceName,
+      URL:workspaceURL,
+      _id:v4(),
+      id:workspaceName.slice(0,3),
+      subItems: subItems,
+      totalTasks:0,
+      totalMembers:1,
+      members:[
+        {
+          name:"guest",
+          email:email,
+          id:_id,
+          img:"",
+          color:"red",
+          joined:`${Date.now()}`,
+          username:"guestusername",
+          taskIDs:[]
+        }
+      ],
+    task:[],
+      owner: {
+        name:"guest",
+        email:email,
+        img:""
+      }
+
+  }
+  dispatch(setCurrentWorkspace({workspace:newWorkspace,boardDetails:{
+    name:workspaceName,
+    URL:workspaceURL,
+    workspace:workspaceName,
+    tasks:[]
+  }}))
+  router.push(`/${workspaceURL}/welcome`)
   }
 }
-
+const OpenNext = () => {
+   dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE}))
+  dispatch(setCurrentUser({user:{
+    name:"guest",
+    email:"guest@gmail.com",
+    _id:v4(),
+    username:"guestusername",
+    image:"",
+    workspaces: []
+  }}))
+setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_CREATE_WORKSPACE)
+}
+const setGuest = () =>{
+  dispatch(setTypes({type:"guest"}))
+  storeDataInLocalStorage("kanbanToken","guest")
+  dispatch(setModalData({modalType:"success",modalMessage:`Hello guest, your data will be stored on the browser, i.e localstorage, and you will have limited access. Comeback and signup Thanks :)`,modal:true, type:'confirm',click:OpenNext}))
+ 
+}
   return (
     <NavWrapper>
      {loading|| registerLoading || axiosLoading ? 
@@ -277,6 +309,7 @@ const createNewWorkspace =async () => {
         disabled={disableButton}
         passwordIndicator={passwordIndicator}
         signupWithOAuth={signupWithOAuth}
+        setGuest={setGuest}
         />
 
         <Terms>

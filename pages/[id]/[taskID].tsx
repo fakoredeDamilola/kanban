@@ -18,6 +18,7 @@ const SingleTask = () => {
   const router = useRouter()
   const {currentWorkspace} = useSelector((state:RootState)=>state.board)
   const {user} = useSelector((state:RootState)=>state)
+  
 
   const dispatch = useDispatch()
 
@@ -36,8 +37,10 @@ const SingleTask = () => {
     }
   })
   useEffect(()=>{
-    if(!task?._id){
+    if(!task?._id && user.types!=="guest"){
       fetchTask()
+    }else if(user.types==="guest"){
+     setTask(currentWorkspace.task.find((t)=>t._id === router?.query.taskID))
     }
   },[task])
   useMemo(()=>{
