@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { addNewActivity, changeTaskDueDate, changeTaskPriority, IActivity, ITaskCards } from "../../state/board"
+import { addNewActivities, changeTaskDueDate, changeTaskPriority, IActivity, ITaskCards } from "../../state/board"
 import CustomDropdown from "../Customdropdown"
 import {forwardRef} from "react"
 import ProfilePicture from "../ProfilePicture"
@@ -159,7 +159,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
             },
             time:Date.now()
         }
-        dispatch(addNewActivity({id:card?._id,activity:CalenderActivity}))
+        dispatch(addNewActivities({id:card?._id,activity:CalenderActivity}))
          setOpenCalenderModal(false)
     }
     const closeCalenderModal = () => {
@@ -231,7 +231,7 @@ const TaskCard = ({card,view}:{view:string,card:ITaskCards}) => {
       icon:priority.img
   }
     }
-  dispatch(addNewActivity({id:card?._id,activity:newActivity}))
+  dispatch(addNewActivities({id:card?._id,activity:newActivity}))
   }
  
 

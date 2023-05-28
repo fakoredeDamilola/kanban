@@ -214,24 +214,7 @@ changeTaskDetail({
    
       icon:"hh"
   }
-//      changeTaskDate({
-//     variables:{
-//         input:{
-//              taskID:task?._id,
-//         date:`${new Date(date).getTime()/1000}`
-//         }
-       
-//     }
-// })
-  // addNewActivity({
-  //   variables:{
-  //     input:{
-  //       taskID:task._id,
-  //     activity:CalenderActivity
-  //     }
-      
-  //   }
-  // })
+
   }
 
  

@@ -99,8 +99,6 @@ variables:{
             }
           
         })
-            
-        // dispatch(addNewActivity({id:taskInfo?._id,activity:CalenderActivity}))
          setOpenCalenderModal(false)
     }
     const closeCalenderModal = () => {
