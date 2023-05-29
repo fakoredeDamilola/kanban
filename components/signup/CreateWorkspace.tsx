@@ -185,13 +185,14 @@ const modalVariants = {
   }
 }
 
-const CreateWorkspace = ({workspaceName,workspaceURL,setWorkspaceURL,setWorkspaceName,createNewWorkspace,email,errorTableWorkspace,setErrorTableWorkspace,disableWorkspaceBtn,setDisableWorkspaceBtn}:{
+const CreateWorkspace = ({workspaceName,workspaceURL,setWorkspaceURL,setWorkspaceName,createNewWorkspace,email,errorTableWorkspace,setErrorTableWorkspace,disableWorkspaceBtn,setDisableWorkspaceBtn,logOut}:{
   workspaceName:string;
   email:string;
   setWorkspaceName:React.Dispatch<React.SetStateAction<string>>;
   workspaceURL:string;
   setWorkspaceURL:React.Dispatch<React.SetStateAction<string>>;
   createNewWorkspace:() => void;
+  logOut:() => void;
   errorTableWorkspace:string[];
   setErrorTableWorkspace:any;
   disableWorkspaceBtn:boolean;
@@ -210,7 +211,7 @@ const [disableButton,setDisableButton] = useState(false)
       <p>Logged in as:</p>
       <p>{email}</p>
         </EmailBox>
-        <SignedInBox>
+        <SignedInBox onClick={logOut}>
         Log out
         </SignedInBox>
       </EmailInfo>

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import DashboardLayout from '../components/Dashboardlayout'
 import CreateWorkspace from '../components/signup/CreateWorkspace'
 import {  IWorkspace } from '../state/board'
-import { AddNewWorkspace } from '../state/user'
+import { AddNewWorkspace, setTypes } from '../state/user'
 import { RootState } from '../state/store'
 import { subItems } from '../utils/utilData'
 import styled from 'styled-components'
@@ -12,6 +12,7 @@ import { useMutation } from '@apollo/client'
 import { CREATE_NEW_WORKSPACE } from '../graphql/mutation'
 import { setCurrentSignupPage, setModalData } from '../state/display'
 import LoadingPage from '../components/LoadingPage'
+import { storeDataInLocalStorage } from '../utils/localStorage'
 
 const NavWrapper = styled.div`
    display: flex;
@@ -92,7 +93,11 @@ const [createWorkspace,{loading}] = useMutation(
         // router.push(`/${workspaceName}`)
         await createWorkspace()
       }
-
+      const logOut = () =>{
+        dispatch(setTypes({type:""}))
+        storeDataInLocalStorage("kanbanToken","")
+        router.push(`/signin`)
+      }
   return (
     <NavWrapper>
       {!loading ? 
@@ -102,6 +107,7 @@ const [createWorkspace,{loading}] = useMutation(
     disableWorkspaceBtn={disableWorkspaceBtn}
     setDisableWorkspaceBtn={setDisableWorkspaceBtn}
     email={user.email}
+    logOut={logOut}
     createNewWorkspace={createNewWorkspace}
     workspaceName={workspaceName} 
     setWorkspaceName={setWorkspaceName} 

@@ -292,6 +292,20 @@ const setGuest = () =>{
   dispatch(setModalData({modalType:"success",modalMessage:`Hello guest, your data will be stored on the browser, i.e localstorage, and you will have limited access. Comeback and signup Thanks :)`,modal:true, type:'confirm',click:OpenNext}))
  
 }
+const logOut = () =>{
+  dispatch(setTypes({type:""}))
+  storeDataInLocalStorage("kanbanToken","")
+  dispatch(setCurrentSignupPage({current:SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX}))
+  dispatch(setCurrentUser({user:{
+    name:"",
+    email:"",
+    _id:"",
+    username:"",
+    image:"",
+    workspaces: []
+  }}))
+setSignupPageState(SIGNUPPAGESTATE.SIGN_UP_PAGE_INDEX)
+}
   return (
     <NavWrapper>
      {loading|| registerLoading || axiosLoading ? 
@@ -331,6 +345,7 @@ const setGuest = () =>{
       workspaceName={workspaceName} 
       setWorkspaceName={setWorkspaceName} 
       workspaceURL={workspaceURL}
+      logOut={logOut}
       setWorkspaceURL={setWorkspaceURL}
       /> : null
     }
