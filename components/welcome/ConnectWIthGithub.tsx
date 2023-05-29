@@ -47,11 +47,12 @@ const MainText = styled.div`
 
 const Wrapper= styled.div`
   margin:20px 0;
-  @media ${device.mobileM} {
-    display:flex;
+   display:flex;
     justify-content:center;
     align-items:center;
     flex-direction:column;
+  @media ${device.mobileM} {
+   
     width:500px;
     margin:0 auto;
     margin-top:20px;
