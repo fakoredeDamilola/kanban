@@ -11,10 +11,12 @@ const Content = styled.div`
   align-items:center;
   justify-content:center;
   width:100%;
+  padding:0 15px;
   background-color: #191A23;
   & p {
     margin-top:30px;
     font-size:14px;
+    text-align:center;
     color:#C0C0C4;
   }
 `

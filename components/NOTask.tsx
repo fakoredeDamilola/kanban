@@ -14,7 +14,8 @@ const NoTask = styled.div`
   background: ${({theme}) => theme.modalBackground};
   /* allign div to center */
   width:90%; 
-  padding:40px;
+  padding:40px 20px;
+  box-sizing:border-box;
   position:absolute;
   top:50%;
   left:50%;
@@ -29,8 +30,9 @@ const NoTask = styled.div`
     margin: 20px 0;
     color:${({theme}) => theme.otherColor};
   }
-  @media ${device.mobileS} {
+  @media ${device.mobileM} {
   width:400px;
+  padding:40px;
  }
 `
 const IconFlex = styled.div`
@@ -60,7 +62,7 @@ const NOTask = () => {
       <p>All Issues in the place where you can see all of your team's work in one view</p>
       <p>Once you have created some issues for your team, they will show up here</p>
     </div>
-    <CustomButton background="button" color="white" onClick={openAddModal} hover="border" width="30px">Create new task</CustomButton>
+    <CustomButton background="button" color="white" onClick={openAddModal} hover="border" width="160px">Create new task</CustomButton>
    </NoTask>
   )
 }

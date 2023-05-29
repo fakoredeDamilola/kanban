@@ -15,8 +15,11 @@ const MainText = styled.div`
   text-align:center;
   color:white;
   margin-top:30px;
+  box-sizing:border-box;
   & > p {
+    margin:0 auto;
   margin-top:30px;
+  width:90%;
   font-size:14px;
   color:#D1D2DF;
   }
@@ -71,8 +74,10 @@ font-size:13px;
 
 `
 const GridDiv = styled.div`
-margin:30px 0;
-   @media ${device.mobileS} {
+margin:30px auto;
+width:90%;
+
+   @media ${device.mobileM} {
     display:flex;
     width:100%;
    
@@ -81,6 +86,7 @@ margin:30px 0;
 const Grid = styled.div`
   width:90%;
   padding:30px 40px;
+  box-sizing:border-box;
   border:1px solid rgb(57, 58, 75);
     border-radius:4px;
     @media ${device.mobileS} {
