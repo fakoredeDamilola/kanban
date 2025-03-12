@@ -1,34 +1,84 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Kanban Management Board
+
+A **Kanban Board** built with **Next.js**, **TypeScript**, and **Styled Components**, featuring **drag-and-drop** (DND) functionality. It allows users to log in using **Google authentication**, **email**, and **password**, and efficiently create and assign tasks. The backend is developed separately with **Node.js and GraphQL**.
+
+## Features
+
+- 🌟 **User Authentication** (Google, Email, Password)
+- 🏗 **Drag and Drop** for easy task management
+- 🎨 **Styled Components** for custom UI
+- ⚡ **Next.js** for server-side rendering and performance
+- 📊 **GraphQL API** for seamless backend communication
+
+## Technologies Used
+
+### Frontend
+
+- **Next.js** (React Framework)
+- **TypeScript** (Static Typing)
+- **Styled Components** (CSS-in-JS)
+- **React-Beautiful-DND** (Drag-and-Drop Functionality)
+- **NextAuth.js** (Authentication)
+
+### Backend (Separate Repository)
+
+- **Node.js**
+- **GraphQL**
+- **PostgreSQL / MongoDB** (Database)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- **Node.js** (Latest Version)
+- **Yarn or npm**
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
+# Clone the repository
+git clone https://github.com/fakoredeDamilola/kanban.git
+cd kanban
+
+# Install dependencies
+yarn install  # or npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the root directory
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+cp .env.example .env
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Running the Application
 
-## Learn More
+```bash
+# Start the development server
+yarn dev  # or npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Log in** using Google or email/password.
+- **Create tasks** and assign them to team members.
+- **Drag and drop** tasks between different status columns.
+- **Update tasks** in real time.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+This project can be deployed on **Vercel**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Deploy using Vercel CLI
+vercel deploy
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contributing
+
+Feel free to submit pull requests or open issues to improve the project!
+
+## License
+
+MIT License
